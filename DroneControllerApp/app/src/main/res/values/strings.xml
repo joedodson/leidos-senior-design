@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Drone Controller App</string>
+
+    <!-- Error Strings -->
+    <string name="error_SDKRegistrationError_textView">DJI SDK Registration Failed</string>
+    <string name="error_SDKRegistrationError_button">Retry Registration</string>
+    <string name="title_activity_permissions_helper">PermissionsHelper</string>
+
 </resources>
