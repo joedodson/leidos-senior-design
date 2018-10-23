@@ -10,6 +10,11 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +23,7 @@ import dji.common.error.DJIError;
 import dji.common.error.DJISDKError;
 import dji.sdk.base.BaseComponent;
 import dji.sdk.base.BaseProduct;
+import dji.sdk.sdkmanager.DJIAoaControllerActivity;
 import dji.sdk.sdkmanager.DJISDKManager;
 
 public class SplashActivity extends AppCompatActivity {
@@ -46,6 +52,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_splash);
 
         DJISDKManagerCallback = new DJISDKManager.SDKManagerCallback() {
 
@@ -101,6 +108,14 @@ public class SplashActivity extends AppCompatActivity {
         checkAndRequestPermissions();
     }
 
+    private void startAnimations() {
+        TextView progressText = (TextView) findViewById(R.id.progressBarText);
+
+        Animation textAnimation = new AlphaAnimation(0.0f, 1.0f);
+        textAnimation.setDuration(1000);
+
+        progressText.startAnimation(textAnimation);
+    }
     /**
      * Checks if there is any missing permissions, and
      * requests runtime permission if needed.

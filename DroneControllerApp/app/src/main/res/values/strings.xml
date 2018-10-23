@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Drone Controller App</string>
 
+    <!-- Splash Screen Progress Bar Text -->
+    <string name="activity_splashscreen_progressBarText">Registering DJI SDK…</string>
+
     <!-- Error Strings -->
     <string name="error_SDKRegistrationError_textView">DJI SDK Registration Failed</string>
     <string name="error_SDKRegistrationError_button">Retry Registration</string>

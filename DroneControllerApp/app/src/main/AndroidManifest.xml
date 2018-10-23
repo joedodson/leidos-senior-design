@@ -62,9 +62,17 @@
             android:name=".SDKRegistrationErrorActivity"
             android:theme="@style/AppTheme" />
 
-        <activity android:name=".DroneConnectionActivity" />
+        <activity
+            android:name=".DroneConnectionActivity"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
+            </intent-filter>
+        </activity>
 
-        <activity android:name=".MainActivity" android:theme="@style/AppTheme"></activity>
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>
