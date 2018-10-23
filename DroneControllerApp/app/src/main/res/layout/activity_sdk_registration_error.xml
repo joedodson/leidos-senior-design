@@ -14,14 +14,14 @@
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context=".SDKRegistrationErrorActivity"
-        tools:showIn="@layout/activity_sdkregistrationerror">
+        tools:showIn="@layout/activity_sdk_registration_error">
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:text="@string/error_SDKRegistrationError_textView"
+            android:text="@string/activity_sdkregistrationerror_text"
             style="@style/Header"
             android:textAlignment="center" />
 
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:onClick="retry"
-            android:text="@string/error_SDKRegistrationError_button"
+            android:text="@string/activity_sdkregistrationerror_button"
             android:textAlignment="center" />
 
     </LinearLayout>

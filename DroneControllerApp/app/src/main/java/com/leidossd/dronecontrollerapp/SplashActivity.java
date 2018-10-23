@@ -13,8 +13,7 @@ import android.util.Log;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,6 @@ import dji.common.error.DJIError;
 import dji.common.error.DJISDKError;
 import dji.sdk.base.BaseComponent;
 import dji.sdk.base.BaseProduct;
-import dji.sdk.sdkmanager.DJIAoaControllerActivity;
 import dji.sdk.sdkmanager.DJISDKManager;
 
 public class SplashActivity extends AppCompatActivity {
@@ -60,7 +58,7 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onRegister(final DJIError error) {
                 if (error == DJISDKError.REGISTRATION_SUCCESS) {
-                    Log.i(TAG, "SDK Registration Success - Sending Broadcast");
+                    Log.i(TAG, "SDK Registration Success");
                     startActivity(new Intent(SplashActivity.this, MainActivity.class));
                     finish();
                 } else {
@@ -106,17 +104,19 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        startAnimations();
         checkAndRequestPermissions();
     }
 
     private void startAnimations() {
-        TextView progressText = (TextView) findViewById(R.id.progressBarText);
+        TextView progressText = findViewById(R.id.progressBarText);
 
         Animation textAnimation = new AlphaAnimation(0.0f, 1.0f);
         textAnimation.setDuration(1000);
 
         progressText.startAnimation(textAnimation);
     }
+
     /**
      * Checks if there is any missing permissions, and
      * requests runtime permission if needed.
@@ -157,12 +157,11 @@ public class SplashActivity extends AppCompatActivity {
         if(missingPermissions.isEmpty()) {
             startRegistration();
         } else {
-            MainApplication.showToast("Missing Permissions");
+            Toast.makeText(this, "Missing Permissions!", Toast.LENGTH_LONG).show();
         }
     }
 
     private void startRegistration() {
         DJISDKManager.getInstance().registerApp(this, DJISDKManagerCallback);
     }
-
 }

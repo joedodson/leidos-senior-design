@@ -6,6 +6,11 @@ import android.content.res.Configuration;
 import android.support.multidex.MultiDex;
 import com.secneo.sdk.Helper;
 
+/**
+ * Still not entirely sure why, but this is needed to handle runtime loading of classes in DJI Apps.
+ * This class is used entry point in the manifest.
+ */
+
 public class MApplication extends Application {
 
     private static MainApplication mainApplication;
