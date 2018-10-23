@@ -2,6 +2,7 @@ package com.leidossd.dronecontrollerapp;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 
 public class DroneConnectionActivity extends Activity {
 
@@ -9,5 +10,9 @@ public class DroneConnectionActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drone_connection);
+    }
+
+    public void returnToMainActivity(View view) {
+
     }
 }

@@ -22,8 +22,20 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="AppTheme.Header1">
-        <item name="android:textSize">16sp</item>
+    <style name="Header">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="Button">
+        <item name="android:textSize">20sp</item>
+        <item name="android:color">@color/accent</item>
+        <item name="android:colorAccent">@color/accent</item>
+        <item name="android:textColor">@color/light_text</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingLeft">20sp</item>
+        <item name="android:paddingRight">20sp</item>
+        <item name="android:background">@drawable/custom_button</item>
     </style>
 
 </resources>

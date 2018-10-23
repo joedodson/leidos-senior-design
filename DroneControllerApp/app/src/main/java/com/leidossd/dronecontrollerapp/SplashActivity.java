@@ -65,6 +65,7 @@ public class SplashActivity extends AppCompatActivity {
                     finish();
                 } else {
                     Log.e(TAG, error.getDescription());
+                    startActivity(new Intent(SplashActivity.this, SDKRegistrationErrorActivity.class));
                 }
             }
 
@@ -156,7 +157,7 @@ public class SplashActivity extends AppCompatActivity {
         if(missingPermissions.isEmpty()) {
             startRegistration();
         } else {
-
+            MainApplication.showToast("Missing Permissions");
         }
     }
 

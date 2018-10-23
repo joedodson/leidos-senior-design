@@ -18,17 +18,16 @@
 
         <TextView
             android:id="@+id/textView"
-            style="@style/AppTheme.Header1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:text="@string/error_SDKRegistrationError_textView"
+            style="@style/Header"
             android:textAlignment="center" />
 
         <Button
             android:id="@+id/button"
-            android:background="@drawable/custom_button"
-            android:color="@color/colorAccent"
+            style="@style/Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
