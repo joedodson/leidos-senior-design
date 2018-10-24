@@ -7,6 +7,12 @@
     <!-- Drone Connection -->
     <string name="activity_droneconnection_infoText">Please ensure drone is connected to the device via USB or WiFi</string>
     <string name="activity_droneconnection_buttonText">Connect</string>
+    <string name="activity_droneconnection_statusLabel">Status: </string>
+    <string name="activity_droneconnection_statusDisconnected">Disconnected</string>
+    <string name="activity_droneconnection_statusConnected">Connected</string>
+    <string name="activity_droneconnection_statusChanged">Component Changed</string>
+    <string name="activity_droneconnection_connecting">Connecting</string>
+    <string name="activity_droneconnection_connectError">Failed to Connect</string>
 
     <!-- Error Strings -->
     <string name="activity_sdkregistrationerror_text">DJI SDK Registration Failed</string>
