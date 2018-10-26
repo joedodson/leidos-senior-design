@@ -27,15 +27,19 @@ public class SecondActivity extends AppCompatActivity {
     public void onClicked(View view) {
         switch (view.getId()) {
             case(R.id.button_1): { //On Button
-                FlightControllerWrapper.getInstance().turnOnMotors(null);
-                engineOn = true;
-                testText.setText("On");
+                if(!engineOn) {
+                    FlightControllerWrapper.getInstance().turnOnMotors(null);
+                    engineOn = true;
+                    testText.setText("On");
+                }
                 break;
             }
             case(R.id.button_2): { //Off Button
-                FlightControllerWrapper.getInstance().turnOffMotors(null);
-                engineOn = false;
-                testText.setText("Off");
+                if(engineOn) {
+                    FlightControllerWrapper.getInstance().turnOffMotors(null);
+                    engineOn = false;
+                    testText.setText("Off");
+                }
                 break;
             }
             case(R.id.button_3): { //Back button
