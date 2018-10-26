@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Drone Controller App</string>
     <string name="next_button">Next Screen →</string>
-    <string name="plus_button">+</string>
-    <string name="minus_button">-</string>
+    <string name="on_button">On</string>
+    <string name="off_button">Off</string>
     <string name="back_button">← Previous</string>
 </resources>

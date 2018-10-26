@@ -14,7 +14,6 @@ public class SecondActivity extends AppCompatActivity {
 
     private boolean engineOn = false;
     private TextView testText;
-    private FlightControllerWrapper fcw;
 
 
     @Override
@@ -26,17 +25,15 @@ public class SecondActivity extends AppCompatActivity {
     }
 
     public void onClicked(View view) {
-        fcw = new FlightControllerWrapper();
-
         switch (view.getId()) {
             case(R.id.button_1): { //On Button
-                fcw.turnOnMotors(null);
+                FlightControllerWrapper.getInstance().turnOnMotors(null);
                 engineOn = true;
                 testText.setText("On");
                 break;
             }
             case(R.id.button_2): { //Off Button
-                fcw.turnOffMotors(null);
+                FlightControllerWrapper.getInstance().turnOffMotors(null);
                 engineOn = false;
                 testText.setText("Off");
                 break;
