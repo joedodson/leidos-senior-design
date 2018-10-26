@@ -1,32 +1,62 @@
 package com.leidossd.djiwrapper;
 import android.support.annotation.Nullable;
 
+import dji.common.error.DJIError;
+import dji.common.flightcontroller.virtualstick.RollPitchControlMode;
+import dji.common.flightcontroller.virtualstick.VerticalControlMode;
+import dji.common.flightcontroller.virtualstick.FlightControlData;
 import dji.common.util.CommonCallbacks;
 import dji.sdk.flightcontroller.FlightController;
+import dji.sdk.sdkmanager.DJISDKManager;
+import dji.sdk.products.Aircraft;
 
 public class FlightControllerWrapper {
-    private FlightController flightController;
-    private float x;
-    private float y;
-    private float z;
+    private static FlightControllerWrapper instance = null;
 
-    public FlightControllerWrapper(FlightController fc){
-        flightController = fc;
-        x = 0;
-        y = 0;
-        z = 0;
+    private FlightController flightController;
+    private float xPos;
+    private float yPos;
+    private float zPos;
+
+    public static FlightControllerWrapper getInstance(){
+        if(instance == null)
+            instance = new FlightControllerWrapper();
+
+        return instance;
+    }
+
+    private FlightControllerWrapper(){
+        flightController = ((Aircraft) DJISDKManager.getInstance().
+                                       getProduct()).getFlightController();
+        xPos = 0;
+        yPos = 0;
+        zPos = 0;
     }
 
     public void gotoX(float x){
+        flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
 
     }
 
     public void gotoY(float y){
+        flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
 
     }
 
     public void gotoZ(float z){
+        flightController.setVerticalControlMode(VerticalControlMode.POSITION);
+        float pitch = 0;
+        float roll = 0;
+        float yaw = 0;
+        float verticalThrottle = 0;
 
+        flightController.sendVirtualStickFlightControlData(
+                        new FlightControlData(pitch, roll, yaw, verticalThrottle),
+                        new CommonCallbacks.CompletionCallback() {
+                            @Override
+                            public void onResult(DJIError djiError) {
+                            }
+                        });
     }
 
     public void gotoXYZ(float x, float y, float z){
@@ -37,7 +67,18 @@ public class FlightControllerWrapper {
 
 
 
-    // Here lie forwarded functions
+    // Here lie forwarded functions, add them as you need them
+
+    /* To use these functions, DJI makes the callbacks like this:
+       new CommonCallbacks.CompletionCallback() {
+            @Override
+            public void onResult(DJIError djiError) {
+            }
+       });
+
+       sometimes there are things inside that onResult() function, depends on what you want.
+       Also note that ALL of what's written above appears as a single argument passed to a function.
+     */
 
     public void turnOnMotors(@Nullable CommonCallbacks.CompletionCallback callback){
         flightController.turnOnMotors(callback);
