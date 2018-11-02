@@ -57,34 +57,24 @@
                 android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"
                 android:resource="@xml/accessory_filter" />
         </activity>
-
         <service android:name="dji.sdk.sdkmanager.DJIGlobalService" />
         <!-- DJI SDK -->
-
-        <activity
-            android:name=".SplashActivity"
-            android:theme="@style/SplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
+          
         <activity
             android:name=".SDKRegistrationErrorActivity"
             android:theme="@style/AppTheme" />
 
         <activity
             android:name=".DroneConnectionActivity"
-            android:theme="@style/AppTheme">
-            <intent-filter>
-                <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme" />
+          
+        <activity
+            android:name=".SecondActivity"
+            android:screenOrientation="landscape" />
+          
     </application>
-
 </manifest>
