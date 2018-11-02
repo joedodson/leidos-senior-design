@@ -23,14 +23,14 @@ public class MApplication extends Application {
         if (mainApplication != null) {
             return;
         }
+
         Helper.install(this);
-        loadApplication(paramContext);
+        loadApplication();
     }
 
-    public void loadApplication(Context paramContext) {
-        if (mainApplication != null)
-            return;
-        mainApplication = new MainApplication(this);
+    public void loadApplication() {
+        mainApplication = new MainApplication();
+        mainApplication.setContext(this);
     }
 
     public MainApplication getMainApplication() {

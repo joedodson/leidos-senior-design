@@ -1,6 +1,10 @@
 package com.leidossd.dronecontrollerapp;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -9,92 +13,46 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import dji.common.error.DJIError;
-import dji.sdk.base.BaseComponent;
 import dji.sdk.base.BaseProduct;
 import dji.sdk.sdkmanager.DJISDKManager;
 
 public class DroneConnectionActivity extends Activity {
     private static final String TAG = DroneConnectionActivity.class.getName();
 
-    DJISDKManager.SDKManagerCallback DJISDKManagerCallback;
-    TextView productConnectionStatus;
-    ProgressBar productConnectProgress;
+    private static final long CONNECT_TIMEOUT_MS = 10000;
 
-    // separate runnables for progress bar and status update
-    Handler connectFailedHandler;
-    Runnable connectFailedRunnable;
+    private TextView productConnectionStatus;
+    private ProgressBar productConnectProgress;
+
+    // handler and runnable to show error message and hide progress bar after timeout
+    private Handler connectFailedHandler;
+    private Runnable connectFailedRunnable = new Runnable() {
+        @Override
+        public void run() {
+            updateUI(R.string.activity_droneconnection_connectError, View.GONE);
+        }
+    };
+
+    // receiver to wait for 'MainApplication' to notify connection status change
+    private BroadcastReceiver connectionChangeReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateUI(getConnectionStatusStringId(), View.GONE);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drone_connection);
 
-        // get current connection status and set UI text
-        BaseProduct drone = DJISDKManager.getInstance().getProduct();
-        int statusId = (drone != null && drone.isConnected()) ?
-                R.string.activity_droneconnection_statusConnected :
-                R.string.activity_droneconnection_statusDisconnected;
+        registerReceiver(connectionChangeReceiver, new IntentFilter(MainApplication.FLAG_CONNECTION_CHANGE));
 
         productConnectProgress = findViewById(R.id.connectProgressBar);
         productConnectionStatus = findViewById(R.id.status_text);
-        productConnectionStatus.setText(statusId);
+        productConnectionStatus.setText(getConnectionStatusStringId());
 
-        // handler and runnable to show error message and hide progress bar after timeout
         connectFailedHandler = new Handler();
-        connectFailedRunnable = new Runnable() {
-            @Override
-            public void run() {
-                updateUI(R.string.activity_droneconnection_connectError, View.GONE);
-            }
-        };
-
-        DJISDKManagerCallback = new DJISDKManager.SDKManagerCallback() {
-
-            @Override
-            public void onRegister(final DJIError error) {
-            }
-
-            // remove callback to prevent failed message, set correct status, and log result
-            @Override
-            public void onProductDisconnect() {
-                updateUI(R.string.activity_droneconnection_statusDisconnected, View.GONE);
-
-                showToast("Product Disconnected");
-                Log.d(TAG, "onProductDisconnect");
-            }
-
-            @Override
-            public void onProductConnect(BaseProduct baseProduct) {
-                updateUI(R.string.activity_droneconnection_statusConnected, View.GONE);
-
-                showToast("Product Connected");
-                Log.d(TAG, String.format("onProductConnect newProduct:%s", baseProduct));
-            }
-
-            @Override
-            public void onComponentChange(BaseProduct.ComponentKey componentKey, BaseComponent oldComponent,
-                                          BaseComponent newComponent) {
-                updateUI(R.string.activity_droneconnection_statusChanged, View.GONE);
-
-                showToast("Component Changed");
-                if (newComponent != null) {
-                    newComponent.setComponentListener(new BaseComponent.ComponentListener() {
-
-                        @Override
-                        public void onConnectivityChange(boolean isConnected) {
-                            Log.d("TAG", "onComponentConnectivityChanged: " + isConnected);
-                        }
-                    });
-                }
-
-                Log.d(TAG,
-                        String.format("onComponentChange key:%s, oldComponent:%s, newComponent:%s",
-                                componentKey,
-                                oldComponent,
-                                newComponent));
-            }
-        };
     }
 
     public void startConnection(View view) {
@@ -104,9 +62,11 @@ public class DroneConnectionActivity extends Activity {
         updateUI(R.string.activity_droneconnection_connecting, View.VISIBLE);
 
         // show failed message after 5 seconds
-        connectFailedHandler.postDelayed(connectFailedRunnable, 5000);
+        connectFailedHandler.postDelayed(connectFailedRunnable, CONNECT_TIMEOUT_MS);
     }
 
+
+    // remove callback to prevent failed message, set correct status, and log result
     private void updateUI(int stringId, int visibilityId) {
         connectFailedHandler.removeCallbacks(connectFailedRunnable);
 
@@ -125,6 +85,15 @@ public class DroneConnectionActivity extends Activity {
         productConnectionStatus.setTextColor(getColor(colorId));
         productConnectionStatus.setText(getString(stringId));
         productConnectProgress.setVisibility(visibilityId);
+
+        Log.d(TAG, String.format("Update UI: %s", getString(stringId)));
+    }
+
+    int getConnectionStatusStringId() {
+        BaseProduct drone = DJISDKManager.getInstance().getProduct();
+        return (drone != null && drone.isConnected()) ?
+                R.string.activity_droneconnection_statusConnected :
+                R.string.activity_droneconnection_statusDisconnected;
     }
 
     private void showToast(String msg) {
