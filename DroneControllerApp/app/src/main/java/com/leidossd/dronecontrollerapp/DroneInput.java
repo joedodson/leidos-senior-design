@@ -9,14 +9,15 @@ import android.text.method.KeyListener;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import com.leidossd.djiwrapper.FlightControllerWrapper;
 
 public class DroneInput extends AppCompatActivity {
 
     private TextView testText;
-    private EditText xBox;
-    private EditText yBox;
-    private EditText zBox;
+    private InputBox xBox;
+    private InputBox yBox;
+    private InputBox zBox;
+    private KeyListener xBoxListener = null;
+    private KeyListener yBoxListener = null;
     private KeyListener zBoxListener = null;
 
 
@@ -27,9 +28,9 @@ public class DroneInput extends AppCompatActivity {
         testText = findViewById(R.id.text_1);
 
         testText.setText("Off");
-        xBox = (EditText) findViewById(R.id.x_box);
-        yBox = (EditText) findViewById(R.id.y_box);
-        zBox = (EditText) findViewById(R.id.z_box);
+        xBox = findViewById(R.id.x_box);
+        yBox = findViewById(R.id.y_box);
+        zBox = findViewById(R.id.z_box);
         addCoordinateListener(xBox);
         addCoordinateListener(yBox);
     }
@@ -74,22 +75,30 @@ public class DroneInput extends AppCompatActivity {
     private void checkTextStatus(){
         String xString = xBox.getText().toString();
         String yString = yBox.getText().toString();
-        String zString = yBox.getText().toString();
+        String zString = zBox.getText().toString();
 
         int x = xString.isEmpty() ? Integer.parseInt(xString) : 0;
-        int y = Integer.parseInt(yString);
-        int z = Integer.parseInt(zString);
+        int y = yString.isEmpty() ? Integer.parseInt(yString) : 0;
+        int z = zString.isEmpty() ? Integer.parseInt(zString) : 0;
 
         if (x != 0 || y != 0) {
             if (zBoxListener == null) {
-                zBoxListener = zBox.getKeyListener();
-                zBox.setEnabled(false);
-                zBox.setKeyListener(null);
+                zBoxListener = zBox.disableInputBox();
             }
         } else if (zBox.getKeyListener() == null) {
-            zBox.setKeyListener(zBoxListener);
+            zBox.enableInputBox(zBoxListener);
             zBoxListener = null;
-            zBox.setEnabled(true);
+        }
+        if (z != 0) {
+            if (xBoxListener == null && yBoxListener == null) {
+                xBoxListener = xBox.disableInputBox();
+                yBoxListener = yBox.disableInputBox();
+            }
+        } else if (xBox.getKeyListener() == null && yBox.getKeyListener() == null) {
+            xBox.enableInputBox(xBoxListener);
+            yBox.enableInputBox(yBoxListener);
+            xBoxListener = null;
+            yBoxListener = null;
         }
     }
 }
