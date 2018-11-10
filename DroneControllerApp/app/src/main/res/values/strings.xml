@@ -4,4 +4,6 @@
     <string name="on_button">On</string>
     <string name="off_button">Off</string>
     <string name="back_button">← Previous</string>
+    <string name="confirm_button">Confirm</string>
+    <string name="default_num">0</string>
 </resources>
