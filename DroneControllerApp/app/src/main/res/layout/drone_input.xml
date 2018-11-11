@@ -6,16 +6,38 @@
     android:layout_height="match_parent"
     tools:context=".DroneInput">
 
+    <Button
+        android:id="@+id/button_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="84dp"
+        android:text="@string/takeoff_button"
+        app:layout_constraintBottom_toTopOf="@+id/button_1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_3"
+        app:layout_constraintVertical_bias="0.504" />
+
+    <Button
+        android:id="@+id/button_5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="84dp"
+        android:text="@string/landing_button"
+        app:layout_constraintBottom_toTopOf="@+id/button_2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_3"
+        app:layout_constraintVertical_bias="0.504" />
+
     <EditText
         android:id="@+id/x_box"
         android:layout_width="108dp"
         android:layout_height="38dp"
-        android:layout_marginBottom="40dp"
         android:layout_marginStart="8dp"
+        android:layout_marginBottom="40dp"
         android:ems="10"
+        android:hint="@string/default_num"
         android:inputType="number"
         android:text="@string/default_num"
-        android:hint="@string/default_num"
         app:layout_constraintBottom_toTopOf="@+id/button_3"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -23,13 +45,13 @@
         android:id="@+id/y_box"
         android:layout_width="108dp"
         android:layout_height="38dp"
-        android:layout_marginBottom="40dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="40dp"
         android:ems="10"
+        android:hint="@string/default_num"
         android:inputType="number"
         android:text="@string/default_num"
-        android:hint="@string/default_num"
         app:layout_constraintBottom_toTopOf="@+id/button_3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -38,12 +60,12 @@
         android:id="@+id/z_box"
         android:layout_width="108dp"
         android:layout_height="38dp"
-        android:layout_marginBottom="40dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="40dp"
         android:ems="10"
+        android:hint="@string/default_num"
         android:inputType="number"
         android:text="@string/default_num"
-        android:hint="@string/default_num"
         app:layout_constraintBottom_toTopOf="@+id/button_3"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -79,7 +101,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.61" />
+        app:layout_constraintVertical_bias="0.456" />
 
     <TextView
         android:id="@+id/text_1"
@@ -87,5 +109,12 @@
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="20dp" />
 
 </android.support.constraint.ConstraintLayout>

@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClicked(View view) {
-        startActivity(new Intent(this, SecondActivity.class));
+        startActivity(new Intent(this, DroneInput.class));
         finish();
     }
 }

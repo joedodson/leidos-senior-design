@@ -5,21 +5,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.KeyListener;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.leidossd.djiwrapper.FlightControllerWrapper;
+
+import dji.common.error.DJIError;
+import dji.common.util.CommonCallbacks;
 
 public class DroneInput extends AppCompatActivity {
 
-    private TextView testText;
-    private InputBox xBox;
-    private InputBox yBox;
-    private InputBox zBox;
-    private KeyListener xBoxListener = null;
-    private KeyListener yBoxListener = null;
-    private KeyListener zBoxListener = null;
+    private DroneState state = DroneState.ON;
+    public enum DroneState {
+        ON, READY, WAITING
+    }
 
+    private TextView testText;
+    private EditText xBox;
+    private EditText yBox;
+    private EditText zBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,23 +39,59 @@ public class DroneInput extends AppCompatActivity {
         zBox = findViewById(R.id.z_box);
         addCoordinateListener(xBox);
         addCoordinateListener(yBox);
+        addCoordinateListener(zBox);
     }
 
+    //TODO: Prevent buttons from being clicked at the wrong times.
     public void onClicked(View view) {
         switch (view.getId()) {
             case(R.id.button_1): { //Back Button
-                startActivity(new Intent(this, MainActivity.class));
-                finish();
-                break;
-            }
-            case(R.id.button_2): { //Next Button
-            }
-            case(R.id.button_3): { //Confirm button
-                if(zBoxListener != null){ //Z is disabled
-//                    FlightControllerWrapper.getInstance().goToAbsoluteXYZ(new Coordinate(xBox.getText(), yBox.getText(), 0));
-                } else { //Dummy code for now.
-//                    FlightControllerWrapper.getInstance().goToAbsoluteXYZ(new Coordinate(xBox.getText(), yBox.getText(), 0));
+                if(getState() == DroneState.ON) {
+                    startActivity(new Intent(this, MainActivity.class));
+                    finish();
+                    break;
                 }
+            } case(R.id.button_3): { //Confirm button
+                if(getState() == DroneState.READY){
+                    setState(DroneState.WAITING);
+                    //TODO: Ask about returning result from function, to know when its done executing
+                    FlightControllerWrapper.getInstance().goToAbsoluteXYZ(new Coordinate(toIntEmpty(xBox), toIntEmpty(yBox), toIntEmpty(zBox)));
+                }
+                break;
+            } case(R.id.button_4): { //Takeoff button
+                if(getState() == DroneState.ON){
+                    FlightControllerWrapper.getInstance().startTakeoff(new CommonCallbacks.CompletionCallback() {
+                        @Override
+                        public void onResult(DJIError djiError) {
+                            setState(DroneState.READY);
+                            if(BuildConfig.DEBUG){
+                                if (djiError != null) {
+                                    showToast(djiError.getDescription());
+                                } else {
+                                    showToast("Take off success!");
+                                }
+                            }
+                        }
+                    });
+                }
+                break;
+            } case(R.id.button_5): { //Landing button
+                if(getState() == DroneState.READY){
+                    FlightControllerWrapper.getInstance().startLanding(new CommonCallbacks.CompletionCallback() {
+                        @Override
+                        public void onResult(DJIError djiError) {
+                            setState(DroneState.ON);
+                            if(BuildConfig.DEBUG){
+                                if (djiError != null) {
+                                    showToast(djiError.getDescription());
+                                } else {
+                                    showToast("Landing started.");
+                                }
+                            }
+                        }
+                    });
+                }
+                break;
             }
         }
     }
@@ -73,32 +115,34 @@ public class DroneInput extends AppCompatActivity {
     }
 
     private void checkTextStatus(){
-        String xString = xBox.getText().toString();
-        String yString = yBox.getText().toString();
-        String zString = zBox.getText().toString();
-
-        int x = xString.isEmpty() ? Integer.parseInt(xString) : 0;
-        int y = yString.isEmpty() ? Integer.parseInt(yString) : 0;
-        int z = zString.isEmpty() ? Integer.parseInt(zString) : 0;
+        int x = toIntEmpty(xBox);
+        int y = toIntEmpty(yBox);
+        int z = toIntEmpty(zBox);
 
         if (x != 0 || y != 0) {
-            if (zBoxListener == null) {
-                zBoxListener = zBox.disableInputBox();
-            }
-        } else if (zBox.getKeyListener() == null) {
-            zBox.enableInputBox(zBoxListener);
-            zBoxListener = null;
+            zBox.setEnabled(false);
+        } else {
+            zBox.setEnabled(true);
         }
         if (z != 0) {
-            if (xBoxListener == null && yBoxListener == null) {
-                xBoxListener = xBox.disableInputBox();
-                yBoxListener = yBox.disableInputBox();
-            }
-        } else if (xBox.getKeyListener() == null && yBox.getKeyListener() == null) {
-            xBox.enableInputBox(xBoxListener);
-            yBox.enableInputBox(yBoxListener);
-            xBoxListener = null;
-            yBoxListener = null;
+            xBox.setEnabled(false);
+            yBox.setEnabled(false);
+        } else {
+            xBox.setEnabled(true);
+            yBox.setEnabled(true);
         }
+    }
+
+    private int toIntEmpty(EditText box) {
+        String s = box.getText().toString();
+        return s.isEmpty() ? 0 : Integer.parseInt(s);
+    }
+
+    public DroneState getState() { return state; }
+
+    public void setState(DroneState ds) { state = ds; }
+
+    private void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 }
