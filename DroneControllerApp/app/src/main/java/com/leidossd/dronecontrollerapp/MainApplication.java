@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import dji.common.error.DJIError;
 import dji.sdk.base.BaseComponent;
@@ -59,20 +60,27 @@ public class MainApplication extends Application {
             @Override
             public void onProductDisconnect() {
                 handler.postDelayed(connectionUpdateRunnable, 250);
+                showToast(TAG + " connect");
                 Log.d(TAG, "Product Disconnected");
             }
 
             @Override
             public void onProductConnect(BaseProduct baseProduct) {
                 handler.postDelayed(connectionUpdateRunnable, 250);
+                showToast(TAG + " disconnect");
                 Log.d(TAG, "Product Connected");
             }
 
             @Override
             public void onComponentChange(BaseProduct.ComponentKey componentKey, BaseComponent baseComponent, BaseComponent baseComponent1) {
                 handler.postDelayed(connectionUpdateRunnable, 250);
+                showToast(TAG + " change");
                 Log.d(TAG, "Component Changed");
             }
         };
+    }
+
+    private void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }

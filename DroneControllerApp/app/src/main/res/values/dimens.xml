@@ -3,4 +3,19 @@
     <dimen name="text_size_large">24sp</dimen>
     <dimen name="text_size_medium">20sp</dimen>
     <dimen name="text_size_small">16sp</dimen>
+
+    <dimen name="button_std_width">500dp</dimen>
+    <dimen name="button_std_padding_top_bottom">10sp</dimen>
+    <dimen name="button_std_padding_left_right">20sp</dimen>
+
+    <dimen name="button_menu_width">175dp</dimen>
+    <dimen name="button_menu_height">100dp</dimen>
+
+    <dimen name="margin_tiny">5sp</dimen>
+    <dimen name="margin_small">10sp</dimen>
+    <dimen name="margin_medium">15sp</dimen>
+    <dimen name="margin_large">25sp</dimen>
+
+    <dimen name="menu_constraintGuideline_begin">350dp</dimen>
+    <dimen name="menu_width">250dp</dimen>
 </resources>

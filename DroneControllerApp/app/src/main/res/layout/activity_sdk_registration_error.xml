@@ -22,19 +22,17 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:text="@string/activity_sdkregistrationerror_text"
-            style="@style/Header"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            android:textSize="@dimen/text_size_large" />
 
         <Button
             android:id="@+id/button"
-            style="@style/Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
+            android:enabled="true"
             android:onClick="retry"
-            android:text="@string/activity_sdkregistrationerror_button"
-            android:textAlignment="center" />
+            android:text="@string/activity_sdkregistrationerror_button" />
 
     </LinearLayout>
-
 </android.support.design.widget.CoordinatorLayout>

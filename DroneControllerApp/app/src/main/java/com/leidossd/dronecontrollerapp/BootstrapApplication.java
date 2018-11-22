@@ -3,7 +3,6 @@ package com.leidossd.dronecontrollerapp;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.support.multidex.MultiDex;
 import com.secneo.sdk.Helper;
 
 /**
@@ -11,7 +10,7 @@ import com.secneo.sdk.Helper;
  * This class is used entry point in the manifest.
  */
 
-public class MApplication extends Application {
+public class BootstrapApplication extends Application {
 
     private static MainApplication mainApplication;
 
@@ -19,7 +18,6 @@ public class MApplication extends Application {
     protected void attachBaseContext(Context paramContext) {
         super.attachBaseContext(paramContext);
 
-        MultiDex.install(this);
         if (mainApplication != null) {
             return;
         }

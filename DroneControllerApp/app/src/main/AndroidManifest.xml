@@ -27,10 +27,9 @@
     <uses-feature
         android:name="android.hardware.usb.accessory"
         android:required="true" />
-
     <!-- PermissionsHelper and features -->
     <application
-        android:name=".MApplication"
+        android:name=".BootstrapApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
@@ -48,7 +47,7 @@
 
         <activity
             android:name="dji.sdk.sdkmanager.DJIAoaControllerActivity"
-            android:theme="@android:style/Theme.Translucent" >
+            android:theme="@android:style/Theme.Translucent">
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
             </intent-filter>
@@ -57,24 +56,31 @@
                 android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"
                 android:resource="@xml/accessory_filter" />
         </activity>
+
         <service android:name="dji.sdk.sdkmanager.DJIGlobalService" />
         <!-- DJI SDK -->
-          
+
+        <activity
+            android:name=".SplashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".SDKRegistrationErrorActivity"
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".DroneConnectionActivity"
-            android:theme="@style/AppTheme" />
-
-        <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme" />
-          
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".SecondActivity"
             android:screenOrientation="landscape" />
-          
     </application>
 </manifest>

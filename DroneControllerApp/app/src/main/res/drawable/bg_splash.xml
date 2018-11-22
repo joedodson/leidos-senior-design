@@ -10,6 +10,6 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/ic_leidos_logo" />
+            android:src="@drawable/img_leidos_full_logo" />
     </item>
 </layer-list>

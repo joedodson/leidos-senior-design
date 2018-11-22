@@ -18,8 +18,17 @@
     <string name="activity_sdkregistrationerror_text">DJI SDK Registration Failed</string>
     <string name="activity_sdkregistrationerror_button">Retry Registration</string>
 
+    <!-- Menus -->
+    <string name="menu_main_item_missions_title">Missions</string>
+    <string name="menu_main_item_settings_title">Settings</string>
+    <string name="menu_main_item_developer_title">Developer</string>
+
+
     <string name="next_button">Next Screen →</string>
     <string name="on_button">On</string>
     <string name="off_button">Off</string>
     <string name="back_button">← Previous</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

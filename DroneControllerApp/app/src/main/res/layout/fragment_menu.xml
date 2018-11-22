@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/accent_normal">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/menu_header_container"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/main_menu_mission"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/main_menu_close"
+            style="@style/CustomWidget.Button.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_close_white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/menu_header_leidos_logo"
+            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/menu_header_leidos_logo"
+            android:layout_width="144dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/main_menu_close"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/img_leidos_full_logo" />
+    </android.support.constraint.ConstraintLayout>
+
+    <!-- Divider -->
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:background="@color/accent_light"
+        app:layout_constraintBottom_toTopOf="@id/main_menu_mission"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/menu_header_container" />
+
+    <Button
+        android:id="@+id/main_menu_mission"
+        style="@style/CustomWidget.Button.Menu"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:drawableStart="@drawable/ic_mission_white"
+        android:text="@string/menu_main_item_missions_title"
+        app:layout_constraintBottom_toTopOf="@+id/main_menu_developer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/menu_header_container"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:background="@color/accent_light"
+        app:layout_constraintBottom_toTopOf="@id/main_menu_developer"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_menu_mission" />
+
+    <Button
+        android:id="@+id/main_menu_developer"
+        style="@style/CustomWidget.Button.Menu"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:drawableStart="@drawable/ic_android_logo_white"
+        android:text="@string/menu_main_item_developer_title"
+        app:layout_constraintBottom_toTopOf="@+id/main_menu_settings"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_menu_mission" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:background="@color/accent_light"
+        app:layout_constraintBottom_toTopOf="@id/main_menu_settings"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_menu_developer" />
+
+    <Button
+        android:id="@+id/main_menu_settings"
+        style="@style/CustomWidget.Button.Menu"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:drawableStart="@drawable/ic_cog_white"
+        android:text="@string/menu_main_item_settings_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_menu_developer" />
+
+</android.support.constraint.ConstraintLayout>

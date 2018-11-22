@@ -25,7 +25,7 @@ import dji.sdk.base.BaseProduct;
 import dji.sdk.sdkmanager.DJISDKManager;
 
 public class SplashActivity extends AppCompatActivity {
-    private static final String TAG = MainActivity.class.getName();
+    private static final String TAG = SplashActivity.class.getName();
 
     private static final String[] REQUIRED_PERMISSION_LIST = new String[]{
             Manifest.permission.VIBRATE,
@@ -59,6 +59,7 @@ public class SplashActivity extends AppCompatActivity {
             public void onRegister(final DJIError error) {
                 if (error == DJISDKError.REGISTRATION_SUCCESS) {
                     Log.i(TAG, "SDK Registration Success");
+                    DJISDKManager.getInstance().startConnectionToProduct();
                     startActivity(new Intent(SplashActivity.this, MainActivity.class));
                     finish();
                 } else {
@@ -69,17 +70,20 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onProductDisconnect() {
+                showToast(TAG + " disconnect");
                 Log.d("TAG", "onProductDisconnect");
             }
 
             @Override
             public void onProductConnect(BaseProduct baseProduct) {
+                showToast(TAG + " connect");
                 Log.d("TAG", String.format("onProductConnect newProduct:%s", baseProduct));
             }
 
             @Override
             public void onComponentChange(BaseProduct.ComponentKey componentKey, BaseComponent oldComponent,
                                           BaseComponent newComponent) {
+                showToast(TAG + " change");
                 if (newComponent != null) {
                     newComponent.setComponentListener(new BaseComponent.ComponentListener() {
 
@@ -163,5 +167,9 @@ public class SplashActivity extends AppCompatActivity {
 
     private void startRegistration() {
         DJISDKManager.getInstance().registerApp(this, DJISDKManagerCallback);
+    }
+
+    private void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }

@@ -3,14 +3,26 @@
     <!-- A theme to override the default theme Android uses during start up -->
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/bg_splash</item>
+        <item name="colorAccent">@color/accent_normal</item>
     </style>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <!-- Base application theme -->
+    <style name="AppTheme" parent="Theme.AppCompat">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent_normal</item>
+        <item name="android:textColorPrimary">@color/text_light</item>
+        <item name="android:colorForeground">@color/text_light</item>
+        <item name="android:colorBackground">@color/primary_dark</item>
+        <item name="actionBarStyle">@style/CustomWidget.StatusActionBar</item>
+        <item name="buttonStyle">@style/CustomWidget.Button.Standard</item>
+    </style>
+
+    <!-- Widgets -->
+    <style name="CustomWidget" />
+
+    <style name="CustomWidget.StatusActionBar" parent="Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:displayOptions">useLogo|showHome</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -20,34 +32,35 @@
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
 
-    <style name="Header">
-        <item name="android:textSize">24sp</item>
+    <!-- Button -->
+    <style name="CustomWidget.Button">
+        <item name="android:paddingTop">@dimen/button_std_padding_top_bottom</item>
+        <item name="android:paddingBottom">@dimen/button_std_padding_top_bottom</item>
+        <item name="android:paddingLeft">@dimen/button_std_padding_left_right</item>
+        <item name="android:paddingRight">@dimen/button_std_padding_left_right</item>
+        <item name="android:maxWidth">@dimen/button_std_width</item>
+        <item name="android:textAlignment">center</item>
     </style>
 
-    <style name="Button">
+    <style name="CustomWidget.Button.Standard">
         <item name="android:textSize">@dimen/text_size_medium</item>
         <item name="android:textColor">@color/text_light</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:paddingBottom">10dp</item>
-        <item name="android:paddingLeft">20sp</item>
-        <item name="android:paddingRight">20sp</item>
         <item name="android:background">@drawable/btn_standard</item>
     </style>
 
-    <style name="Info" parent="TextAppearance.AppCompat">
-        <item name="android:paddingLeft">10dp</item>
-        <item name="android:paddingRight">10dp</item>
-        <item name="android:textSize">@dimen/text_size_large</item>
+    <style name="CustomWidget.Button.Menu">
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:textColor">@color/text_light</item>
+        <item name="android:background">@drawable/btn_standard</item>
+        <item name="android:layout_marginTop">@dimen/margin_small</item>
+        <item name="android:layout_marginBottom">@dimen/margin_small</item>
+        <item name="android:gravity">center</item>
     </style>
 
-    <style name="Info.Label">
-        <item name="android:textAlignment">textEnd</item>
+    <style name="CustomWidget.Button.Icon">
+        <item name="android:padding">0sp</item>
+        <item name="android:background">@android:color/transparent</item>
     </style>
-
-    <style name="Info.Text">
-        <item name="android:textAlignment">textStart</item>
-    </style>
-
 </resources>
