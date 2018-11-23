@@ -3,8 +3,10 @@ package com.leidossd.dronecontrollerapp;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.Toolbar;
@@ -16,7 +18,11 @@ import android.widget.Toast;
 
 import dji.sdk.base.BaseProduct;
 import dji.sdk.sdkmanager.DJISDKManager;
+import utils.DroneConnectionStatus;
 import utils.MenuAction;
+
+import static utils.IntentAction.*;
+import static utils.DroneConnectionStatus.*;
 
 public class MainActivity extends AppCompatActivity implements MenuFragment.fragmentInteractionListener {
     private static final String TAG = MainActivity.class.getName();
@@ -30,20 +36,21 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.frag
     FragmentManager fragmentManager;
     MenuFragment menuFragment;
 
-    DJISDKManager.SDKManagerCallback DJISDKManagerCallback;
-
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // MainApplication sends local broadcast when connection status changes
         connectionChangeReceiver = new BroadcastReceiver() {
             @Override
-            public void onReceive(Context context, Intent intent) {
-                updateStatus(getConnectionStatusStringId());
+            public void onReceive(Context context, Intent connectionChangeIntent) {
+                String droneStatus = connectionChangeIntent.getStringExtra(CONNECTION_CHANGE.getResultKey());
+                updateDroneStatus(droneStatus);
             }
         };
+        LocalBroadcastManager.getInstance(this).registerReceiver(connectionChangeReceiver, new IntentFilter(CONNECTION_CHANGE.getActionString()));
 
         fragmentManager = getSupportFragmentManager();
         menuFragment = new MenuFragment();
@@ -75,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.frag
         switch (item.getItemId()) {
             case R.id.action_bar_status:
                 showToast("Status");
+                DJISDKManager.getInstance().startConnectionToProduct();
                 break;
             case R.id.action_bar_gps:
                 showToast("GPS");
@@ -132,11 +140,15 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.frag
     }
 
     // remove callback to prevent failed message, set correct status, and log result
-    private void updateStatus(int stringId) {
-        MenuView.ItemView status = findViewById(R.id.action_bar_status);
-        status.setTitle(getString(stringId));
-        showToast(getString(stringId));
-        Log.d(TAG, String.format("Update UI: %s", getString(stringId)));
+    private void updateDroneStatus(String droneStatus) {
+        MenuView.ItemView statusView = findViewById(R.id.action_bar_status);
+
+        if(droneStatus.equals(DRONE_CONNECTED.getStatus()) || droneStatus.equals(DRONE_DISCONNECTED.getStatus())) {
+            statusView.setTitle(droneStatus + DJISDKManager.getInstance().getProduct().getModel());
+        } else {
+            statusView.setTitle(DRONE_CONNECTION_ERROR.getStatus());
+        }
+        Log.d(TAG, String.format("Updated drone status with: %s", droneStatus));
     }
 
     private void configureActionBar() {

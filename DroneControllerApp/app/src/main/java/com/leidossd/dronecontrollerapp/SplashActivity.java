@@ -1,28 +1,28 @@
 package com.leidossd.dronecontrollerapp;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import dji.common.error.DJIError;
-import dji.common.error.DJISDKError;
-import dji.sdk.base.BaseComponent;
-import dji.sdk.base.BaseProduct;
 import dji.sdk.sdkmanager.DJISDKManager;
+
+import static utils.IntentAction.REGISTRATION_RESULT;
 
 public class SplashActivity extends AppCompatActivity {
     private static final String TAG = SplashActivity.class.getName();
@@ -45,71 +45,33 @@ public class SplashActivity extends AppCompatActivity {
     private List<String> missingPermissions = new ArrayList<>();
     private static final int PERMISSION_REQUEST_CODE = 12345;
 
-    private DJISDKManager.SDKManagerCallback DJISDKManagerCallback;
+    private BroadcastReceiver registrationReceiver;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        DJISDKManagerCallback = new DJISDKManager.SDKManagerCallback() {
-
-            //Listens to the SDK registration result
+        registrationReceiver = new BroadcastReceiver() {
             @Override
-            public void onRegister(final DJIError error) {
-                if (error == DJISDKError.REGISTRATION_SUCCESS) {
+            public void onReceive(Context context, Intent registrationIntent) {
+                boolean registrationSuccess = registrationIntent.getBooleanExtra(REGISTRATION_RESULT.getResultKey(), false);
+                if (registrationSuccess) {
                     Log.i(TAG, "SDK Registration Success");
-                    DJISDKManager.getInstance().startConnectionToProduct();
-                    startActivity(new Intent(SplashActivity.this, MainActivity.class));
-                    finish();
+                    checkAndRequestPermissions();
                 } else {
-                    Log.e(TAG, error.getDescription());
                     startActivity(new Intent(SplashActivity.this, SDKRegistrationErrorActivity.class));
                 }
             }
-
-            @Override
-            public void onProductDisconnect() {
-                showToast(TAG + " disconnect");
-                Log.d("TAG", "onProductDisconnect");
-            }
-
-            @Override
-            public void onProductConnect(BaseProduct baseProduct) {
-                showToast(TAG + " connect");
-                Log.d("TAG", String.format("onProductConnect newProduct:%s", baseProduct));
-            }
-
-            @Override
-            public void onComponentChange(BaseProduct.ComponentKey componentKey, BaseComponent oldComponent,
-                                          BaseComponent newComponent) {
-                showToast(TAG + " change");
-                if (newComponent != null) {
-                    newComponent.setComponentListener(new BaseComponent.ComponentListener() {
-
-                        @Override
-                        public void onConnectivityChange(boolean isConnected) {
-                            Log.d("TAG", "onComponentConnectivityChanged: " + isConnected);
-                        }
-                    });
-                }
-
-                Log.d("TAG",
-                        String.format("onComponentChange key:%s, oldComponent:%s, newComponent:%s",
-                                componentKey,
-                                oldComponent,
-                                newComponent));
-
-            }
         };
-    }
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(registrationReceiver, new IntentFilter(REGISTRATION_RESULT.getActionString()));
+    }
 
     @Override
     protected void onStart() {
         super.onStart();
         startAnimations();
-        checkAndRequestPermissions();
     }
 
     private void startAnimations() {
@@ -134,13 +96,14 @@ public class SplashActivity extends AppCompatActivity {
         }
         // Request for missing permissions
         if (missingPermissions.isEmpty()) {
-            DJISDKManager.getInstance().registerApp(this, DJISDKManagerCallback);
+            startMainActivity();
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ActivityCompat.requestPermissions(this,
                     missingPermissions.toArray(new String[missingPermissions.size()]),
                     PERMISSION_REQUEST_CODE);
         }
     }
+
     /**
      * Result of runtime permission request
      */
@@ -157,19 +120,17 @@ public class SplashActivity extends AppCompatActivity {
                 }
             }
         }
-        // If there is enough permission, we will start the registration
+        // If no missing permissions, continue to MainActivity
         if(missingPermissions.isEmpty()) {
-            startRegistration();
+            startMainActivity();
         } else {
-            Toast.makeText(this, "Missing Permissions!", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(SplashActivity.this, SDKRegistrationErrorActivity.class));
         }
     }
 
-    private void startRegistration() {
-        DJISDKManager.getInstance().registerApp(this, DJISDKManagerCallback);
-    }
-
-    private void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    public void startMainActivity() {
+        DJISDKManager.getInstance().startConnectionToProduct();
+        startActivity(new Intent(SplashActivity.this, MainActivity.class));
+        finish();
     }
 }
