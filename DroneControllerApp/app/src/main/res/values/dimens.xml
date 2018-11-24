@@ -3,4 +3,27 @@
     <dimen name="text_size_large">24sp</dimen>
     <dimen name="text_size_medium">20sp</dimen>
     <dimen name="text_size_small">16sp</dimen>
+
+    <dimen name="button_std_width">500dp</dimen>
+    <dimen name="button_std_padding_top_bottom">10sp</dimen>
+    <dimen name="button_std_padding_left_right">20sp</dimen>
+
+    <dimen name="button_menu_width">175dp</dimen>
+    <dimen name="button_menu_height">100dp</dimen>
+
+    <dimen name="margin_tiny">5sp</dimen>
+    <dimen name="margin_small">10sp</dimen>
+    <dimen name="margin_medium">15sp</dimen>
+    <dimen name="margin_large">25sp</dimen>
+
+    <dimen name="menu_constraintGuideline_begin">350dp</dimen>
+    <dimen name="menu_width">250dp</dimen>
+
+    <dimen name="drawable_camera_inner_circle_size">60dp</dimen>
+    <dimen name="drawable_camera_outer_circle_size">60dp</dimen>
+    <dimen name="drawable_camera_outer_circle_stroke_width">2dp</dimen>
+
+    <item name="alpha_mostly_visible" format="float" type="dimen">0.8</item>
+    <item name="alpha_medium_visibility" format="float" type="dimen">0.5</item>
+    <item name="alpha_low_visibility" format="float" type="dimen">0.3</item>
 </resources>

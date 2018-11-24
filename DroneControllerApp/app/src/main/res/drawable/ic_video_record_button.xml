@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:width="@dimen/drawable_camera_outer_circle_size"
+        android:height="@dimen/drawable_camera_outer_circle_size"
+        android:gravity="center">
+        <shape android:shape="oval">
+            <solid android:color="@android:color/transparent" />
+            <stroke
+                android:width="@dimen/drawable_camera_outer_circle_stroke_width"
+                android:color="@android:color/white" />
+        </shape>
+    </item>
+
+    <item
+        android:width="@dimen/drawable_camera_inner_circle_size"
+        android:height="@dimen/drawable_camera_inner_circle_size"
+        android:gravity="center">
+        <shape android:shape="oval">
+            <gradient
+                android:type="radial"
+                android:gradientRadius="50%"
+                android:startColor="@android:color/holo_red_light"
+                android:endColor="@android:color/transparent" />
+        </shape>
+    </item>
+</layer-list>
