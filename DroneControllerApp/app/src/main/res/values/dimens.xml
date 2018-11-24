@@ -18,4 +18,12 @@
 
     <dimen name="menu_constraintGuideline_begin">350dp</dimen>
     <dimen name="menu_width">250dp</dimen>
+
+    <dimen name="drawable_camera_inner_circle_size">60dp</dimen>
+    <dimen name="drawable_camera_outer_circle_size">60dp</dimen>
+    <dimen name="drawable_camera_outer_circle_stroke_width">2dp</dimen>
+
+    <item name="alpha_mostly_visible" format="float" type="dimen">0.8</item>
+    <item name="alpha_medium_visibility" format="float" type="dimen">0.5</item>
+    <item name="alpha_low_visibility" format="float" type="dimen">0.3</item>
 </resources>

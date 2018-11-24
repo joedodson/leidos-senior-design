@@ -13,5 +13,8 @@
     <color name="icon_foreground">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
     <color name="disabled">#CFD8DC</color>
-    <color name="transparent">#00000000</color>
+    
+    <color name="white_transparent_full">#00ffffff</color>
+    <color name="white_transparent_medium">#45ffffff</color>
+    <color name="white_transparent_slight">#9affffff</color>
 </resources>

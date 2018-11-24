@@ -17,9 +17,11 @@ import android.util.Log;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import dji.sdk.sdkmanager.DJISDKManager;
 
 import static utils.IntentAction.REGISTRATION_RESULT;
@@ -47,20 +49,31 @@ public class SplashActivity extends AppCompatActivity {
 
     private BroadcastReceiver registrationReceiver;
 
+    private AtomicBoolean registrationSuccess;
+    private AtomicBoolean permissionsGranted;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        registrationSuccess = new AtomicBoolean(false);
+        permissionsGranted = new AtomicBoolean(false);
+
         registrationReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent registrationIntent) {
-                boolean registrationSuccess = registrationIntent.getBooleanExtra(REGISTRATION_RESULT.getResultKey(), false);
-                if (registrationSuccess) {
+                registrationSuccess.set(registrationIntent.getBooleanExtra(REGISTRATION_RESULT.getResultKey(), false));
+                if (registrationSuccess.get()) {
                     Log.i(TAG, "SDK Registration Success");
-                    checkAndRequestPermissions();
+                    if (permissionsGranted.get()) {
+                        startMainActivityConditionally();
+                    } else {
+                        Log.d(TAG, "Waiting for permissions");
+                    }
                 } else {
                     startActivity(new Intent(SplashActivity.this, SDKRegistrationErrorActivity.class));
+                    finish();
                 }
             }
         };
@@ -72,6 +85,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         startAnimations();
+        checkAndRequestPermissions();
     }
 
     private void startAnimations() {
@@ -96,7 +110,8 @@ public class SplashActivity extends AppCompatActivity {
         }
         // Request for missing permissions
         if (missingPermissions.isEmpty()) {
-            startMainActivity();
+            permissionsGranted.set(true);
+            startMainActivityConditionally();
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ActivityCompat.requestPermissions(this,
                     missingPermissions.toArray(new String[missingPermissions.size()]),
@@ -122,15 +137,22 @@ public class SplashActivity extends AppCompatActivity {
         }
         // If no missing permissions, continue to MainActivity
         if(missingPermissions.isEmpty()) {
-            startMainActivity();
+            permissionsGranted.set(true);
+            startMainActivityConditionally();
         } else {
             startActivity(new Intent(SplashActivity.this, SDKRegistrationErrorActivity.class));
+            finish();
         }
     }
 
-    public void startMainActivity() {
-        DJISDKManager.getInstance().startConnectionToProduct();
-        startActivity(new Intent(SplashActivity.this, MainActivity.class));
-        finish();
+    public void startMainActivityConditionally() {
+        if(registrationSuccess.get() && permissionsGranted.get()) {
+            DJISDKManager.getInstance().startConnectionToProduct();
+            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            finish();
+        } else {
+            Log.d(TAG, String.format("Couldn't start main activity, registrationSuccess: %s, permissionGranted: %s",
+                    String.valueOf(registrationSuccess), String.valueOf(permissionsGranted)));
+        }
     }
 }

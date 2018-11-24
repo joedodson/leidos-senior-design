@@ -1,5 +1,7 @@
 package utils;
 
+import android.support.annotation.NonNull;
+
 public enum DroneConnectionStatus {
     DRONE_CONNECTED("Connected"),
     DRONE_DISCONNECTED("Disconnected"),
@@ -10,7 +12,9 @@ public enum DroneConnectionStatus {
         this.status = status;
     }
 
-    public String getStatus() {
+    @Override
+    @NonNull
+    public String toString() {
         return status;
     }
 }

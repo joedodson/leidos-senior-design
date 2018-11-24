@@ -82,5 +82,6 @@
         <activity
             android:name=".SecondActivity"
             android:screenOrientation="landscape" />
+
     </application>
 </manifest>

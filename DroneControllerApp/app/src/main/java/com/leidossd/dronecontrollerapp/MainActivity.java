@@ -7,24 +7,28 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
-import dji.sdk.base.BaseProduct;
 import dji.sdk.sdkmanager.DJISDKManager;
-import utils.DroneConnectionStatus;
 import utils.MenuAction;
 
 import static utils.IntentAction.*;
 import static utils.DroneConnectionStatus.*;
+import static com.leidossd.dronecontrollerapp.MainApplication.getDroneInstance;
 
-public class MainActivity extends AppCompatActivity implements MenuFragment.fragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements
+        MenuFragment.fragmentInteractionListener {
+
     private static final String TAG = MainActivity.class.getName();
     MainApplication app = (MainApplication) getApplication();
 
@@ -32,9 +36,11 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.frag
     private BroadcastReceiver connectionChangeReceiver;
 
     Toolbar actionBar;
+    private GestureDetectorCompat gestureDetector;
 
     FragmentManager fragmentManager;
     MenuFragment menuFragment;
+    LiveVideoFragment liveVideoFragment;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -54,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.frag
 
         fragmentManager = getSupportFragmentManager();
         menuFragment = new MenuFragment();
+        liveVideoFragment = new LiveVideoFragment();
 
         // add the menu fragment, but don't show it
         fragmentManager.beginTransaction()
@@ -62,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.frag
                 .commit();
 
         actionBar = findViewById(R.id.status_actionbar);
+        gestureDetector = new GestureDetectorCompat(this, new GestureListener());
 
         // hides the status bar
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
@@ -90,12 +98,8 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.frag
             case R.id.action_bar_battery:
                 showToast("Battery");
                 break;
-            case R.id.action_bar_menu:
-                actionBar.animate()
-                        .translationY(-200)
-                        .setDuration(getResources().getInteger(R.integer.animation_duration_ms_short))
-                        .start();
-
+            case R.id.action_bar_main_menu:
+                hideActionBar();
                 fragmentManager.beginTransaction()
                         .setCustomAnimations(R.animator.show_menu, R.animator.hide_menu)
                         .show(menuFragment)
@@ -120,11 +124,7 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.frag
                 showToast("Settings");
                 break;
             default:
-                showToast("Closing Menu");
-                actionBar.animate()
-                        .translationY(0)
-                        .setDuration(getResources().getInteger(R.integer.animation_duration_ms_short))
-                        .start();
+                showActionBar();
                 fragmentManager.beginTransaction()
                         .setCustomAnimations(R.animator.show_menu, R.animator.hide_menu)
                         .hide(menuFragment)
@@ -132,22 +132,46 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.frag
         }
     }
 
-    int getConnectionStatusStringId() {
-        BaseProduct drone = DJISDKManager.getInstance().getProduct();
-        return (drone != null && drone.isConnected()) ?
-                R.string.activity_droneconnection_statusConnected :
-                R.string.activity_droneconnection_statusDisconnected;
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        this.gestureDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
     }
+
+    class GestureListener extends GestureDetector.SimpleOnGestureListener {
+        private static final String DEBUG_TAG = "Gestures";
+
+        @Override
+        public boolean onFling(MotionEvent event1, MotionEvent event2,
+                               float velocityX, float velocityY) {
+
+            if(event1.getY() < event2.getY()) { // swipe down
+                showActionBar();
+            } else if(event1.getY() > event2.getY()) { // swipe up
+                hideActionBar();
+            }
+            return true;
+        }
+    }
+
 
     // remove callback to prevent failed message, set correct status, and log result
     private void updateDroneStatus(String droneStatus) {
         MenuView.ItemView statusView = findViewById(R.id.action_bar_status);
+        String status = droneStatus;
 
-        if(droneStatus.equals(DRONE_CONNECTED.getStatus()) || droneStatus.equals(DRONE_DISCONNECTED.getStatus())) {
-            statusView.setTitle(droneStatus + DJISDKManager.getInstance().getProduct().getModel());
+        if(droneStatus.equals(DRONE_CONNECTED.toString())) {
+            status = status += " " + getDroneInstance().getModel().getDisplayName();
+            startLiveVideo();
+        } else if(droneStatus.equals(DRONE_DISCONNECTED.toString())) {
+            stopLiveVideo();
         } else {
-            statusView.setTitle(DRONE_CONNECTION_ERROR.getStatus());
+            status = DRONE_CONNECTION_ERROR.toString();
+            stopLiveVideo();
         }
+
+        statusView.setTitle(status);
+
         Log.d(TAG, String.format("Updated drone status with: %s", droneStatus));
     }
 
@@ -155,6 +179,36 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.frag
         actionBar.setLogo(R.drawable.ic_leidos);
         actionBar.setTitle("LSD");
         setSupportActionBar(actionBar);
+    }
+
+    private void hideActionBar() {
+        actionBar.animate()
+                .translationY(-200)
+                .setDuration(getResources().getInteger(R.integer.animation_duration_ms_short))
+                .start();
+    }
+
+    private void showActionBar() {
+        actionBar.animate()
+                .translationY(0)
+                .setDuration(getResources().getInteger(R.integer.animation_duration_ms_short))
+                .start();
+    }
+
+    private void startLiveVideo() {
+        if(!liveVideoFragment.isAdded()) {
+            fragmentManager.beginTransaction()
+                    .add(R.id.live_video_fragment_container, liveVideoFragment)
+                    .commitAllowingStateLoss();
+        }
+    }
+
+    private void stopLiveVideo() {
+        if(liveVideoFragment.isAdded()) {
+            fragmentManager.beginTransaction()
+                    .remove(liveVideoFragment)
+                    .commitAllowingStateLoss();
+        }
     }
 
     private void showToast(String msg) {

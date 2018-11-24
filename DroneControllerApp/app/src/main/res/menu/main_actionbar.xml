@@ -20,7 +20,7 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/action_bar_menu"
+        android:id="@+id/action_bar_main_menu"
         android:icon="@drawable/ic_menu_white"
         android:title=""
         app:showAsAction="always" />
