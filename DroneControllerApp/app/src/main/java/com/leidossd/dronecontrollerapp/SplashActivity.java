@@ -6,14 +6,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.TextView;
@@ -24,7 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import dji.sdk.sdkmanager.DJISDKManager;
 
-import static utils.IntentAction.REGISTRATION_RESULT;
+import static com.leidossd.utils.IntentAction.REGISTRATION_RESULT;
 
 public class SplashActivity extends AppCompatActivity {
     private static final String TAG = SplashActivity.class.getName();
@@ -56,6 +59,9 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        // hides the status bar
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
 
         registrationSuccess = new AtomicBoolean(false);
         permissionsGranted = new AtomicBoolean(false);
