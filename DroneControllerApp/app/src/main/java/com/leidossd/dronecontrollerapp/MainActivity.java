@@ -118,6 +118,8 @@ public class MainActivity extends AppCompatActivity implements
                 showToast("Missions");
                 break;
             case OPEN_DEVELOPER:
+                // Start Brians Activity
+                startActivity(new Intent(this, SecondActivity.class));
                 showToast("Developer");
                 break;
             case OPEN_SETTINGS:
