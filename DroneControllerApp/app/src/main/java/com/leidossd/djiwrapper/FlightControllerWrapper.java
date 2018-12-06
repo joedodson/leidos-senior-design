@@ -63,6 +63,7 @@ public class FlightControllerWrapper {
     }
 
     public void goToRelativeXYZ(Coordinate destination){
+        // go to the location with respect to the drones own coordinate system (where forward is y+)
 
     }
 
@@ -71,15 +72,15 @@ public class FlightControllerWrapper {
         Coordinate movement = destination.add(position.scale(-1));
 
         // distinguish between rotation lock and not
-        if(rotationLock) {
-        }
-        else{
-            // rotate to face the point, then straight to it
+        //if(rotationLock) {
+        //}
+        //else{
+        //    // rotate to face the point, then straight to it
 
-            movement = new Coordinate(0,
-                           new Coordinate(movement.getX(), movement.getY(), 0).magnitude(),
-                           movement.getZ());
-        }
+        //    movement = new Coordinate(0,
+        //                   new Coordinate(movement.getX(), movement.getY(), 0).magnitude(),
+        //                   movement.getZ());
+        //}
 
         final double flightTime = movement.magnitude()/flightSpeed;
 
@@ -102,7 +103,6 @@ public class FlightControllerWrapper {
                 }, (long) (flightTime*1000));
             }
         });
-
 
         // We will need to take into account "skidding" as the drone stops and overshoots the target.
         // Which we'll need to test manually, probably using tape on the floor and the camera
