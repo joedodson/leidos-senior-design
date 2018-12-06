@@ -55,33 +55,20 @@ public class FlightControllerWrapper {
         return flightData != null;
     }
 
-    public void rotateTo(float angle){
+    public void rotateTo(float angle, @Nullable CommonCallbacks.CompletionCallback callback){
         flightController.setYawControlMode(YawControlMode.ANGLE);
         flightController.sendVirtualStickFlightControlData(
                 new FlightControlData(0,0,0,angle),
-                new CommonCallbacks.CompletionCallback() {
-                            @Override
-                            public void onResult(DJIError djiError) {
-                            }
-                        });
+                callback);
     }
 
     public void goToRelativeXYZ(Coordinate destination){
 
     }
 
-
-    public void goToAbsoluteXYZ(Coordinate destination){
-        flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
-        flightController.setVerticalControlMode(VerticalControlMode.VELOCITY);
-
-        Coordinate movement;
-        float roll;
-        float pitch;
-        float throttle;
-
-
-        movement = destination.add(position.scale(-1));
+    public void goToAbsoluteXYZ(Coordinate destination, final @Nullable CommonCallbacks.CompletionCallback callback){
+        // get the movement vector
+        Coordinate movement = destination.add(position.scale(-1));
 
         // distinguish between rotation lock and not
         if(rotationLock) {
@@ -89,68 +76,63 @@ public class FlightControllerWrapper {
         else{
             // rotate to face the point, then straight to it
 
-            movement = new Coordinate(
-                           0,
+            movement = new Coordinate(0,
                            new Coordinate(movement.getX(), movement.getY(), 0).magnitude(),
                            movement.getZ());
         }
 
-        double flightTime = movement.magnitude()/flightSpeed;
+        final double flightTime = movement.magnitude()/flightSpeed;
 
-        roll = (float) (movement.getX()/flightTime);
-        pitch = (float) (movement.getY()/flightTime);
-        throttle = (float) (movement.getZ()/flightTime);
-
+        // the math works out
+        float roll = (float) (movement.getX()/flightTime);
+        float pitch = (float) (movement.getY()/flightTime);
+        float throttle = (float) (movement.getZ()/flightTime);
 
         // Start up the engines going at speed
 
-        flightController.sendVirtualStickFlightControlData(
-                        new FlightControlData(pitch, roll , 0, throttle),
-                        new CommonCallbacks.CompletionCallback() {
-                            @Override
-                            public void onResult(DJIError djiError) {
-                            }
-                        });
-
-        // Stop the motion after enough time has passed
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        setVelocity(roll, pitch, throttle, new CommonCallbacks.CompletionCallback() {
+            // after velocity is set, let it run for the flightTime, then stop it.
             @Override
-            public void run(){
-                        halt();
+            public void onResult(DJIError djiError){
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        halt(callback);
+                    }
+                }, (long) (flightTime*1000));
             }
-        }, (long) (flightTime*1000));
+        });
 
 
         // We will need to take into account "skidding" as the drone stops and overshoots the target.
         // Which we'll need to test manually, probably using tape on the floor and the camera
+
+        // We will also need to be concerned with interrupting the flight, if we call halt from
+        // somewhere else later, then tell the drone to move again, the halt inside of this function
+        // may stop the drone mid flight later.
     }
 
 
     // Stop the current flight, set all velocities to zero
-    public void halt(){
-        flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
-        flightController.setVerticalControlMode(VerticalControlMode.VELOCITY);
-
-        // Check timer and make sure to update position
-
+    public void halt(@Nullable CommonCallbacks.CompletionCallback callback){
         position = getPosition();
         flightData = null;
 
-        flightController.sendVirtualStickFlightControlData(
-                        new FlightControlData(0,0,0,0),
-                        new CommonCallbacks.CompletionCallback() {
-                            @Override
-                            public void onResult(DJIError djiError) {
-                            }
-                        });
+        setVelocity(0,0,0, callback);
+    }
 
+    public void setVelocity(float roll, float pitch, float throttle, @Nullable CommonCallbacks.CompletionCallback callback){
+         flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
+         flightController.setVerticalControlMode(VerticalControlMode.VELOCITY);
+
+         flightController.sendVirtualStickFlightControlData(
+                 new FlightControlData(roll, pitch, 0, throttle),
+                 callback);
     }
 
 
-    public void goToOrigin(){
-        goToAbsoluteXYZ(new Coordinate(0,0,0));
+    public void goToOrigin(@Nullable CommonCallbacks.CompletionCallback callback){
+        goToAbsoluteXYZ(new Coordinate(0,0,0), callback);
     }
 
 

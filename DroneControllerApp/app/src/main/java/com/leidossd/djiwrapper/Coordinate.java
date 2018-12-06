@@ -60,8 +60,8 @@ public class Coordinate {
         return new Coordinate(newX, newY, this.z);
     }
 
-
-    // The angle between the current angle of the aircraft and the current coordinate
+    // The angle between the given angle and the angle that the current vector points at
+    // Not complete, don't rely on this
     public double angleBetween(double angle){
         Coordinate dir = new Coordinate(Math.cos(Math.toRadians(angle)),
                                         Math.sin(Math.toRadians(angle)), 0);
