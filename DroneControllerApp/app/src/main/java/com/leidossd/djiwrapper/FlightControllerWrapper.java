@@ -91,6 +91,8 @@ public class FlightControllerWrapper {
 
         // Start up the engines going at speed
 
+        flightData = new FlightData(getPosition(), destination, flightTime);
+
         setVelocity(roll, pitch, throttle, new CommonCallbacks.CompletionCallback() {
             // after velocity is set, let it run for the flightTime, then stop it.
             @Override
