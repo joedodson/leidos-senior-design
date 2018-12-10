@@ -31,6 +31,7 @@ public class SecondActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_second);
         testText = findViewById(R.id.text_1);
 
@@ -53,30 +54,54 @@ public class SecondActivity extends AppCompatActivity {
                     break;
                 }
             } case(R.id.button_3): { //Confirm button
-                if(!FlightControllerWrapper.getInstance().isInFlight()){
+                //if(!FlightControllerWrapper.getInstance().isInFlight()){
                     //TODO: Ask about returning result from function, to know when its done executing
-                    FlightControllerWrapper.getInstance().goToAbsoluteXYZ(new Coordinate(toIntEmpty(xBox), toIntEmpty(yBox), toIntEmpty(zBox)), null);
-                }
-                break;
-            } case(R.id.button_4): { //Takeoff button
-                if(getState() == DroneState.ON){
-                    FlightControllerWrapper.getInstance().startTakeoff(new CommonCallbacks.CompletionCallback() {
+                    FlightControllerWrapper.getInstance().turnOnMotors(new CommonCallbacks.CompletionCallback() {
                         @Override
                         public void onResult(DJIError djiError) {
-                            setState(DroneState.READY);
                             if(BuildConfig.DEBUG){
                                 if (djiError != null) {
                                     showToast(djiError.getDescription());
                                 } else {
+                                    showToast("Motor off success!");
+                                }
+                            }
+                        }
+                    });
+                    //FlightControllerWrapper.getInstance().goToAbsoluteXYZ(new Coordinate((double) toIntEmpty(xBox), (double) toIntEmpty(yBox), (double) toIntEmpty(zBox)), null);
+                //}
+                break;
+            } case(R.id.button_4): { //Takeoff button
+                //if(getState() == DroneState.ON){
+                    FlightControllerWrapper.getInstance().turnOffMotors(new CommonCallbacks.CompletionCallback() {
+                        @Override
+                        public void onResult(DJIError djiError) {
+                            if(BuildConfig.DEBUG){
+                                if (djiError != null) {
+                                    showToast(djiError.getDescription());
+                                } else {
+                                    showToast("Motor off success!");
+                                }
+                            }
+                        }
+                    });
+                    FlightControllerWrapper.getInstance().startTakeoff(new CommonCallbacks.CompletionCallback() {
+                        @Override
+                        public void onResult(DJIError djiError) {
+                            if(BuildConfig.DEBUG){
+                                if (djiError != null) {
+                                    showToast(djiError.getDescription());
+                                } else {
+                                    setState(DroneState.READY);
                                     showToast("Take off success!");
                                 }
                             }
                         }
                     });
-                }
+                //}
                 break;
             } case(R.id.button_5): { //Landing button
-                if(getState() == DroneState.READY){
+                //if(getState() == DroneState.READY){
                     FlightControllerWrapper.getInstance().startLanding(new CommonCallbacks.CompletionCallback() {
                         @Override
                         public void onResult(DJIError djiError) {
@@ -90,7 +115,7 @@ public class SecondActivity extends AppCompatActivity {
                             }
                         }
                     });
-                }
+                //}
                 break;
             }
         }
