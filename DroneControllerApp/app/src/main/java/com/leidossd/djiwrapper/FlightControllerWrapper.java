@@ -107,4 +107,16 @@ public class FlightControllerWrapper {
     public void confirmLanding(@Nullable CommonCallbacks.CompletionCallback callback){
         flightController.confirmLanding(callback);
     }
+
+    public void getCompassCalibrationState(@Nullable CommonCallbacks.CompletionCallback callback){
+        flightController.getCompass().getCalibrationState();
+    }
+
+    public void compassStartCalibration(CommonCallbacks.CompletionCallback callback){
+        flightController.getCompass().startCalibration(callback);
+    }
+
+    public void compassStopCalibration(CommonCallbacks.CompletionCallback callback){
+        flightController.getCompass().stopCalibration(callback);
+    }
 }

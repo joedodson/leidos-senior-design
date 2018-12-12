@@ -4,10 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Handler;
-import android.os.Looper;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
@@ -27,21 +24,18 @@ import com.leidossd.dronecontrollerapp.R;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import dji.common.flightcontroller.simulator.InitializationData;
-import dji.common.flightcontroller.simulator.SimulatorState;
+import dji.common.error.DJIError;
 import dji.common.flightcontroller.virtualstick.FlightControlData;
 import dji.common.flightcontroller.virtualstick.FlightCoordinateSystem;
 import dji.common.flightcontroller.virtualstick.RollPitchControlMode;
 import dji.common.flightcontroller.virtualstick.VerticalControlMode;
 import dji.common.flightcontroller.virtualstick.YawControlMode;
-import dji.common.model.LocationCoordinate2D;
 import dji.common.util.CommonCallbacks;
 import dji.sdk.flightcontroller.FlightController;
 import dji.sdk.products.Aircraft;
-import dji.common.error.DJIError;
 
+import static com.leidossd.utils.DroneConnectionStatus.DRONE_CONNECTED;
 import static com.leidossd.utils.IntentAction.CONNECTION_CHANGE;
-import static com.leidossd.utils.DroneConnectionStatus.*;
 
 public class SimulatorActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -93,25 +87,25 @@ public class SimulatorActivity extends AppCompatActivity implements View.OnClick
             flightController.setVerticalControlMode(VerticalControlMode.VELOCITY);
             flightController.setRollPitchCoordinateSystem(FlightCoordinateSystem.BODY);
 
-            flightController.getSimulator().setStateCallback(new SimulatorState.Callback() {
-                @Override
-                public void onUpdate(@NonNull final SimulatorState stateData) {
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            float yaw = stateData.getYaw();
-                            float pitch = stateData.getPitch();
-                            float roll = stateData.getRoll();
-                            float positionX = stateData.getPositionX();
-                            float positionY = stateData.getPositionY();
-                            float positionZ = stateData.getPositionZ();
-
-                            telemetryTextView.setText(String.format(getString(R.string.simulator_telemetry),
-                                    yaw, pitch, roll, positionX, positionY, positionZ));
-                        }
-                    });
-                }
-            });
+//            flightController.getSimulator().setStateCallback(new SimulatorState.Callback() {
+//                @Override
+//                public void onUpdate(@NonNull final SimulatorState stateData) {
+//                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            float yaw = stateData.getYaw();
+//                            float pitch = stateData.getPitch();
+//                            float roll = stateData.getRoll();
+//                            float positionX = stateData.getPositionX();
+//                            float positionY = stateData.getPositionY();
+//                            float positionZ = stateData.getPositionZ();
+//
+//                            telemetryTextView.setText(String.format(getString(R.string.simulator_telemetry),
+//                                    yaw, pitch, roll, positionX, positionY, positionZ));
+//                        }
+//                    });
+//                }
+//            });
         }
     }
 
@@ -301,10 +295,10 @@ public class SimulatorActivity extends AppCompatActivity implements View.OnClick
         flightController.setVirtualStickModeEnabled(true,
                 new DjiSimulatorTaskCallback("Enable Virtual Sticks"));
 
-        flightController.getSimulator()
-                .start(InitializationData.createInstance(
-                        new LocationCoordinate2D(23, 113), 10, 10),
-                        new DjiSimulatorTaskCallback("Start Simulator"));
+        //flightController.getSimulator()
+        //        .start(InitializationData.createInstance(
+        //                new LocationCoordinate2D(23, 113), 10, 10),
+        //                new DjiSimulatorTaskCallback("Start Simulator"));
     }
 
     private void disableSimulator() {
@@ -316,8 +310,8 @@ public class SimulatorActivity extends AppCompatActivity implements View.OnClick
 
         flightController.setVirtualStickModeEnabled(false,
                 new DjiSimulatorTaskCallback("Disable Virtual Sticks"));
-        flightController.getSimulator()
-                .stop(new DjiSimulatorTaskCallback("Stop Simulator"));
+        //flightController.getSimulator()
+        //        .stop(new DjiSimulatorTaskCallback("Stop Simulator"));
     }
 
     public void showToast(final String msg) {
