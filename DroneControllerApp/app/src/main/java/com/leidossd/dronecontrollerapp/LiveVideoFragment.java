@@ -81,24 +81,26 @@ public class LiveVideoFragment extends Fragment implements
                         final String timeString = String.format("%02d:%02d", minutes, seconds);
                         final boolean isVideoRecording = cameraSystemState.isRecording();
 
-                        if(getActivity() != null)
+
+                        if(getActivity() != null) {
                             getActivity().runOnUiThread(new Runnable() {
 
-                            @Override
-                            public void run() {
-                                recordingTime.setText(timeString);
+                                @Override
+                                public void run() {
 
-                                /*
-                                 * Update recordingTime TextView visibility and mRecordBtn's check state
-                                 */
-                                if (isVideoRecording){
-                                    recordingTime.setVisibility(View.VISIBLE);
-                                }else
-                                {
-                                    recordingTime.setVisibility(View.INVISIBLE);
+                                    recordingTime.setText(timeString);
+
+                                    /*
+                                     * Update recordingTime TextView visibility and mRecordBtn's check state
+                                     */
+                                    if (isVideoRecording) {
+                                        recordingTime.setVisibility(View.VISIBLE);
+                                    } else {
+                                        recordingTime.setVisibility(View.INVISIBLE);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                 }
             });

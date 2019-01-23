@@ -16,7 +16,7 @@ import com.leidossd.djiwrapper.Coordinate;
 import dji.common.error.DJIError;
 import dji.common.util.CommonCallbacks;
 
-public class SecondActivity extends AppCompatActivity {
+public class FlightTestActivity extends AppCompatActivity {
 
     private DroneState state = DroneState.ON;
     public enum DroneState {
