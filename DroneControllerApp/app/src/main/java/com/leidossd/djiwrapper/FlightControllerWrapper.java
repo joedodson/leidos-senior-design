@@ -2,6 +2,8 @@ package com.leidossd.djiwrapper;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import java.lang.Math;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import dji.common.error.DJIError;
 import dji.common.flightcontroller.virtualstick.RollPitchControlMode;
@@ -150,6 +152,80 @@ public class FlightControllerWrapper {
 
     // TODO: define VirtualStickTasks similar to  how they are in the SimulatorActivity file
     //       except so that we can control it without having a listener for input
+
+    class FlightTask extends TimerTask {
+        // TODO: make singleton, add task queue
+        private float pitch;
+        private float roll;
+        private float yaw;
+        private float throttle;
+
+        private boolean inFlight;
+
+        Timer dataTimer;
+        Timer endTimer;
+
+        public FlightTask(){
+            pitch = roll = yaw = throttle = 0;
+            inFlight = false;
+
+            // this is always running
+            dataTimer = new Timer();
+            dataTimer.schedule(this, 0, 200);
+        }
+
+        // TODO: add callback
+        void setTask(float pitch, float roll, float throttle, float yaw, long duration){
+            // make sure we aren't doing yaw with anything else simultaneously
+            // may need to throw some kind of exception, for now just do nothing.
+            if(yaw != 0 && (pitch != 0 || roll != 0 || throttle != 0))
+                return;
+
+            // changing these values changes the flight
+            this.pitch = pitch;
+            this.roll = roll;
+            this.throttle = throttle;
+            this.yaw = yaw;
+
+            this.inFlight = true;
+
+            // schedule a halt after the time has passed
+            endTimer = new Timer();
+            endTimer.schedule(new FlightHalt(), duration);
+        }
+
+        public boolean isInFlight(){
+            return inFlight;
+        }
+
+        public void halt(){
+            // stop flight
+            pitch = roll = yaw = throttle = 0;
+            inFlight = false;
+        }
+
+        @Override
+        public void run(){
+            if (flightController != null) {
+                flightController.sendVirtualStickFlightControlData(
+                        new FlightControlData(
+                                pitch, roll, yaw, throttle
+                        ), new CommonCallbacks.CompletionCallback() {
+                            @Override
+                            public void onResult(DJIError djiError) {
+                            }
+                        }
+                );
+            }
+        }
+
+        class FlightHalt extends TimerTask {
+            @Override
+            public void run(){
+                halt();
+            }
+        }
+    }
 
 
     // Here lie forwarded functions, add them as you need them
