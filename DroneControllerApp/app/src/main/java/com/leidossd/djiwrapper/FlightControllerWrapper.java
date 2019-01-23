@@ -55,19 +55,23 @@ public class FlightControllerWrapper {
         return flightData != null;
     }
 
-    public void rotateTo(float angle, @Nullable CommonCallbacks.CompletionCallback callback){
+    public void rotateBy(float angle, @Nullable CommonCallbacks.CompletionCallback callback){
+        // TODO: Joe will use VirtualStick stuff to do yaw rotation
         flightController.setYawControlMode(YawControlMode.ANGLE);
         flightController.sendVirtualStickFlightControlData(
                 new FlightControlData(0,0,0,angle),
                 callback);
     }
 
-    public void goToRelativeXYZ(Coordinate destination){
-        // go to the location with respect to the drones own coordinate system (where forward is y+)
+    public void goToRelativeXYZ(Coordinate movement){
+        // TODO: Joe will to use the VirtualStick stuff to do roll/pitch/throttle
 
+        // go to the location with respect to the drones own coordinate system (where forward is y+)
     }
 
     public void goToAbsoluteXYZ(Coordinate destination, final @Nullable CommonCallbacks.CompletionCallback callback){
+        // TODO: Dalton uses Joe's relative goto function and keeps track of coordinates
+
         // get the movement vector
         Coordinate movement = destination.add(position.scale(-1));
 
@@ -82,6 +86,9 @@ public class FlightControllerWrapper {
         //                   movement.getZ());
         //}
 
+
+
+        // TODO: use Joe's relative goto instead of managing speeds yourself
         final double flightTime = movement.magnitude()/flightSpeed;
 
         // the math works out
@@ -117,13 +124,17 @@ public class FlightControllerWrapper {
 
     // Stop the current flight, set all velocities to zero
     public void halt(@Nullable CommonCallbacks.CompletionCallback callback){
+        // TODO: the purpose of this function is in limbo, should it stop a current flight
+        //       or be the killswitch?
+
         position = getPosition();
         flightData = null;
 
-        setVelocity(0,0,0, callback);
     }
 
     public void setVelocity(float roll, float pitch, float throttle, @Nullable CommonCallbacks.CompletionCallback callback){
+         // TODO: Joe, use VirtualSticks to set roll/pitch/throttle speeds
+
          flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
          flightController.setVerticalControlMode(VerticalControlMode.VELOCITY);
 
@@ -137,6 +148,8 @@ public class FlightControllerWrapper {
         goToAbsoluteXYZ(new Coordinate(0,0,0), callback);
     }
 
+    // TODO: define VirtualStickTasks similar to  how they are in the SimulatorActivity file
+    //       except so that we can control it without having a listener for input
 
 
     // Here lie forwarded functions, add them as you need them
