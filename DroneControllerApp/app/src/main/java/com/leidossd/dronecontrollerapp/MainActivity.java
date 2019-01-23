@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.UiThread;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GestureDetectorCompat;
@@ -17,17 +16,18 @@ import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Toast;
-
-import dji.sdk.sdkmanager.DJISDKManager;
 
 import com.leidossd.dronecontrollerapp.simulator.SimulatorActivity;
 import com.leidossd.utils.MenuAction;
 
-import static com.leidossd.utils.IntentAction.*;
-import static com.leidossd.utils.DroneConnectionStatus.*;
+import dji.sdk.sdkmanager.DJISDKManager;
+
 import static com.leidossd.dronecontrollerapp.MainApplication.getDroneInstance;
+import static com.leidossd.utils.DroneConnectionStatus.DRONE_CONNECTED;
+import static com.leidossd.utils.DroneConnectionStatus.DRONE_CONNECTION_ERROR;
+import static com.leidossd.utils.DroneConnectionStatus.DRONE_DISCONNECTED;
+import static com.leidossd.utils.IntentAction.CONNECTION_CHANGE;
 
 public class MainActivity extends AppCompatActivity implements
         MenuFragment.fragmentInteractionListener {
@@ -115,6 +115,8 @@ public class MainActivity extends AppCompatActivity implements
                 showToast("Missions");
                 break;
             case OPEN_DEVELOPER:
+                // Start Brians Activity
+                startActivity(new Intent(this, SecondActivity.class));
                 showToast("Developer");
                 break;
             case OPEN_SIMULATOR:
@@ -124,6 +126,9 @@ public class MainActivity extends AppCompatActivity implements
             case OPEN_SETTINGS:
                 showToast("Settings");
                 break;
+            case OPEN_COMPASS:
+                showToast("Compass");
+                startActivity(new Intent(this, CompassActivity.class));
             default:
                 showActionBar();
         }

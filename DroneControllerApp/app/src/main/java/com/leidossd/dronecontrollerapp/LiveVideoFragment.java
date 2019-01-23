@@ -81,6 +81,7 @@ public class LiveVideoFragment extends Fragment implements
                         final String timeString = String.format("%02d:%02d", minutes, seconds);
                         final boolean isVideoRecording = cameraSystemState.isRecording();
 
+
                         if(getActivity() != null) {
                             getActivity().runOnUiThread(new Runnable() {
 

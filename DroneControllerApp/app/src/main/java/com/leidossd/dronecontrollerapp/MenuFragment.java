@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.leidossd.utils.MenuAction;
 
 import static com.leidossd.utils.MenuAction.CLOSE_MENU;
+import static com.leidossd.utils.MenuAction.OPEN_COMPASS;
 import static com.leidossd.utils.MenuAction.OPEN_DEVELOPER;
 import static com.leidossd.utils.MenuAction.OPEN_MISSIONS;
 import static com.leidossd.utils.MenuAction.OPEN_SETTINGS;
@@ -48,6 +49,11 @@ public class MenuFragment extends Fragment {
                         case R.id.main_menu_settings:
                             action = OPEN_SETTINGS;
                             break;
+
+                        case R.id.main_menu_compass:
+                            action = OPEN_COMPASS;
+                            break;
+
                         default:
                             action = CLOSE_MENU;
                     }
@@ -67,6 +73,7 @@ public class MenuFragment extends Fragment {
         view.findViewById(R.id.main_menu_mission).setOnClickListener(menuSelectListener);
         view.findViewById(R.id.main_menu_developer).setOnClickListener(menuSelectListener);
         view.findViewById(R.id.main_menu_simulator).setOnClickListener(menuSelectListener);
+        view.findViewById(R.id.main_menu_compass).setOnClickListener(menuSelectListener);
         view.findViewById(R.id.main_menu_settings).setOnClickListener(menuSelectListener);
 
         return view;

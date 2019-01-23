@@ -27,6 +27,7 @@
     <uses-feature
         android:name="android.hardware.usb.accessory"
         android:required="true" />
+
     <!-- PermissionsHelper and features -->
     <application
         android:name=".BootstrapApplication"
@@ -62,7 +63,7 @@
 
         <activity
             android:name=".SplashActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -79,12 +80,15 @@
         <activity
             android:name=".FlightTestActivity"
             android:screenOrientation="landscape" />
-
         <activity
             android:name=".simulator.SimulatorActivity"
+            android:launchMode="singleTop"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme"
-            android:launchMode="singleTop"/>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".CompassActivity"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme"/>
     </application>
-
 </manifest>

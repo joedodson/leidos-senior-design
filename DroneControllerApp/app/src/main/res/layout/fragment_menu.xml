@@ -124,7 +124,7 @@
                 android:layout_height="@dimen/button_menu_height"
                 android:drawableStart="@drawable/ic_cog_white"
                 android:text="@string/menu_main_item_simulator_title"
-                app:layout_constraintBottom_toTopOf="@id/main_menu_settings"
+                app:layout_constraintBottom_toTopOf="@id/main_menu_compass"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
@@ -134,11 +134,33 @@
                 android:layout_width="fill_parent"
                 android:layout_height="2dp"
                 android:background="@color/accent_light"
-                app:layout_constraintBottom_toTopOf="@id/main_menu_settings"
+                app:layout_constraintBottom_toTopOf="@+id/main_menu_compass"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/main_menu_simulator" />
+
+            <Button
+                android:id="@+id/main_menu_compass"
+                style="@style/CustomWidget.Button.Menu"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_menu_height"
+                android:drawableStart="@drawable/ic_cog_white"
+                android:text="@string/menu_main_item_compass_title"
+                app:layout_constraintBottom_toTopOf="@id/main_menu_settings"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/main_menu_simulator" />
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:background="@color/accent_light"
+                app:layout_constraintBottom_toTopOf="@id/main_menu_settings"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/main_menu_compass" />
 
             <Button
                 android:id="@+id/main_menu_settings"
@@ -147,11 +169,11 @@
                 android:layout_height="@dimen/button_menu_height"
                 android:drawableStart="@drawable/ic_cog_white"
                 android:text="@string/menu_main_item_settings_title"
-                app:layout_constraintBottom_toTopOf="@id/main_menu_simulator"
+                app:layout_constraintBottom_toTopOf="@id/main_menu_compass"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/main_menu_simulator" />
+                app:layout_constraintTop_toBottomOf="@id/main_menu_compass" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
