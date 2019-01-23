@@ -8,12 +8,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
-import utils.MenuAction;
+import com.leidossd.utils.MenuAction;
 
-import static utils.MenuAction.CLOSE_MENU;
-import static utils.MenuAction.OPEN_DEVELOPER;
-import static utils.MenuAction.OPEN_MISSIONS;
-import static utils.MenuAction.OPEN_SETTINGS;
+import static com.leidossd.utils.MenuAction.CLOSE_MENU;
+import static com.leidossd.utils.MenuAction.OPEN_DEVELOPER;
+import static com.leidossd.utils.MenuAction.OPEN_MISSIONS;
+import static com.leidossd.utils.MenuAction.OPEN_SETTINGS;
+import static com.leidossd.utils.MenuAction.OPEN_SIMULATOR;
 
 
 public class MenuFragment extends Fragment {
@@ -41,6 +42,9 @@ public class MenuFragment extends Fragment {
                         case R.id.main_menu_developer:
                             action = OPEN_DEVELOPER;
                             break;
+                        case R.id.main_menu_simulator:
+                            action = OPEN_SIMULATOR;
+                            break;
                         case R.id.main_menu_settings:
                             action = OPEN_SETTINGS;
                             break;
@@ -62,6 +66,7 @@ public class MenuFragment extends Fragment {
         view.findViewById(R.id.main_menu_close).setOnClickListener(menuSelectListener);
         view.findViewById(R.id.main_menu_mission).setOnClickListener(menuSelectListener);
         view.findViewById(R.id.main_menu_developer).setOnClickListener(menuSelectListener);
+        view.findViewById(R.id.main_menu_simulator).setOnClickListener(menuSelectListener);
         view.findViewById(R.id.main_menu_settings).setOnClickListener(menuSelectListener);
 
         return view;

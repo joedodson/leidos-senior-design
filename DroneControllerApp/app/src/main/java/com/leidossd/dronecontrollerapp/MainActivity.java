@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.UiThread;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GestureDetectorCompat;
@@ -20,10 +21,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import dji.sdk.sdkmanager.DJISDKManager;
-import utils.MenuAction;
 
-import static utils.IntentAction.*;
-import static utils.DroneConnectionStatus.*;
+import com.leidossd.dronecontrollerapp.simulator.SimulatorActivity;
+import com.leidossd.utils.MenuAction;
+
+import static com.leidossd.utils.IntentAction.*;
+import static com.leidossd.utils.DroneConnectionStatus.*;
 import static com.leidossd.dronecontrollerapp.MainApplication.getDroneInstance;
 
 public class MainActivity extends AppCompatActivity implements
@@ -71,9 +74,6 @@ public class MainActivity extends AppCompatActivity implements
         actionBar = findViewById(R.id.status_actionbar);
         gestureDetector = new GestureDetectorCompat(this, new GestureListener());
 
-        // hides the status bar
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
-
         configureActionBar();
     }
 
@@ -100,10 +100,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case R.id.action_bar_main_menu:
                 hideActionBar();
-                fragmentManager.beginTransaction()
-                        .setCustomAnimations(R.animator.show_menu, R.animator.hide_menu)
-                        .show(menuFragment)
-                        .commit();
+                showMenu();
                 break;
             default:
                 return false;
@@ -120,16 +117,18 @@ public class MainActivity extends AppCompatActivity implements
             case OPEN_DEVELOPER:
                 showToast("Developer");
                 break;
+            case OPEN_SIMULATOR:
+                showToast("Simulator");
+                startActivity(new Intent(this, SimulatorActivity.class));
+                break;
             case OPEN_SETTINGS:
                 showToast("Settings");
                 break;
             default:
                 showActionBar();
-                fragmentManager.beginTransaction()
-                        .setCustomAnimations(R.animator.show_menu, R.animator.hide_menu)
-                        .hide(menuFragment)
-                        .commit();
         }
+        showActionBar();
+        hideMenu();
     }
 
     @Override
@@ -179,6 +178,21 @@ public class MainActivity extends AppCompatActivity implements
         actionBar.setLogo(R.drawable.ic_leidos);
         actionBar.setTitle("LSD");
         setSupportActionBar(actionBar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    private void showMenu() {
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(R.animator.show_menu, R.animator.hide_menu)
+                .show(menuFragment)
+                .commit();
+    }
+
+    private void hideMenu() {
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(R.animator.show_menu, R.animator.hide_menu)
+                .hide(menuFragment)
+                .commit();
     }
 
     private void hideActionBar() {
@@ -208,6 +222,20 @@ public class MainActivity extends AppCompatActivity implements
             fragmentManager.beginTransaction()
                     .remove(liveVideoFragment)
                     .commitAllowingStateLoss();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        stopLiveVideo();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(MainApplication.getDroneInstance() != null && MainApplication.getDroneInstance().isConnected()) {
+            startLiveVideo();
         }
     }
 

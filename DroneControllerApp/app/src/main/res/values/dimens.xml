@@ -9,7 +9,8 @@
     <dimen name="button_std_padding_left_right">20sp</dimen>
 
     <dimen name="button_menu_width">175dp</dimen>
-    <dimen name="button_menu_height">100dp</dimen>
+    <dimen name="button_menu_height">75dp</dimen>
+    <dimen name="menu_header_height">100dp</dimen>
 
     <dimen name="margin_tiny">5sp</dimen>
     <dimen name="margin_small">10sp</dimen>

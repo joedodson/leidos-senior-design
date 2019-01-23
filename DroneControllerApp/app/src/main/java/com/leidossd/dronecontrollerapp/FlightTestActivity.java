@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.leidossd.djiwrapper.FlightControllerWrapper;
 
-public class SecondActivity extends AppCompatActivity {
+public class FlightTestActivity extends AppCompatActivity {
 
     private boolean engineOn = false;
     private TextView testText;

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Drone Controller App</string>
+    <string name="app_name">LSD App</string>
 
     <!-- Splash Screen Progress Bar Text -->
     <string name="activity_splashscreen_progressBarText">Registering DJI SDK…</string>
@@ -21,13 +21,21 @@
     <!-- Menus -->
     <string name="menu_main_item_missions_title">Missions</string>
     <string name="menu_main_item_settings_title">Settings</string>
+    <string name="menu_main_item_simulator_title">Simulator</string>
     <string name="menu_main_item_developer_title">Developer</string>
-
 
     <string name="next_button">Next Screen →</string>
     <string name="on_button">On</string>
     <string name="off_button">Off</string>
     <string name="back_button">← Previous</string>
+
+    <string name="simulator_status_off">Simulator is off</string>
+    <string name="simulator_action_start">Start Simulator</string>
+    <string name="simulator_action_stop">Stop Simulator</string>
+    <string name="simulator_action_take_off">Take Off</string>
+    <string name="simulator_action_land">Land</string>
+    <string name="simulator_telemetry">Yaw: %1$.2f \tPitch: %2$.2f \tRoll: %3$.2f\n
+        X: %4$.2f \tY:%5$.2f \tZ:%6$.2f</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
