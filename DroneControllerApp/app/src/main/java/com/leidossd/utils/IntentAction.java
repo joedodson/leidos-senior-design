@@ -1,4 +1,4 @@
-package utils;
+package com.leidossd.utils;
 
 public enum IntentAction {
     REGISTRATION_RESULT("Registration Result", "registrationResult"),

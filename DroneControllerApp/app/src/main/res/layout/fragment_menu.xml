@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/accent_normal">
@@ -8,9 +9,9 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/menu_header_container"
         android:layout_width="fill_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/menu_header_height"
         android:background="@color/accent_dark"
-        app:layout_constraintBottom_toTopOf="@+id/main_menu_mission"
+        app:layout_constraintBottom_toTopOf="@+id/menu_items_scrollview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,14 +24,14 @@
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_close_white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/menu_header_leidos_logo"
-            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/menu_header_leidos_logo"
-            android:layout_width="144dp"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -46,67 +47,134 @@
         android:layout_width="fill_parent"
         android:layout_height="2dp"
         android:background="@color/accent_light"
-        app:layout_constraintBottom_toTopOf="@id/main_menu_mission"
+        app:layout_constraintBottom_toTopOf="@id/menu_items_scrollview"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/menu_header_container" />
 
-    <Button
-        android:id="@+id/main_menu_mission"
-        style="@style/CustomWidget.Button.Menu"
-        android:layout_width="0dp"
+    <ScrollView
+        android:id="@+id/menu_items_scrollview"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:drawableStart="@drawable/ic_mission_white"
-        android:text="@string/menu_main_item_missions_title"
-        app:layout_constraintBottom_toTopOf="@+id/main_menu_developer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/menu_header_container"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="2dp"
-        android:background="@color/accent_light"
-        app:layout_constraintBottom_toTopOf="@id/main_menu_developer"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/main_menu_mission" />
-
-    <Button
-        android:id="@+id/main_menu_developer"
-        style="@style/CustomWidget.Button.Menu"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:drawableStart="@drawable/ic_android_logo_white"
-        android:text="@string/menu_main_item_developer_title"
-        app:layout_constraintBottom_toTopOf="@+id/main_menu_settings"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_menu_mission" />
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="2dp"
-        android:background="@color/accent_light"
-        app:layout_constraintBottom_toTopOf="@id/main_menu_settings"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/main_menu_developer" />
-
-    <Button
-        android:id="@+id/main_menu_settings"
-        style="@style/CustomWidget.Button.Menu"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:drawableStart="@drawable/ic_cog_white"
-        android:text="@string/menu_main_item_settings_title"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_menu_developer" />
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/menu_header_container">
 
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/menu_items_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/menu_header_container">
+
+            <Button
+                android:id="@+id/main_menu_mission"
+                style="@style/CustomWidget.Button.Menu"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_menu_height"
+                android:drawableStart="@drawable/ic_mission_white"
+                android:text="@string/menu_main_item_missions_title"
+                app:layout_constraintBottom_toTopOf="@id/main_menu_developer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:background="@color/accent_light"
+                app:layout_constraintBottom_toTopOf="@id/main_menu_developer"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/main_menu_mission" />
+
+            <Button
+                android:id="@+id/main_menu_developer"
+                style="@style/CustomWidget.Button.Menu"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_menu_height"
+                android:drawableStart="@drawable/ic_android_logo_white"
+                android:text="@string/menu_main_item_developer_title"
+                app:layout_constraintBottom_toTopOf="@id/main_menu_simulator"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/main_menu_mission" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:background="@color/accent_light"
+                app:layout_constraintBottom_toTopOf="@+id/main_menu_simulator"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/main_menu_developer" />
+
+            <Button
+                android:id="@+id/main_menu_simulator"
+                style="@style/CustomWidget.Button.Menu"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_menu_height"
+                android:drawableStart="@drawable/ic_cog_white"
+                android:text="@string/menu_main_item_simulator_title"
+                app:layout_constraintBottom_toTopOf="@id/main_menu_compass"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/main_menu_developer" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:background="@color/accent_light"
+                app:layout_constraintBottom_toTopOf="@+id/main_menu_compass"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/main_menu_simulator" />
+
+            <Button
+                android:id="@+id/main_menu_compass"
+                style="@style/CustomWidget.Button.Menu"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_menu_height"
+                android:drawableStart="@drawable/ic_cog_white"
+                android:text="@string/menu_main_item_compass_title"
+                app:layout_constraintBottom_toTopOf="@id/main_menu_settings"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/main_menu_simulator" />
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:background="@color/accent_light"
+                app:layout_constraintBottom_toTopOf="@id/main_menu_settings"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/main_menu_compass" />
+
+            <Button
+                android:id="@+id/main_menu_settings"
+                style="@style/CustomWidget.Button.Menu"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_menu_height"
+                android:drawableStart="@drawable/ic_cog_white"
+                android:text="@string/menu_main_item_settings_title"
+                app:layout_constraintBottom_toTopOf="@id/main_menu_compass"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/main_menu_compass" />
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
 </android.support.constraint.ConstraintLayout>

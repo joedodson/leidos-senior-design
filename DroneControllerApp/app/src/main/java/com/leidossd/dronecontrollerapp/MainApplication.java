@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -17,10 +18,10 @@ import dji.sdk.camera.Camera;
 import dji.sdk.products.Aircraft;
 import dji.sdk.sdkmanager.DJISDKManager;
 
-import utils.DroneConnectionStatus;
+import com.leidossd.utils.DroneConnectionStatus;
 
-import static utils.IntentAction.*;
-import static utils.DroneConnectionStatus.*;
+import static com.leidossd.utils.IntentAction.*;
+import static com.leidossd.utils.DroneConnectionStatus.*;
 
 /**
  * This class iw where the actual application logic goes. The Application class is a container
@@ -39,7 +40,7 @@ public class MainApplication extends Application {
 
     private Application baseApplication;
 
-    private static BaseProduct droneInstance;
+    private static Aircraft droneInstance;
     private static Camera cameraInstance;
     private static boolean droneConnected;
 
@@ -121,12 +122,13 @@ public class MainApplication extends Application {
      * This function is used to get the instance of DJIBaseProduct.
      * If no product is connected, it returns null.
      */
-    public static synchronized BaseProduct getDroneInstance() {
+    public static synchronized Aircraft getDroneInstance() {
         if (droneInstance == null) {
-            droneInstance = DJISDKManager.getInstance().getProduct();
-
-            if (!(droneInstance instanceof Aircraft)) {
-                droneInstance = null;
+            try {
+                droneInstance = (Aircraft) DJISDKManager.getInstance().getProduct();
+            } catch (ClassCastException e) {
+                Log.w(TAG, "Attempt to cast base product to aircraft failed on: "
+                        + DJISDKManager.getInstance().getProduct().toString());
             }
         }
 
