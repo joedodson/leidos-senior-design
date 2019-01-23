@@ -163,6 +163,7 @@ public class SimulatorActivity extends AppCompatActivity implements View.OnClick
 
                 if (null == sendVirtualStickDataTimer) {
                     sendVirtualStickDataTask = new SendVirtualStickDataTask();
+
                     sendVirtualStickDataTimer = new Timer();
                     sendVirtualStickDataTimer.schedule(sendVirtualStickDataTask, 100, 200);
                 }
