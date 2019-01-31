@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_bar_status"
+        android:title="@string/activity_droneconnection_statusDisconnected"
+        app:showAsAction="always|withText" />
+
+    <item
+        android:id="@+id/action_bar_gps"
+        android:icon="@drawable/ic_satellite_white"
+        android:title=""
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_bar_battery"
+        android:icon="@drawable/ic_battery_full_white"
+        android:title=""
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_bar_main_menu"
+        android:icon="@drawable/ic_menu_white"
+        android:title=""
+        app:showAsAction="always" />
+</menu>
