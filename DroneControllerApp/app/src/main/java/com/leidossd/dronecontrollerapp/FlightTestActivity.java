@@ -11,7 +11,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.leidossd.djiwrapper.FlightControllerWrapper;
-import com.leidossd.djiwrapper.Coordinate;
 
 import dji.common.error.DJIError;
 import dji.common.util.CommonCallbacks;
@@ -32,7 +31,7 @@ public class FlightTestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_second);
+        setContentView(R.layout.activity_flight_test);
         testText = findViewById(R.id.text_1);
 
         testText.setText("Off");

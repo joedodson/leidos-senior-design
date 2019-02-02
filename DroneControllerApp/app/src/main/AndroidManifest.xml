@@ -27,7 +27,6 @@
     <uses-feature
         android:name="android.hardware.usb.accessory"
         android:required="true" />
-
     <!-- PermissionsHelper and features -->
     <application
         android:name=".BootstrapApplication"
@@ -67,6 +66,7 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -89,6 +89,8 @@
             android:name=".CompassActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="landscape"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".GridParentActivity"></activity>
     </application>
+
 </manifest>
