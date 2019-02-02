@@ -90,7 +90,10 @@
             android:parentActivityName=".MainActivity"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme" />
-        <activity android:name=".GridParentActivity"></activity>
+        <activity
+            android:name=".GridParentActivity"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="landscape"/>
     </application>
 
 </manifest>
