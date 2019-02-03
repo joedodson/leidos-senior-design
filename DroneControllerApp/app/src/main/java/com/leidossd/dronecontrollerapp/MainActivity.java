@@ -129,8 +129,10 @@ public class MainActivity extends AppCompatActivity implements
             case OPEN_COMPASS:
                 showToast("Compass");
                 startActivity(new Intent(this, CompassActivity.class));
+                break;
             case OPEN_GRID_VIEW:
                 startActivity(new Intent(this, GridParentActivity.class));
+                break;
             default:
                 showActionBar();
         }

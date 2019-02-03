@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -19,11 +20,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import dji.sdk.sdkmanager.DJISDKManager;
 
@@ -55,6 +59,11 @@ public class SplashActivity extends AppCompatActivity {
     private AtomicBoolean registrationSuccess;
     private AtomicBoolean permissionsGranted;
 
+    private ProgressBar progressBar;
+    private static final int progressMaxTimeMs = 5000;
+    private static final int progressUpdateIntervalMs = 50;
+    private static final int maxProgress = 100;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +71,21 @@ public class SplashActivity extends AppCompatActivity {
 
         // hides the status bar
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+
+        progressBar = findViewById(R.id.progressBar);
+        CountDownTimer progressBarTimer = new CountDownTimer(progressMaxTimeMs, progressUpdateIntervalMs) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                float percentTimeLeft = (float)millisUntilFinished / progressMaxTimeMs;
+                progressBar.setProgress(maxProgress - Math.round(percentTimeLeft * 100));
+            }
+
+            @Override
+            public void onFinish() {
+                progressBar.setProgress(maxProgress);
+            }
+        };
 
         registrationSuccess = new AtomicBoolean(false);
         permissionsGranted = new AtomicBoolean(false);
@@ -84,6 +108,7 @@ public class SplashActivity extends AppCompatActivity {
             }
         };
 
+        progressBarTimer.start();
         LocalBroadcastManager.getInstance(this).registerReceiver(registrationReceiver, new IntentFilter(REGISTRATION_RESULT.getActionString()));
     }
 
@@ -160,5 +185,9 @@ public class SplashActivity extends AppCompatActivity {
             Log.d(TAG, String.format("Couldn't start main activity, registrationSuccess: %s, permissionGranted: %s",
                     String.valueOf(registrationSuccess), String.valueOf(permissionsGranted)));
         }
+    }
+
+    private void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }
