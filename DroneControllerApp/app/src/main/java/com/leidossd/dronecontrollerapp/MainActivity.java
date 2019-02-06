@@ -17,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
+import com.leidossd.dronecontrollerapp.missions.runner.MissionRunner;
+import com.leidossd.dronecontrollerapp.missions.SpecificMission;
 import com.leidossd.dronecontrollerapp.simulator.SimulatorActivity;
 import com.leidossd.utils.MenuAction;
 
@@ -41,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements
     FragmentManager fragmentManager;
     MenuFragment menuFragment;
     LiveVideoFragment liveVideoFragment;
+
+    private static MissionRunner missionRunner;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -73,6 +77,10 @@ public class MainActivity extends AppCompatActivity implements
         gestureDetector = new GestureDetectorCompat(this, new GestureListener());
 
         configureActionBar();
+
+        missionRunner = BootstrapApplication.getMissionRunnerInstance();
+
+        missionRunner.startMission(this, new SpecificMission("Some Title"));
     }
 
 

@@ -3,6 +3,8 @@ package com.leidossd.dronecontrollerapp;
 import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
+
+import com.leidossd.dronecontrollerapp.missions.runner.MissionRunner;
 import com.secneo.sdk.Helper;
 
 /**
@@ -13,6 +15,7 @@ import com.secneo.sdk.Helper;
 public class BootstrapApplication extends Application {
 
     private static MainApplication mainApplication;
+    private static MissionRunner missionRunnerInstance = null;
 
     @Override
     protected void attachBaseContext(Context paramContext) {
@@ -40,13 +43,13 @@ public class BootstrapApplication extends Application {
         super.onCreate();
         mainApplication.onCreate();
 
+        missionRunnerInstance = MissionRunner.getInstance();
     }
 
     @Override
     public void onConfigurationChanged(Configuration paramConfiguration) {
         super.onConfigurationChanged(paramConfiguration);
         mainApplication.onConfigurationChanged(paramConfiguration);
-
     }
 
     @Override
@@ -59,5 +62,9 @@ public class BootstrapApplication extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
+    }
+
+    public static MissionRunner getMissionRunnerInstance() {
+        return missionRunnerInstance;
     }
 }
