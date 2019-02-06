@@ -87,6 +87,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:onClick="onClicked"
+        android:text="@string/halt_button"
         android:text="@string/next_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />

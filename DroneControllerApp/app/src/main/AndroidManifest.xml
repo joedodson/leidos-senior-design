@@ -79,6 +79,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".FlightTestActivity"
+            android:theme="@style/AppTheme"/>
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".simulator.SimulatorActivity"
