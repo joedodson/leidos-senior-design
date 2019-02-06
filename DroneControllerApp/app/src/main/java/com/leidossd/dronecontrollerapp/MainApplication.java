@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -34,11 +33,9 @@ import static com.leidossd.utils.DroneConnectionStatus.*;
 public class MainApplication extends Application {
     private static final String TAG = MainApplication.class.getName();
 
-    private Handler handler = new Handler(Looper.getMainLooper());
-    private DJISDKManager.SDKManagerCallback DJISDKManagerCallback;
     LocalBroadcastManager localBroadcastManager;
 
-    private Application baseApplication;
+    private static Application baseApplication;
 
     private static Aircraft droneInstance;
     private static Camera cameraInstance;
@@ -47,8 +44,8 @@ public class MainApplication extends Application {
     public MainApplication() {
     }
 
-    public void setContext(Application application) {
-        this.baseApplication = application;
+    public static void setContext(Application application) {
+        baseApplication = application;
     }
 
     @Override
@@ -59,12 +56,11 @@ public class MainApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        handler = new Handler(Looper.getMainLooper());
         droneConnected = false;
 
         localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
 
-        DJISDKManagerCallback = new DJISDKManager.SDKManagerCallback() {
+        DJISDKManager.SDKManagerCallback DJISDKManagerCallback = new DJISDKManager.SDKManagerCallback() {
             @Override
             public void onRegister(DJIError result) {
                 boolean registrationResult = result == DJISDKError.REGISTRATION_SUCCESS;
@@ -78,7 +74,7 @@ public class MainApplication extends Application {
 
             @Override
             public void onProductDisconnect() {
-                if(getDroneInstance() != null && !getDroneInstance().isConnected()) {
+                if (getDroneInstance() != null && !getDroneInstance().isConnected()) {
                     droneConnected = false;
                     broadcastConnectionChange(DRONE_DISCONNECTED);
                     Log.d(TAG, "Drone Disconnected");
@@ -87,7 +83,7 @@ public class MainApplication extends Application {
 
             @Override
             public void onProductConnect(BaseProduct baseProduct) {
-                if(getDroneInstance() != null && getDroneInstance().isConnected()) {
+                if (getDroneInstance() != null && getDroneInstance().isConnected()) {
                     droneConnected = true;
                     broadcastConnectionChange(DRONE_CONNECTED);
                     Log.d(TAG, "Product Connected");
@@ -96,7 +92,7 @@ public class MainApplication extends Application {
 
             @Override
             public void onComponentChange(BaseProduct.ComponentKey componentKey, BaseComponent oldComponent, BaseComponent newComponent) {
-                if(getDroneInstance() != null && getDroneInstance().isConnected() != droneConnected) {
+                if (getDroneInstance() != null && getDroneInstance().isConnected() != droneConnected) {
                     DroneConnectionStatus status = getDroneInstance().isConnected() ? DRONE_CONNECTED : DRONE_DISCONNECTED;
                     broadcastConnectionChange(status);
                 }
@@ -145,7 +141,7 @@ public class MainApplication extends Application {
         return cameraInstance;
     }
 
-    private void showToast(String msg) {
-        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+    public static void showToast(String msg) {
+        Toast.makeText(baseApplication, msg, Toast.LENGTH_SHORT).show();
     }
 }

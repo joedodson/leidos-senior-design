@@ -3,13 +3,17 @@ package com.leidossd.dronecontrollerapp;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Toast;
+
+import com.leidossd.djiwrapper.Coordinate;
+import com.leidossd.djiwrapper.FlightControllerWrapper;
 
 import dji.common.error.DJIError;
 import dji.common.flightcontroller.CompassCalibrationState;
 import dji.common.util.CommonCallbacks;
 import dji.sdk.flightcontroller.Compass;
 import dji.sdk.products.Aircraft;
+
+import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
 public class CompassActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -83,8 +87,5 @@ public class CompassActivity extends AppCompatActivity implements View.OnClickLi
                 break;
         }
 
-    }
-    private void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }

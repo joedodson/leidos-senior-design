@@ -16,7 +16,6 @@ import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.widget.Toast;
 
 import com.leidossd.dronecontrollerapp.simulator.SimulatorActivity;
 import com.leidossd.utils.MenuAction;
@@ -28,15 +27,13 @@ import static com.leidossd.utils.DroneConnectionStatus.DRONE_CONNECTED;
 import static com.leidossd.utils.DroneConnectionStatus.DRONE_CONNECTION_ERROR;
 import static com.leidossd.utils.DroneConnectionStatus.DRONE_DISCONNECTED;
 import static com.leidossd.utils.IntentAction.CONNECTION_CHANGE;
+import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
 public class MainActivity extends AppCompatActivity implements
         MenuFragment.fragmentInteractionListener {
 
     private static final String TAG = MainActivity.class.getName();
     MainApplication app = (MainApplication) getApplication();
-
-    // receiver to wait for 'MainApplication' to notify connection status change
-    private BroadcastReceiver connectionChangeReceiver;
 
     Toolbar actionBar;
     private GestureDetectorCompat gestureDetector;
@@ -52,7 +49,8 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         // MainApplication sends local broadcast when connection status changes
-        connectionChangeReceiver = new BroadcastReceiver() {
+        // receiver to wait for 'MainApplication' to notify connection status change
+        BroadcastReceiver connectionChangeReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent connectionChangeIntent) {
                 String droneStatus = connectionChangeIntent.getStringExtra(CONNECTION_CHANGE.getResultKey());
@@ -117,18 +115,19 @@ public class MainActivity extends AppCompatActivity implements
             case OPEN_DEVELOPER:
                 // Start Brians Activity
                 startActivity(new Intent(this, FlightTestActivity.class));
-                showToast("Developer");
                 break;
             case OPEN_SIMULATOR:
-                showToast("Simulator");
                 startActivity(new Intent(this, SimulatorActivity.class));
                 break;
             case OPEN_SETTINGS:
                 showToast("Settings");
                 break;
             case OPEN_COMPASS:
-                showToast("Compass");
                 startActivity(new Intent(this, CompassActivity.class));
+                break;
+            case OPEN_GRID_VIEW:
+                startActivity(new Intent(this, GridParentActivity.class));
+                break;
             default:
                 showActionBar();
         }
@@ -181,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void configureActionBar() {
         actionBar.setLogo(R.drawable.ic_leidos);
-        actionBar.setTitle("LSD");
+        actionBar.setTitle(R.string.app_name);
         setSupportActionBar(actionBar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -242,9 +241,5 @@ public class MainActivity extends AppCompatActivity implements
         if(MainApplication.getDroneInstance() != null && MainApplication.getDroneInstance().isConnected()) {
             startLiveVideo();
         }
-    }
-
-    private void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }

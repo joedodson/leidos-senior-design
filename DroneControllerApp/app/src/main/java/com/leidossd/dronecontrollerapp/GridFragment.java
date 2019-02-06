@@ -67,6 +67,7 @@ public class GridFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_grid, container, false);
 
         int[] buttons = {R.id.grid_nw, R.id.grid_n, R.id.grid_ne,
