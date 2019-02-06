@@ -10,10 +10,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.leidossd.djiwrapper.Coordinate;
 import com.leidossd.djiwrapper.FlightControllerWrapper;
+import com.leidossd.djiwrapper.VirtualStickFlightControl;
 
 import dji.common.error.DJIError;
 import dji.common.util.CommonCallbacks;
+import dji.sdk.flightcontroller.FlightController;
 
 public class FlightTestActivity extends AppCompatActivity {
 
@@ -47,43 +50,22 @@ public class FlightTestActivity extends AppCompatActivity {
     public void onClicked(View view) {
         switch (view.getId()) {
             case(R.id.button_1): { //Back Button
-                if(getState() == DroneState.ON) {
+                if (getState() == DroneState.ON) {
                     startActivity(new Intent(this, MainActivity.class));
                     finish();
                     break;
                 }
-            } case(R.id.button_3): { //Confirm button
-                //if(!FlightControllerWrapper.getInstance().isInFlight()){
-                    //TODO: Ask about returning result from function, to know when its done executing
-                    FlightControllerWrapper.getInstance().turnOnMotors(new CommonCallbacks.CompletionCallback() {
-                        @Override
-                        public void onResult(DJIError djiError) {
-                            if(BuildConfig.DEBUG){
-                                if (djiError != null) {
-                                    showToast(djiError.getDescription());
-                                } else {
-                                    showToast("Motor off success!");
-                                }
-                            }
-                        }
-                    });
-                    //FlightControllerWrapper.getInstance().goToAbsoluteXYZ(new Coordinate((double) toIntEmpty(xBox), (double) toIntEmpty(yBox), (double) toIntEmpty(zBox)), null);
-                //}
+
+            }case(R.id.button_2):{ //Halt button
+                FlightControllerWrapper.getInstance().haltFlight();
                 break;
+
+            } case(R.id.button_3): { //Confirm button
+                FlightControllerWrapper.getInstance().gotoRelativeXYZ(new Coordinate((float) toIntEmpty(xBox),(float) toIntEmpty(yBox),(float) toIntEmpty(zBox)));
+                break;
+
             } case(R.id.button_4): { //Takeoff button
                 //if(getState() == DroneState.ON){
-                    FlightControllerWrapper.getInstance().turnOffMotors(new CommonCallbacks.CompletionCallback() {
-                        @Override
-                        public void onResult(DJIError djiError) {
-                            if(BuildConfig.DEBUG){
-                                if (djiError != null) {
-                                    showToast(djiError.getDescription());
-                                } else {
-                                    showToast("Motor off success!");
-                                }
-                            }
-                        }
-                    });
                     FlightControllerWrapper.getInstance().startTakeoff(new CommonCallbacks.CompletionCallback() {
                         @Override
                         public void onResult(DJIError djiError) {
@@ -143,18 +125,18 @@ public class FlightTestActivity extends AppCompatActivity {
         int y = toIntEmpty(yBox);
         int z = toIntEmpty(zBox);
 
-        if (x != 0 || y != 0) {
-            zBox.setEnabled(false);
-        } else {
-            zBox.setEnabled(true);
-        }
-        if (z != 0) {
-            xBox.setEnabled(false);
-            yBox.setEnabled(false);
-        } else {
-            xBox.setEnabled(true);
-            yBox.setEnabled(true);
-        }
+        //if (x != 0 || y != 0) {
+        //    zBox.setEnabled(false);
+        //} else {
+        //    zBox.setEnabled(true);
+        //}
+        //if (z != 0) {
+        //    xBox.setEnabled(false);
+        //    yBox.setEnabled(false);
+        //} else {
+        //    xBox.setEnabled(true);
+        //    yBox.setEnabled(true);
+        //}
     }
 
     private int toIntEmpty(EditText box) {

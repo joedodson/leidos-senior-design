@@ -4,16 +4,21 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import dji.common.error.DJIError;
+import dji.common.flightcontroller.virtualstick.FlightCoordinateSystem;
 import dji.common.flightcontroller.virtualstick.RollPitchControlMode;
 import dji.common.flightcontroller.virtualstick.VerticalControlMode;
 import dji.common.flightcontroller.virtualstick.FlightControlData;
 import dji.common.flightcontroller.virtualstick.YawControlMode;
 import dji.common.util.CommonCallbacks;
+import dji.sdk.flightcontroller.FlightController;
+import dji.sdk.products.Aircraft;
+import dji.sdk.sdkmanager.DJISDKManager;
 
-class VirtualStickFlightControl implements LowLevelFlightControl {
+public class VirtualStickFlightControl  {
     static private VirtualStickFlightControl instance = null;
+    private FlightController flightController = null;
 
-    // m/s
+    // m/s, probably should make a constant for the speed and angular velocity, no magic numbers
     private float speed = (float) .5;
     // deg/s
     private float angularVelocity = 50;
@@ -25,15 +30,16 @@ class VirtualStickFlightControl implements LowLevelFlightControl {
 
     private boolean inFlight;
 
-    Timer inputTimer;
-    Timer endTimer;
+    private Timer inputTimer = null;
+    private Timer endTimer;
 
     VirtualSticksUpdateTask virtualSticksUpdateTask;
 
     private VirtualStickFlightControl(){
         pitch = roll = yaw = throttle = 0;
         inFlight = false;
-
+        flightController = ((Aircraft) DJISDKManager.getInstance().
+                                       getProduct()).getFlightController();
         inputTimer = new Timer();
         virtualSticksUpdateTask = new VirtualSticksUpdateTask();
         inputTimer.schedule(virtualSticksUpdateTask,0, 200);
@@ -66,13 +72,19 @@ class VirtualStickFlightControl implements LowLevelFlightControl {
     }
 
     public void move(Coordinate movement){
+       move(movement, FlightCoordinateSystem.BODY);
+    }
+
+    public void move(Coordinate movement, FlightCoordinateSystem flightCoordinateSystem){
+        flightController.setRollPitchCoordinateSystem(flightCoordinateSystem);
+
         float duration = (float) movement.magnitude()/speed;
 
         float p = (float) movement.getY()/duration;
         float r = (float) movement.getX()/duration;
         float t = (float) movement.getZ()/duration;
 
-        startTask(p,r,0, t, (long) (duration*1000));
+        startTask(r,p,0, t, (long) (duration*1000));
     }
 
     public void rotate(float theta){
@@ -84,9 +96,10 @@ class VirtualStickFlightControl implements LowLevelFlightControl {
     public void halt(){
         pitch = roll = yaw = throttle = 0;
         inFlight = false;
+        flightController.setVirtualStickModeEnabled(false, null);
     }
 
-    private void startTask(float pitch, float roll, float yaw, float throttle, long duration){
+    private void startTask(float roll, float pitch, float yaw, float throttle, long duration){
         // make sure we aren't doing yaw with anything else simultaneously
         // may need to throw some kind of exception, for now just do nothing.
         if(yaw != 0 && (pitch != 0 || roll != 0 || throttle != 0))
@@ -96,7 +109,9 @@ class VirtualStickFlightControl implements LowLevelFlightControl {
         if(isInFlight())
             return;
 
-        // changing these values changes the flight
+        // enable flight before starting. may break out into separate functions to enable/disable
+        flightController.setVirtualStickModeEnabled(true, null);
+        // changing these values changes the flight in real time
         this.pitch = pitch;
         this.roll = roll;
         this.throttle = throttle;
@@ -126,7 +141,7 @@ class VirtualStickFlightControl implements LowLevelFlightControl {
 
                 flightController.sendVirtualStickFlightControlData(
                     new FlightControlData(
-                            pitch, roll, yaw, throttle
+                            roll, pitch, yaw, throttle
                     ), new CommonCallbacks.CompletionCallback() {
                         @Override
                         public void onResult(DJIError djiError) {

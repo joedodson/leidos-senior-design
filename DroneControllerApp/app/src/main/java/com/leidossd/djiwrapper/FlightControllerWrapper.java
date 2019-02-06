@@ -13,14 +13,8 @@ public class FlightControllerWrapper {
     private static FlightControllerWrapper instance = null;
 
     private FlightController flightController;
-    private FlightData flightData;
-
-    private Coordinate position;
-    private Coordinate directionVector;
-
-    private boolean rotationLock;
-
-    private float flightSpeed;
+    // hacky, gotta replace this with the interface
+    private DeadReckoningFlightControl coordinateFlightControl;
 
     public static FlightControllerWrapper getInstance(){
         if(instance == null)
@@ -32,13 +26,30 @@ public class FlightControllerWrapper {
     private FlightControllerWrapper(){
         flightController = ((Aircraft) DJISDKManager.getInstance().
                                        getProduct()).getFlightController();
-        this.position = new Coordinate(0,0,0);
-        this.rotationLock = true;
-        this.directionVector = new Coordinate(0,1,0);
-        this.flightData = null;
-        this.flightSpeed = (float) 0.5;
+        this.coordinateFlightControl = new DeadReckoningFlightControl();
     }
 
+    public boolean isInFlight(){
+        return coordinateFlightControl.isInFlight();
+    }
+
+    public void haltFlight(){
+        coordinateFlightControl.halt();
+    }
+
+    public void gotoRelativeXYZ(Coordinate destination){
+        coordinateFlightControl.setFlightMode(CoordinateFlightControl.FlightMode.RELATIVE);
+        coordinateFlightControl.goTo(destination);
+    }
+
+    public void gotoAbsoluteXYZ(Coordinate destination){
+        coordinateFlightControl.setFlightMode(CoordinateFlightControl.FlightMode.ABSOLUTE);
+        coordinateFlightControl.goTo(destination);
+    }
+
+    public Coordinate getPosition(){
+        return coordinateFlightControl.getPosition();
+    }
 
     // Here lie forwarded functions, add them as you need them
 
@@ -70,6 +81,7 @@ public class FlightControllerWrapper {
     }
 
     public void startLanding(@Nullable CommonCallbacks.CompletionCallback callback){
+        coordinateFlightControl.halt();
         flightController.startLanding(callback);
     }
 

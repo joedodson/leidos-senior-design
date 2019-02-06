@@ -8,8 +8,9 @@ interface CoordinateFlightControl {
 
     FlightMode getFlightMode();
     void setFlightMode(FlightMode flightMode);
-    LowLevelFlightControl lowLevelFlightControl = VirtualStickFlightControl.getInstance();
-    void goTo(Coordinate destination);
-    void rotateTo(float theta);
+    void goTo(Coordinate destination); // add callback to report when done
+    void rotateTo(float theta); // add callback to report when done
+    boolean isInFlight();
+    void halt();
     // need to do a kill/halt flight function
 }

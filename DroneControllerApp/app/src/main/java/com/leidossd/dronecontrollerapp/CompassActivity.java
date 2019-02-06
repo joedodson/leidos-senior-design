@@ -5,6 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
+import com.leidossd.djiwrapper.Coordinate;
+import com.leidossd.djiwrapper.FlightControllerWrapper;
+
 import dji.common.error.DJIError;
 import dji.common.flightcontroller.CompassCalibrationState;
 import dji.common.util.CommonCallbacks;

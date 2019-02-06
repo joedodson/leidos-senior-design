@@ -10,11 +10,10 @@ interface LowLevelFlightControl {
     FlightController flightController = ((Aircraft) DJISDKManager.getInstance().
                                        getProduct()).getFlightController();
 
-    // need to update the minimum to API 24 for this (we're using 23 right now)
-    static LowLevelFlightControl getInstance();
     boolean isInFlight();
     void move(Coordinate movement);
     void rotate(float theta);
+    void halt();
 
     // need to do a kill/halt function
 
