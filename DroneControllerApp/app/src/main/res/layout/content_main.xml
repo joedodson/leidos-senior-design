@@ -2,14 +2,16 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:clipChildren="false">
 
     <android.support.constraint.Guideline
         android:id="@+id/menu_fragment_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="@dimen/menu_constraintGuideline_begin" />
+        app:layout_constraintGuide_end="@dimen/menu_width" />
 
     <FrameLayout
         android:id="@+id/live_video_fragment_container"

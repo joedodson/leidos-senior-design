@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LSD App</string>
+    <string name="app_name">SimpliFly</string>
 
     <!-- Splash Screen Progress Bar Text -->
     <string name="activity_splashscreen_progressBarText">Registering DJI SDK…</string>
@@ -24,6 +24,7 @@
     <string name="menu_main_item_simulator_title">Simulator</string>
     <string name="menu_main_item_developer_title">Developer</string>
     <string name="menu_main_item_compass_title">Compass</string>
+    <string name="menu_main_item_grid_title">Grid</string>
 
     <string name="halt_button">HALT TEST</string>
     <string name="on_button">On</string>

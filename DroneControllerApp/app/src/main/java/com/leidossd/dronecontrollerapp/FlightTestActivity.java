@@ -8,7 +8,6 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.leidossd.djiwrapper.Coordinate;
 import com.leidossd.djiwrapper.FlightControllerWrapper;
@@ -17,6 +16,9 @@ import com.leidossd.djiwrapper.VirtualStickFlightControl;
 import dji.common.error.DJIError;
 import dji.common.util.CommonCallbacks;
 import dji.sdk.flightcontroller.FlightController;
+
+import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
+
 
 public class FlightTestActivity extends AppCompatActivity {
 
@@ -147,8 +149,4 @@ public class FlightTestActivity extends AppCompatActivity {
     public DroneState getState() { return state; }
 
     public void setState(DroneState ds) { state = ds; }
-
-    private void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-    }
 }

@@ -4,13 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/accent_normal">
+    android:background="@color/accent_normal"
+    android:elevation="@dimen/menu_elevation"
+    android:clipToPadding="false"
+    android:clipChildren="false">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/menu_header_container"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/menu_header_height"
         android:background="@color/accent_dark"
+        android:elevation="@dimen/menu_header_elevation"
         app:layout_constraintBottom_toTopOf="@+id/menu_items_scrollview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -31,7 +35,7 @@
 
         <ImageView
             android:id="@+id/menu_header_leidos_logo"
-            android:layout_width="200dp"
+            android:layout_width="@dimen/menu_logo_width"
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -43,14 +47,14 @@
     </android.support.constraint.ConstraintLayout>
 
     <!-- Divider -->
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="2dp"
-        android:background="@color/accent_light"
-        app:layout_constraintBottom_toTopOf="@id/menu_items_scrollview"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/menu_header_container" />
+    <!--<View-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="2dp"-->
+        <!--android:background="@color/accent_light"-->
+        <!--app:layout_constraintBottom_toTopOf="@id/menu_items_scrollview"-->
+        <!--app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--app:layout_constraintRight_toRightOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/menu_header_container" />-->
 
     <ScrollView
         android:id="@+id/menu_items_scrollview"
@@ -147,11 +151,35 @@
                 android:layout_height="@dimen/button_menu_height"
                 android:drawableStart="@drawable/ic_cog_white"
                 android:text="@string/menu_main_item_compass_title"
-                app:layout_constraintBottom_toTopOf="@id/main_menu_settings"
+                app:layout_constraintBottom_toTopOf="@id/main_menu_grid"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/main_menu_simulator" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:background="@color/accent_light"
+                app:layout_constraintBottom_toTopOf="@id/main_menu_grid"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/main_menu_compass" />
+
+            <Button
+                android:id="@+id/main_menu_grid"
+                style="@style/CustomWidget.Button.Menu"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_menu_height"
+                android:drawableStart="@drawable/ic_cog_white"
+                android:text="@string/menu_main_item_grid_title"
+                app:layout_constraintBottom_toTopOf="@id/main_menu_settings"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/main_menu_compass" />
+
             <View
                 android:layout_width="fill_parent"
                 android:layout_height="2dp"
@@ -160,7 +188,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/main_menu_compass" />
+                app:layout_constraintTop_toBottomOf="@+id/main_menu_grid" />
 
             <Button
                 android:id="@+id/main_menu_settings"
@@ -169,11 +197,11 @@
                 android:layout_height="@dimen/button_menu_height"
                 android:drawableStart="@drawable/ic_cog_white"
                 android:text="@string/menu_main_item_settings_title"
-                app:layout_constraintBottom_toTopOf="@id/main_menu_compass"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/main_menu_compass" />
+                app:layout_constraintTop_toBottomOf="@id/main_menu_grid" />
 
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
