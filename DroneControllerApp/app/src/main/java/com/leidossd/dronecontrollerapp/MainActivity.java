@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case OPEN_DEVELOPER:
                 // Start Brians Activity
-                startActivity(new Intent(this, SecondActivity.class));
+                startActivity(new Intent(this, FlightTestActivity.class));
                 showToast("Developer");
                 break;
             case OPEN_SIMULATOR:

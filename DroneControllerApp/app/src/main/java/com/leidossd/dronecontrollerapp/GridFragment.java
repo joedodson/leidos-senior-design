@@ -1,7 +1,6 @@
 package com.leidossd.dronecontrollerapp;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,9 +10,12 @@ import android.view.ViewGroup;
 
 import com.leidossd.djiwrapper.Coordinate;
 
+
 public class GridFragment extends Fragment {
     private GridInteractionListener gridInteractionListener;
     private OnClickListener gridSelectListener;
+
+    private static final double MOVEMENT_MULTI = 1.0;
 
     public GridFragment() { }
 
@@ -25,36 +27,37 @@ public class GridFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Coordinate coordinate = null;
-                switch(view.getId()) {
+                int id = view.getId();
+                switch(id) {
                     case R.id.grid_nw:
-                        coordinate = new Coordinate(-1,-1,0);
+                        coordinate = new Coordinate(-MOVEMENT_MULTI,MOVEMENT_MULTI,0);
                         break;
                     case R.id.grid_n:
-                        coordinate = new Coordinate(-1,0,0);
+                        coordinate = new Coordinate(0,MOVEMENT_MULTI,0);
                         break;
                     case R.id.grid_ne:
-                        coordinate = new Coordinate(-1,1,0);
+                        coordinate = new Coordinate(MOVEMENT_MULTI,MOVEMENT_MULTI,0);
                         break;
                     case R.id.grid_w:
-                        coordinate = new Coordinate(0,-1,0);
+                        coordinate = new Coordinate(-MOVEMENT_MULTI,0,0);
                         break;
                     case R.id.grid_center:
                         coordinate = new Coordinate(0,0,0);
                         break;
                     case R.id.grid_e:
-                        coordinate = new Coordinate(0,1,0);
+                        coordinate = new Coordinate(MOVEMENT_MULTI,0,0);
                         break;
                     case R.id.grid_sw:
-                        coordinate = new Coordinate(1,-1,0);
+                        coordinate = new Coordinate(-MOVEMENT_MULTI,-MOVEMENT_MULTI,0);
                         break;
                     case R.id.grid_s:
-                        coordinate = new Coordinate(1,0,0);
+                        coordinate = new Coordinate(0,-MOVEMENT_MULTI,0);
                         break;
                     case R.id.grid_se:
-                        coordinate = new Coordinate(1,1,0);
+                        coordinate = new Coordinate(MOVEMENT_MULTI,-MOVEMENT_MULTI,0);
                         break;
                     default:
-                        break;
+                        return;
                 }
                 gridInteractionListener.sendInput(coordinate);
             }
@@ -73,15 +76,9 @@ public class GridFragment extends Fragment {
         for (int i : buttons){
             view.findViewById(i).setOnClickListener(gridSelectListener);
         }
+
         return view;
     }
-
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
 
     @Override
     public void onAttach(Context context) {
@@ -100,18 +97,7 @@ public class GridFragment extends Fragment {
         gridInteractionListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface GridInteractionListener {
-        // TODO: Update argument type and name
-        void onGridInteraction(Uri uri);
+        void sendInput(Coordinate coordinate);
     }
 }
