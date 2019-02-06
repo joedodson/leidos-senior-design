@@ -4,13 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/accent_normal">
+    android:background="@color/accent_normal"
+    android:elevation="@dimen/menu_elevation"
+    android:clipToPadding="false"
+    android:clipChildren="false">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/menu_header_container"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/menu_header_height"
         android:background="@color/accent_dark"
+        android:elevation="@dimen/menu_header_elevation"
         app:layout_constraintBottom_toTopOf="@+id/menu_items_scrollview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -43,14 +47,14 @@
     </android.support.constraint.ConstraintLayout>
 
     <!-- Divider -->
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="2dp"
-        android:background="@color/accent_light"
-        app:layout_constraintBottom_toTopOf="@id/menu_items_scrollview"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/menu_header_container" />
+    <!--<View-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="2dp"-->
+        <!--android:background="@color/accent_light"-->
+        <!--app:layout_constraintBottom_toTopOf="@id/menu_items_scrollview"-->
+        <!--app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--app:layout_constraintRight_toRightOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/menu_header_container" />-->
 
     <ScrollView
         android:id="@+id/menu_items_scrollview"
