@@ -27,7 +27,6 @@
     <uses-feature
         android:name="android.hardware.usb.accessory"
         android:required="true" />
-
     <!-- PermissionsHelper and features -->
     <application
         android:name=".BootstrapApplication"
@@ -63,10 +62,11 @@
 
         <activity
             android:name=".SplashActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -75,20 +75,27 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".FlightTestActivity"
-            android:screenOrientation="landscape" />
+            android:theme="@style/AppTheme"/>
+            android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".simulator.SimulatorActivity"
             android:launchMode="singleTop"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:screenOrientation="sensorLandscape"/>
         <activity
             android:name=".CompassActivity"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="landscape"
-            android:theme="@style/AppTheme"/>
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".GridParentActivity"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="sensorLandscape"/>
     </application>
+
 </manifest>

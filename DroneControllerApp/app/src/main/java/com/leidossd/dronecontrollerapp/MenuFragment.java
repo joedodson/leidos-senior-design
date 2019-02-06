@@ -13,10 +13,10 @@ import com.leidossd.utils.MenuAction;
 import static com.leidossd.utils.MenuAction.CLOSE_MENU;
 import static com.leidossd.utils.MenuAction.OPEN_COMPASS;
 import static com.leidossd.utils.MenuAction.OPEN_DEVELOPER;
+import static com.leidossd.utils.MenuAction.OPEN_GRID_VIEW;
 import static com.leidossd.utils.MenuAction.OPEN_MISSIONS;
 import static com.leidossd.utils.MenuAction.OPEN_SETTINGS;
 import static com.leidossd.utils.MenuAction.OPEN_SIMULATOR;
-
 
 public class MenuFragment extends Fragment {
 
@@ -49,11 +49,12 @@ public class MenuFragment extends Fragment {
                         case R.id.main_menu_settings:
                             action = OPEN_SETTINGS;
                             break;
-
                         case R.id.main_menu_compass:
                             action = OPEN_COMPASS;
                             break;
-
+                        case R.id.main_menu_grid:
+                            action = OPEN_GRID_VIEW;
+                            break;
                         default:
                             action = CLOSE_MENU;
                     }
@@ -69,12 +70,21 @@ public class MenuFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
 
-        view.findViewById(R.id.main_menu_close).setOnClickListener(menuSelectListener);
-        view.findViewById(R.id.main_menu_mission).setOnClickListener(menuSelectListener);
-        view.findViewById(R.id.main_menu_developer).setOnClickListener(menuSelectListener);
-        view.findViewById(R.id.main_menu_simulator).setOnClickListener(menuSelectListener);
-        view.findViewById(R.id.main_menu_compass).setOnClickListener(menuSelectListener);
-        view.findViewById(R.id.main_menu_settings).setOnClickListener(menuSelectListener);
+        // All menu item IDs need to be listed here
+        int[] viewIds = {
+                R.id.main_menu_close,
+                R.id.main_menu_mission,
+                R.id.main_menu_developer,
+                R.id. main_menu_simulator,
+                R.id.main_menu_compass,
+                R.id.main_menu_grid,
+                R.id.main_menu_settings,
+        };
+
+        // Set listener for all menu items
+        for (int id : viewIds) {
+            view.findViewById(id).setOnClickListener(menuSelectListener);
+        }
 
         return view;
     }
