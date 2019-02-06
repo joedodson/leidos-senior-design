@@ -3,6 +3,7 @@ package com.leidossd.dronecontrollerapp;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,7 +16,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import dji.common.camera.SettingsDefinitions;
 import dji.common.camera.SettingsDefinitions.CameraMode;
@@ -29,19 +29,22 @@ import dji.sdk.camera.VideoFeeder;
 import dji.sdk.camera.VideoFeeder.VideoDataListener;
 import dji.sdk.codec.DJICodecManager;
 
+import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
+
 public class LiveVideoFragment extends Fragment implements
         SurfaceTextureListener, OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     private static final String TAG = MainActivity.class.getName();
-    protected VideoFeeder.VideoDataListener mReceivedVideoDataListener = null;
+    protected VideoFeeder.VideoDataListener videoDataListener = null;
 
-    protected DJICodecManager mCodecManager = null;
+    protected DJICodecManager codecManager = null;
+    private VideoFeeder.VideoFeed videoFeed;
 
-    protected TextureView mVideoSurface = null;
+    protected TextureView videoTextureView = null;
 
     private boolean recording;
     private static CameraMode currentCameraMode;
-    private static TextView recordingTime;
+    private TextView recordingTime;
     private ImageButton cameraCaptureButton;
 
     private Handler handler;
@@ -55,12 +58,12 @@ public class LiveVideoFragment extends Fragment implements
         currentCameraMode = CameraMode.SHOOT_PHOTO;
 
         // The callback for receiving the raw H264 video data for camera live view
-        mReceivedVideoDataListener = new VideoDataListener() {
+        videoDataListener = new VideoDataListener() {
 
             @Override
             public void onReceive(byte[] videoBuffer, int size) {
-                if (mCodecManager != null) {
-                    mCodecManager.sendDataToDecoder(videoBuffer, size);
+                if (codecManager != null) {
+                    codecManager.sendDataToDecoder(videoBuffer, size);
                 }
             }
         };
@@ -69,38 +72,37 @@ public class LiveVideoFragment extends Fragment implements
 
         if (camera != null) {
             Log.d(TAG, "Setting camera system state callback");
+
+            videoFeed = VideoFeeder.getInstance().getPrimaryVideoFeed();
+
             camera.setSystemStateCallback(new SystemState.Callback() {
                 @Override
-                public void onUpdate(SystemState cameraSystemState) {
-                    if (null != cameraSystemState) {
+                public void onUpdate(@NonNull SystemState cameraSystemState) {
+                    int recordTime = cameraSystemState.getCurrentVideoRecordingTimeInSeconds();
+                    int minutes = (recordTime % 3600) / 60;
+                    int seconds = recordTime % 60;
 
-                        int recordTime = cameraSystemState.getCurrentVideoRecordingTimeInSeconds();
-                        int minutes = (recordTime % 3600) / 60;
-                        int seconds = recordTime % 60;
+                    final String timeString = String.format("%02d:%02d", minutes, seconds);
+                    final boolean isVideoRecording = cameraSystemState.isRecording();
 
-                        final String timeString = String.format("%02d:%02d", minutes, seconds);
-                        final boolean isVideoRecording = cameraSystemState.isRecording();
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(new Runnable() {
 
+                            @Override
+                            public void run() {
 
-                        if(getActivity() != null) {
-                            getActivity().runOnUiThread(new Runnable() {
+                                recordingTime.setText(timeString);
 
-                                @Override
-                                public void run() {
-
-                                    recordingTime.setText(timeString);
-
-                                    /*
-                                     * Update recordingTime TextView visibility and mRecordBtn's check state
-                                     */
-                                    if (isVideoRecording) {
-                                        recordingTime.setVisibility(View.VISIBLE);
-                                    } else {
-                                        recordingTime.setVisibility(View.INVISIBLE);
-                                    }
+                                /*
+                                 * Update recordingTime TextView visibility and mRecordBtn's check state
+                                 */
+                                if (isVideoRecording) {
+                                    recordingTime.setVisibility(View.VISIBLE);
+                                } else {
+                                    recordingTime.setVisibility(View.INVISIBLE);
                                 }
-                            });
-                        }
+                            }
+                        });
                     }
                 }
             });
@@ -111,22 +113,22 @@ public class LiveVideoFragment extends Fragment implements
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_live_video, container, false);
 
-        // init mVideoSurface
-        mVideoSurface = (TextureView) view.findViewById(R.id.video_previewer_surface);
+        // init videoTextureView
+        videoTextureView = view.findViewById(R.id.video_previewer_surface);
 
-        if (null != mVideoSurface) {
-            mVideoSurface.setSurfaceTextureListener(this);
+        if (null != videoTextureView) {
+            videoTextureView.setSurfaceTextureListener(this);
         }
 
         // capture control components
         Switch captureModeSwitch = view.findViewById(R.id.switch_capture_mode);
         cameraCaptureButton= view.findViewById(R.id.btn_capture);
-        recordingTime = (TextView) view.findViewById(R.id.timer);
+        recordingTime = view.findViewById(R.id.timer);
 
         captureModeSwitch.setOnCheckedChangeListener(this);
         cameraCaptureButton.setOnClickListener(this);
@@ -146,11 +148,11 @@ public class LiveVideoFragment extends Fragment implements
         if (product == null || !product.isConnected()) {
             showToast(getString(R.string.activity_droneconnection_statusDisconnected));
         } else {
-            if (null != mVideoSurface) {
-                mVideoSurface.setSurfaceTextureListener(this);
+            if (null != videoTextureView) {
+                videoTextureView.setSurfaceTextureListener(this);
             }
             if (!product.getModel().equals(Model.UNKNOWN_AIRCRAFT)) {
-                VideoFeeder.getInstance().getPrimaryVideoFeed().addVideoDataListener(mReceivedVideoDataListener);
+                videoFeed.addVideoDataListener(videoDataListener);
             }
         }
     }
@@ -159,7 +161,9 @@ public class LiveVideoFragment extends Fragment implements
         Camera camera = MainApplication.getCameraInstance();
         if (camera != null){
             // Reset the callback
-            VideoFeeder.getInstance().getPrimaryVideoFeed().addVideoDataListener(null);
+            for(VideoDataListener v : videoFeed.getListeners()) {
+
+            }
         }
     }
 
@@ -292,8 +296,8 @@ public class LiveVideoFragment extends Fragment implements
         initPreviewer();
         onProductChange();
 
-        if(mVideoSurface == null) {
-            Log.e(TAG, "mVideoSurface is null");
+        if(videoTextureView == null) {
+            Log.e(TAG, "videoTextureView is null");
         }
     }
 
@@ -321,8 +325,8 @@ public class LiveVideoFragment extends Fragment implements
 
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         Log.e(TAG, "onSurfaceTextureAvailable");
-        if (mCodecManager == null) {
-            mCodecManager = new DJICodecManager(getActivity(), surface, width, height);
+        if (codecManager == null) {
+            codecManager = new DJICodecManager(getActivity(), surface, width, height);
         }
     }
 
@@ -334,9 +338,9 @@ public class LiveVideoFragment extends Fragment implements
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
         Log.e(TAG,"onSurfaceTextureDestroyed");
-        if (mCodecManager != null) {
-            mCodecManager.cleanSurface();
-            mCodecManager = null;
+        if (codecManager != null) {
+            codecManager.cleanSurface();
+            codecManager = null;
         }
 
         return false;
@@ -344,12 +348,4 @@ public class LiveVideoFragment extends Fragment implements
 
     @Override
     public void onSurfaceTextureUpdated(SurfaceTexture surface) { }
-
-    public void showToast(final String msg) {
-        getActivity().runOnUiThread(new Runnable() {
-            public void run() {
-                Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 }
