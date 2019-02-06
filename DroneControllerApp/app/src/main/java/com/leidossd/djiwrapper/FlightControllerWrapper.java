@@ -47,6 +47,14 @@ public class FlightControllerWrapper {
         coordinateFlightControl.goTo(destination);
     }
 
+    public void gotoXYZ(Coordinate destination){
+        coordinateFlightControl.goTo(destination);
+    }
+
+    public void setFlightMode(CoordinateFlightControl.FlightMode flightMode){
+        coordinateFlightControl.setFlightMode(flightMode);
+    }
+
     public Coordinate getPosition(){
         return coordinateFlightControl.getPosition();
     }

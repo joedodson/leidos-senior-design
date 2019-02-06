@@ -2,7 +2,7 @@ package com.leidossd.djiwrapper;
 
 
 public class DeadReckoningFlightControl implements CoordinateFlightControl {
-    private FlightMode flightMode;
+    private FlightMode flightMode = null;
     private boolean rotationLock;
     private Coordinate position;
     private Coordinate direction;
@@ -31,6 +31,8 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl {
             relativeGoTo(destination);
         else if(flightMode == FlightMode.ABSOLUTE)
             absoluteGoTo(destination);
+        else
+            throw new IllegalStateException("FlightMode not set!");
     }
 
     public void rotateTo(float theta){
