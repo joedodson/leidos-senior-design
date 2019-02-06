@@ -12,17 +12,18 @@ import com.leidossd.dronecontrollerapp.missions.Mission;
 
 public class MissionRunner {
 
-    private MissionRunnerService missionRunnerService;
-    private boolean missionRunnerServiceIsBound = false;
+    private static MissionRunnerService missionRunnerService;
+    private static boolean missionRunnerServiceIsBound = false;
 
 
     private static MissionRunner missionRunnerInstance;
 
     private static final String MISSION_BUNDLE_EXTRA_NAME = "MISSION_EXTRA";
 
-    /** Defines callbacks for service binding, passed to bindService() */
-    private ServiceConnection missionRunnerServiceConnection = new ServiceConnection() {
-
+    /**
+     * Defines callbacks for service binding, passed to bindService()
+     */
+    private static ServiceConnection missionRunnerServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
@@ -38,10 +39,13 @@ public class MissionRunner {
         }
     };
 
-    private MissionRunner() { }
+    private MissionRunner() {}
 
-    public static MissionRunner getInstance() {
-        if (missionRunnerInstance == null) {
+    public static MissionRunner getInstance(Context applicationContext) {
+        if (missionRunnerInstance == null || !missionRunnerServiceIsBound) {
+            Intent intent = new Intent(applicationContext, MissionRunnerService.class);
+
+            applicationContext.bindService(intent, missionRunnerServiceConnection, Context.BIND_AUTO_CREATE);
             missionRunnerInstance = new MissionRunner();
         }
 
