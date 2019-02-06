@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="@dimen/menu_constraintGuideline_begin" />
+        app:layout_constraintGuide_end="@dimen/menu_width" />
 
     <FrameLayout
         android:id="@+id/live_video_fragment_container"
@@ -24,6 +24,7 @@
         android:id="@+id/menu_fragment_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
