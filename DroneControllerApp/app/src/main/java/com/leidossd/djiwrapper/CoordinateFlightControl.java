@@ -2,7 +2,7 @@ package com.leidossd.djiwrapper;
 
 // Gives an interface to tell the drone where to go autonomously. GPS functionality can go through
 // this once implemented, and missions will work the same.
-interface CoordinateFlightControl {
+public interface CoordinateFlightControl {
 
     enum FlightMode {ABSOLUTE, RELATIVE};
 

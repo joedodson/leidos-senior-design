@@ -17,6 +17,8 @@ import dji.sdk.camera.Camera;
 import dji.sdk.products.Aircraft;
 import dji.sdk.sdkmanager.DJISDKManager;
 
+import com.leidossd.djiwrapper.CoordinateFlightControl;
+import com.leidossd.djiwrapper.FlightControllerWrapper;
 import com.leidossd.utils.DroneConnectionStatus;
 
 import static com.leidossd.utils.IntentAction.*;
@@ -85,6 +87,7 @@ public class MainApplication extends Application {
             public void onProductConnect(BaseProduct baseProduct) {
                 if (getDroneInstance() != null && getDroneInstance().isConnected()) {
                     droneConnected = true;
+                    FlightControllerWrapper.getInstance().setFlightMode(CoordinateFlightControl.FlightMode.ABSOLUTE);
                     broadcastConnectionChange(DRONE_CONNECTED);
                     Log.d(TAG, "Product Connected");
                 }

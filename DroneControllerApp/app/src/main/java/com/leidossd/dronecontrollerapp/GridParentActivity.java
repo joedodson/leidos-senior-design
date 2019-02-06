@@ -8,9 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.leidossd.djiwrapper.FlightControllerWrapper;
+import com.leidossd.djiwrapper.Coordinate;
+
 import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
-public class GridParentActivity extends AppCompatActivity implements GridFragment.fragmentInteractionListener {
+public class GridParentActivity extends AppCompatActivity implements GridFragment.GridInteractionListener {
 
     FragmentManager fragmentManager;
     GridFragment gridFragment;
@@ -53,7 +56,8 @@ public class GridParentActivity extends AppCompatActivity implements GridFragmen
         return super.onOptionsItemSelected(item);
     }
 
-    public void sendInput(String s) {
-        showToast("GridParent received: " + s);
+    public void sendInput(Coordinate coordinate) {
+        showToast("GridParent received: " + coordinate.toString());
+        FlightControllerWrapper.getInstance().gotoXYZ(coordinate);
     }
 }

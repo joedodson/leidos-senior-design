@@ -15,7 +15,7 @@ public class GridFragment extends Fragment {
     private GridInteractionListener gridInteractionListener;
     private OnClickListener gridSelectListener;
 
-    private static final double MOVEMENT_MULTI = 1.0;
+    private static final float MOVEMENT_MULTI = 1.0f;
 
     public GridFragment() { }
 
