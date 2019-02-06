@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.leidossd.dronecontrollerapp.MainApplication;
@@ -36,6 +35,8 @@ import dji.sdk.products.Aircraft;
 
 import static com.leidossd.utils.DroneConnectionStatus.DRONE_CONNECTED;
 import static com.leidossd.utils.IntentAction.CONNECTION_CHANGE;
+import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
+
 
 public class SimulatorActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -313,14 +314,6 @@ public class SimulatorActivity extends AppCompatActivity implements View.OnClick
                 new DjiSimulatorTaskCallback("Disable Virtual Sticks"));
         //flightController.getSimulator()
         //        .stop(new DjiSimulatorTaskCallback("Stop Simulator"));
-    }
-
-    public void showToast(final String msg) {
-        runOnUiThread(new Runnable() {
-            public void run() {
-                Toast.makeText(SimulatorActivity.this, msg, Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     class DjiSimulatorTaskCallback implements CommonCallbacks.CompletionCallback {

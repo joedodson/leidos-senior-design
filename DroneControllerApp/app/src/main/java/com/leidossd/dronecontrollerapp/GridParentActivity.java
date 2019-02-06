@@ -7,7 +7,8 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Toast;
+
+import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
 public class GridParentActivity extends AppCompatActivity implements GridFragment.fragmentInteractionListener {
 
@@ -54,9 +55,5 @@ public class GridParentActivity extends AppCompatActivity implements GridFragmen
 
     public void sendInput(String s) {
         showToast("GridParent received: " + s);
-    }
-
-    private void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }

@@ -18,7 +18,6 @@ import static com.leidossd.utils.MenuAction.OPEN_MISSIONS;
 import static com.leidossd.utils.MenuAction.OPEN_SETTINGS;
 import static com.leidossd.utils.MenuAction.OPEN_SIMULATOR;
 
-
 public class MenuFragment extends Fragment {
 
     private fragmentInteractionListener fragmentInteractionListener;

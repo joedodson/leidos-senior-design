@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LSD App</string>
+    <string name="app_name">SimpliFly</string>
 
     <!-- Splash Screen Progress Bar Text -->
     <string name="activity_splashscreen_progressBarText">Registering DJI SDK…</string>

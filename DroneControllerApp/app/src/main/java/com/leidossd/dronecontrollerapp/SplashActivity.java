@@ -6,11 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -22,12 +20,10 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import dji.sdk.sdkmanager.DJISDKManager;
 
@@ -36,6 +32,7 @@ import static com.leidossd.utils.IntentAction.REGISTRATION_RESULT;
 public class SplashActivity extends AppCompatActivity {
     private static final String TAG = SplashActivity.class.getName();
 
+    // TODO: determine which of these are necessary, taken from DJI example
     private static final String[] REQUIRED_PERMISSION_LIST = new String[]{
             Manifest.permission.VIBRATE,
             Manifest.permission.INTERNET,
@@ -54,8 +51,6 @@ public class SplashActivity extends AppCompatActivity {
     private List<String> missingPermissions = new ArrayList<>();
     private static final int PERMISSION_REQUEST_CODE = 12345;
 
-    private BroadcastReceiver registrationReceiver;
-
     private AtomicBoolean registrationSuccess;
     private AtomicBoolean permissionsGranted;
 
@@ -72,6 +67,7 @@ public class SplashActivity extends AppCompatActivity {
         // hides the status bar
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
 
+        // progress bar fills at fixed rate; progressMaxTimeMs is estimated time to complete registration
         progressBar = findViewById(R.id.progressBar);
         CountDownTimer progressBarTimer = new CountDownTimer(progressMaxTimeMs, progressUpdateIntervalMs) {
 
@@ -90,7 +86,8 @@ public class SplashActivity extends AppCompatActivity {
         registrationSuccess = new AtomicBoolean(false);
         permissionsGranted = new AtomicBoolean(false);
 
-        registrationReceiver = new BroadcastReceiver() {
+        // listens for broadcast that indicates DJI registration was compeleted
+        BroadcastReceiver registrationReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent registrationIntent) {
                 registrationSuccess.set(registrationIntent.getBooleanExtra(REGISTRATION_RESULT.getResultKey(), false));
@@ -122,14 +119,24 @@ public class SplashActivity extends AppCompatActivity {
     private void startAnimations() {
         TextView progressText = findViewById(R.id.progressBarText);
 
-        Animation textAnimation = new AlphaAnimation(0.0f, 1.0f);
-        textAnimation.setDuration(1000);
+        Animation alphaAnimation = new AlphaAnimation(0.0f, 1.0f);
+        alphaAnimation.setDuration(2000);
 
-        progressText.startAnimation(textAnimation);
+        progressBar.startAnimation(alphaAnimation);
+        progressText.startAnimation(alphaAnimation);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // check if sdk has already been registered on resume
+        registrationSuccess.set(DJISDKManager.getInstance().hasSDKRegistered());
+        startMainActivityConditionally();
     }
 
     /**
-     * Checks if there is any missing permissions, and
+     * Checks if there are any missing permissions, and
      * requests runtime permission if needed.
      */
     private void checkAndRequestPermissions() {
@@ -176,6 +183,7 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
+    // continue on to main screen if all requirements fulfilled
     public void startMainActivityConditionally() {
         if(registrationSuccess.get() && permissionsGranted.get()) {
             DJISDKManager.getInstance().startConnectionToProduct();
@@ -185,9 +193,5 @@ public class SplashActivity extends AppCompatActivity {
             Log.d(TAG, String.format("Couldn't start main activity, registrationSuccess: %s, permissionGranted: %s",
                     String.valueOf(registrationSuccess), String.valueOf(permissionsGranted)));
         }
-    }
-
-    private void showToast(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }
