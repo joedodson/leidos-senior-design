@@ -109,8 +109,9 @@ public class Coordinate {
         float d = y.getY();
         float det = a*d - b*c;
 
-        if(det < .1)
-            throw new IllegalArgumentException("x and y cannot form a basis if parallel!");
+        if(det < .01)
+            throw new IllegalArgumentException("x and y cannot form a basis if parallel!" +
+                    x + ", " + y);
 
         // this gives us rows of the inverse
         Coordinate row1 = new Coordinate(d, -b, 0).scale(1/det);
@@ -141,5 +142,10 @@ public class Coordinate {
 
         // Compare the data members and return accordingly
         return (Math.abs(this.x - c.x) < .01 && Math.abs(this.y - c.y) < .01 && Math.abs(this.z - c.z) < .01);
+    }
+
+    @Override
+    public String toString(){
+        return String.format("(%.3f,%.3f,%.3f)", x,y,z);
     }
 }

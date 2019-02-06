@@ -7,6 +7,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.leidossd.djiwrapper.FlightControllerWrapper;
 import com.leidossd.djiwrapper.Coordinate;
@@ -59,5 +60,17 @@ public class GridParentActivity extends AppCompatActivity implements GridFragmen
     public void sendInput(Coordinate coordinate) {
         showToast("GridParent received: " + coordinate.toString());
         FlightControllerWrapper.getInstance().gotoXYZ(coordinate);
+    }
+
+    public void takeOff(View view) {
+        FlightControllerWrapper.getInstance().startTakeoff(null);
+    }
+
+    public void land(View view) {
+        FlightControllerWrapper.getInstance().startLanding(null);
+    }
+
+    public void confirmLand(View view) {
+        FlightControllerWrapper.getInstance().confirmLanding(null);
     }
 }

@@ -66,7 +66,7 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl {
         // If rotations not locked, then rotate so that you're facing the right way, then do a
         // normal relative goTo.
         Coordinate movement = destination.add(position.scale(-1));
-        lowLevelFlightControl.move(movement.inBasis(direction, direction.perpendicularUnit()));
+        lowLevelFlightControl.move(movement.inBasis(direction.perpendicularUnit(), direction));
         position = destination;
     }
 
