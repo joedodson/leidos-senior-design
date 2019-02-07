@@ -27,7 +27,6 @@
     <uses-feature
         android:name="android.hardware.usb.accessory"
         android:required="true" />
-
     <!-- PermissionsHelper and features -->
     <application
         android:name=".BootstrapApplication"
@@ -80,8 +79,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".FlightTestActivity"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme" />
-        android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".simulator.SimulatorActivity"
             android:launchMode="singleTop"
@@ -97,11 +96,17 @@
             android:name=".GridParentActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name=".MissionServiceTestActivity"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme" />
 
-        <service
-            android:name=".missions.MissionRunnerService"
-            android:enabled="true"
-            android:exported="true"></service>
+        <activity
+            android:name=".MissionStatusActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme"/>
+
+        <service android:name=".missions.runner.MissionRunnerService" />
     </application>
-
 </manifest>

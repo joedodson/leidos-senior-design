@@ -1,14 +1,19 @@
 package com.leidossd.dronecontrollerapp;
 
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.IBinder;
 
 import com.leidossd.dronecontrollerapp.missions.runner.MissionRunner;
 import com.secneo.sdk.Helper;
+
+import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
 /**
  * Still not entirely sure why, but this is needed to handle runtime loading of classes in DJI Apps.
@@ -19,8 +24,6 @@ public class BootstrapApplication extends Application {
 
     private static MainApplication mainApplication;
     private static MissionRunner missionRunnerInstance = null;
-
-
 
     @Override
     protected void attachBaseContext(Context paramContext) {
@@ -48,6 +51,7 @@ public class BootstrapApplication extends Application {
         super.onCreate();
         mainApplication.onCreate();
 
+        createNotificationChannel();
         missionRunnerInstance = MissionRunner.getInstance(this);
     }
 
@@ -71,5 +75,21 @@ public class BootstrapApplication extends Application {
 
     public static MissionRunner getMissionRunnerInstance() {
         return missionRunnerInstance;
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.notification_channel_name);
+            String description = getString(R.string.notification_channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(getString(R.string.notification_channel_name), name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 }

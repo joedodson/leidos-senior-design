@@ -77,10 +77,6 @@ public class MainActivity extends AppCompatActivity implements
         gestureDetector = new GestureDetectorCompat(this, new GestureListener());
 
         configureActionBar();
-
-        missionRunner = BootstrapApplication.getMissionRunnerInstance();
-
-        missionRunner.startMission(this, new SpecificMission("Some Title"));
     }
 
 
@@ -122,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case OPEN_DEVELOPER:
                 // Start Brians Activity
-                startActivity(new Intent(this, FlightTestActivity.class));
+                startActivity(new Intent(this, MissionServiceTestActivity.class));
                 break;
             case OPEN_SIMULATOR:
                 startActivity(new Intent(this, SimulatorActivity.class));

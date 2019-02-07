@@ -3,6 +3,8 @@ package com.leidossd.dronecontrollerapp.missions;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.leidossd.dronecontrollerapp.MainApplication;
+
 public class SpecificMission extends Mission {
 
     public SpecificMission(String title){
@@ -15,16 +17,18 @@ public class SpecificMission extends Mission {
 
     @Override
     public void start() {
-
+        MainApplication.showToast("Starting");
+        status = "RUNNING";
     }
 
     @Override
     public void stop() {
-
+        MainApplication.showToast("Stopping");
+        status = "COMPLETED SUCCESSFULLY";
     }
 
     public void testing() {
-
+        MainApplication.showToast("Testing");
     }
 
     @Override
@@ -39,9 +43,8 @@ public class SpecificMission extends Mission {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringArray(new String[] {
-                this.title
-        });
+        dest.writeString(title);
+        dest.writeString(status);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
