@@ -107,6 +107,6 @@
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme"/>
 
-        <service android:name=".missions.runner.MissionRunnerService" />
+        <service android:name=".missions.MissionRunnerService" />
     </application>
 </manifest>

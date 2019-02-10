@@ -7,8 +7,15 @@ abstract public class Mission implements Parcelable {
     protected String title;
     protected String status;
 
+    protected MissionUpdateCallback missionUpdateCallback;
+
     Mission(String title) {
+        this(title, null);
+    }
+
+    Mission(String title, MissionUpdateCallback missionUpdateCallback) {
         this.title = title;
+        this.missionUpdateCallback = missionUpdateCallback;
     }
 
     Mission(Parcel in) {
@@ -16,13 +23,20 @@ abstract public class Mission implements Parcelable {
         status = in.readString();
     }
 
-    //abstract Mission(Parcel in);
-
     public String getTitle() {
         return title;
     }
     public String getStatus() { return status; }
 
-    abstract public void start();
-    abstract public void stop();
+    public interface MissionUpdateCallback {
+        void onMissionStart(String missionStartResult);
+        void onMissionFinish(String missionFinishResult);
+    }
+
+    public void setMissionUpdateCallback(MissionUpdateCallback missionUpdateCallback) {
+        this.missionUpdateCallback = missionUpdateCallback;
+    }
+
+    abstract protected void start();
+    abstract protected void stop();
 }

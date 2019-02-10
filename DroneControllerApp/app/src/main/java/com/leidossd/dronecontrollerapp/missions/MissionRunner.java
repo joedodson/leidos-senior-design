@@ -1,31 +1,24 @@
-package com.leidossd.dronecontrollerapp.missions.runner;
+package com.leidossd.dronecontrollerapp.missions;
 
-import android.app.IntentService;
-import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.SystemClock;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.widget.Toast;
 
-import com.leidossd.dronecontrollerapp.MainApplication;
 import com.leidossd.dronecontrollerapp.MissionStatusActivity;
 import com.leidossd.dronecontrollerapp.R;
-import com.leidossd.dronecontrollerapp.missions.Mission;
 
-import java.util.Calendar;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
 public class MissionRunner {
 
@@ -39,6 +32,41 @@ public class MissionRunner {
     private static Timer timer;
     private long missionStartTime = 0;
 
+    private class MissionRunnerUpdateCallback implements Mission.MissionUpdateCallback, Parcelable {
+        @Override
+        public void onMissionStart(String missionStartResult) {
+            Toast.makeText(missionRunnerService.getApplicationContext(), "mission started", Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onMissionFinish(String missionFinishResult) {
+            Toast.makeText(missionRunnerService.getApplicationContext(), "mission stopped", Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public int describeContents(){
+            return 0;
+        }
+
+        MissionRunnerUpdateCallback() {}
+
+        // Parcelable functionality
+        MissionRunnerUpdateCallback(Parcel in) {}
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) { }
+
+        public final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+            public MissionRunnerUpdateCallback createFromParcel(Parcel in) {
+                return new MissionRunnerUpdateCallback(in);
+            }
+
+            public MissionRunnerUpdateCallback[] newArray(int size) {
+                return new MissionRunnerUpdateCallback[size];
+            }
+        };
+    }
+
     private static final String MISSION_BUNDLE_EXTRA_NAME = "MISSION_EXTRA";
     /**
      * Defines callbacks for service binding, passed to bindService()
@@ -47,6 +75,7 @@ public class MissionRunner {
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
+
             // We've bound to LocalService, cast the IBinder and get LocalService instance
             MissionRunnerService.MissionRunnerBinder binder = (MissionRunnerService.MissionRunnerBinder) service;
             missionRunnerService = binder.getService();
@@ -79,6 +108,8 @@ public class MissionRunner {
 
     public void startMission(Context applicationContext, Mission mission) {
         Intent missionIntent = new Intent(applicationContext, MissionRunnerService.class);
+
+        mission.setMissionUpdateCallback(new MissionRunnerUpdateCallback());
         missionIntent.putExtra(MISSION_BUNDLE_EXTRA_NAME, mission);
 
         Intent notificationIntent = new Intent(applicationContext, MissionStatusActivity.class);
@@ -107,10 +138,16 @@ public class MissionRunner {
                     @Override
                     public void run() {
                         long runningTime = System.currentTimeMillis() - missionStartTime;
-                        String formattedRunningTime = String.format("%s running %d:%02d",
-                                mission.getTitle(),
-                                (runningTime / 1000) / 60,
-                                (int)((runningTime / 1000) % 60));
+                        Mission currentMission = missionRunnerService.getCurrentMission();
+                        String formattedRunningTime;
+                        if(currentMission != null) {
+                            formattedRunningTime = String.format("%s %s %d:%02d",
+                                    currentMission.getTitle(), currentMission.getStatus(),
+                                    (runningTime / 1000) / 60,
+                                    (int)((runningTime / 1000) % 60));
+                        } else {
+                            formattedRunningTime = "Mission starting, please wait";
+                        }
 
                         notificationManager.notify(notificationId, notificationBuilder
                                 .setContentText(formattedRunningTime).build());
@@ -118,7 +155,7 @@ public class MissionRunner {
                 });
             }
         };
-        timer.schedule(updateNotificationTask, 0, notificationUpdateIntervalMs);
+        timer.schedule(updateNotificationTask, 100, notificationUpdateIntervalMs);
 
         handler.postDelayed(new Runnable() {
             @Override
@@ -130,7 +167,7 @@ public class MissionRunner {
                     @Override
                     public void run() {
                         notificationManager.notify(notificationId,
-                                notificationBuilder.setContentText(mission.getTitle() + " completed").build());
+                                notificationBuilder.setContentText(String.format("%s %s", missionRunnerService.getCurrentMission().getTitle(), missionRunnerService.getCurrentMission().getStatus())).build());
                     }
                 }, 500);
             }

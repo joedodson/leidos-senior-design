@@ -1,24 +1,11 @@
 package com.leidossd.dronecontrollerapp;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
-import com.leidossd.dronecontrollerapp.missions.Mission;
 import com.leidossd.dronecontrollerapp.missions.SpecificMission;
-import com.leidossd.dronecontrollerapp.missions.runner.MissionRunner;
-
-import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
+import com.leidossd.dronecontrollerapp.missions.MissionRunner;
 
 public class MissionServiceTestActivity extends AppCompatActivity {
 

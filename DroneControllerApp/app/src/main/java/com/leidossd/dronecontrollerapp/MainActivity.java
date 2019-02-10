@@ -17,8 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 
-import com.leidossd.dronecontrollerapp.missions.runner.MissionRunner;
-import com.leidossd.dronecontrollerapp.missions.SpecificMission;
+import com.leidossd.dronecontrollerapp.missions.MissionRunner;
 import com.leidossd.dronecontrollerapp.simulator.SimulatorActivity;
 import com.leidossd.utils.MenuAction;
 

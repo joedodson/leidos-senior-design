@@ -3,17 +3,12 @@ package com.leidossd.dronecontrollerapp;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Build;
-import android.os.IBinder;
 
-import com.leidossd.dronecontrollerapp.missions.runner.MissionRunner;
+import com.leidossd.dronecontrollerapp.missions.MissionRunner;
 import com.secneo.sdk.Helper;
-
-import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
 /**
  * Still not entirely sure why, but this is needed to handle runtime loading of classes in DJI Apps.
