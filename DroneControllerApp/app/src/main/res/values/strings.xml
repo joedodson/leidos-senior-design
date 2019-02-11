@@ -5,6 +5,8 @@
     <string name="activity_splashscreen_progressBarText">Registering DJI SDK…</string>
 
     <!-- Drone Connection -->
+    <string name="fragment_choosetoconnect_main_text">Would you like to connect to the drone?</string>
+    <string name="fragment_chooseconnecttype_main_text">How would you like to connect to the drone?</string>
     <string name="activity_droneconnection_infoText">Please ensure drone is connected to the device via USB or WiFi</string>
     <string name="activity_droneconnection_buttonText">Connect</string>
     <string name="activity_droneconnection_statusLabel">Status: </string>

@@ -21,6 +21,8 @@ import android.view.animation.Animation;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.leidossd.dronecontrollerapp.droneconnection.ConnectionDecisionActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -94,7 +96,7 @@ public class SplashActivity extends AppCompatActivity {
                 if (registrationSuccess.get()) {
                     Log.i(TAG, "SDK Registration Success");
                     if (permissionsGranted.get()) {
-                        startMainActivityConditionally();
+                        startNextActivityConditionally();
                     } else {
                         Log.d(TAG, "Waiting for permissions");
                     }
@@ -132,7 +134,7 @@ public class SplashActivity extends AppCompatActivity {
 
         // check if sdk has already been registered on resume
         registrationSuccess.set(DJISDKManager.getInstance().hasSDKRegistered());
-        startMainActivityConditionally();
+        startNextActivityConditionally();
     }
 
     /**
@@ -149,7 +151,7 @@ public class SplashActivity extends AppCompatActivity {
         // Request for missing permissions
         if (missingPermissions.isEmpty()) {
             permissionsGranted.set(true);
-            startMainActivityConditionally();
+            startNextActivityConditionally();
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ActivityCompat.requestPermissions(this,
                     missingPermissions.toArray(new String[missingPermissions.size()]),
@@ -176,7 +178,7 @@ public class SplashActivity extends AppCompatActivity {
         // If no missing permissions, continue to MainActivity
         if(missingPermissions.isEmpty()) {
             permissionsGranted.set(true);
-            startMainActivityConditionally();
+            startNextActivityConditionally();
         } else {
             startActivity(new Intent(SplashActivity.this, SDKRegistrationErrorActivity.class));
             finish();
@@ -184,10 +186,10 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     // continue on to main screen if all requirements fulfilled
-    public void startMainActivityConditionally() {
+    public void startNextActivityConditionally() {
         if(registrationSuccess.get() && permissionsGranted.get()) {
             DJISDKManager.getInstance().startConnectionToProduct();
-            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            startActivity(new Intent(SplashActivity.this, ConnectionDecisionActivity.class));
             finish();
         } else {
             Log.d(TAG, String.format("Couldn't start main activity, registrationSuccess: %s, permissionGranted: %s",
