@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/mtype_one"
+        android:title="@string/mission_default">
+    </item>
+
+    <item
+        android:id="@+id/mtype_two"
+        android:title="@string/mission_waypoint">
+    </item>
+
+    <item
+        android:id="@+id/mtype_three"
+        android:title="@string/mission_custom">
+    </item>
+</menu>

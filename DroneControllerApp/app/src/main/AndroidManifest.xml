@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.leidossd.dronecontrollerapp">
-
     <!-- PermissionsHelper and features -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -27,7 +26,7 @@
     <uses-feature
         android:name="android.hardware.usb.accessory"
         android:required="true" />
-    <!-- PermissionsHelper and features -->
+
     <application
         android:name=".BootstrapApplication"
         android:allowBackup="true"
@@ -37,7 +36,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         tools:ignore="GoogleAppIndexingWarning">
-
+        <activity
+            android:name=".MissionActivity"
+            android:label="@string/title_activity_mission" />
         <!-- DJI SDK -->
         <uses-library android:name="com.android.future.usb.accessory" />
 
@@ -57,9 +58,7 @@
                 android:resource="@xml/accessory_filter" />
         </activity>
 
-        <service android:name="dji.sdk.sdkmanager.DJIGlobalService" />
-        <!-- DJI SDK -->
-
+        <service android:name="dji.sdk.sdkmanager.DJIGlobalService" /> <!-- DJI SDK -->
         <activity
             android:name=".SplashActivity"
             android:screenOrientation="sensorLandscape"
@@ -79,14 +78,13 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".FlightTestActivity"
-            android:theme="@style/AppTheme"/>
-            android:screenOrientation="sensorLandscape" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".simulator.SimulatorActivity"
             android:launchMode="singleTop"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="sensorLandscape"/>
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".CompassActivity"
             android:parentActivityName=".MainActivity"
@@ -95,7 +93,7 @@
         <activity
             android:name=".GridParentActivity"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="sensorLandscape"/>
+            android:screenOrientation="sensorLandscape" />
     </application>
 
 </manifest>

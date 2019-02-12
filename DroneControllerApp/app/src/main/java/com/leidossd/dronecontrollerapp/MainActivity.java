@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onMenuSelect(MenuAction action) {
         switch (action) {
             case OPEN_MISSIONS:
-                showToast("Missions");
+                startActivity(new Intent(this, MissionActivity.class));
                 break;
             case OPEN_DEVELOPER:
                 // Start Brians Activity
