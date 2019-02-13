@@ -21,7 +21,7 @@ import android.view.animation.Animation;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.leidossd.dronecontrollerapp.droneconnection.ConnectionDecisionActivity;
+import com.leidossd.dronecontrollerapp.droneconnection.ConnectWalkthroughActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -189,7 +189,7 @@ public class SplashActivity extends AppCompatActivity {
     public void startNextActivityConditionally() {
         if(registrationSuccess.get() && permissionsGranted.get()) {
             DJISDKManager.getInstance().startConnectionToProduct();
-            startActivity(new Intent(SplashActivity.this, ConnectionDecisionActivity.class));
+            startActivity(new Intent(SplashActivity.this, ConnectWalkthroughActivity.class));
             finish();
         } else {
             Log.d(TAG, String.format("Couldn't start main activity, registrationSuccess: %s, permissionGranted: %s",

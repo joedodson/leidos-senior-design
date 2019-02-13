@@ -80,8 +80,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".FlightTestActivity"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".simulator.SimulatorActivity"
             android:launchMode="singleTop"
@@ -98,9 +98,11 @@
             android:parentActivityName=".MainActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
-            android:name=".droneconnection.ConnectionDecisionActivity"
+            android:name=".droneconnection.ConnectWalkthroughActivity"
             android:screenOrientation="sensorLandscape"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".droneconnection.wired.WiredConnectActivity" />
+        <activity android:name=".droneconnection.wireless.WirelessConnectActivity"></activity>
     </application>
 
 </manifest>

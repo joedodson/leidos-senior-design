@@ -1,7 +1,5 @@
-package com.leidossd.dronecontrollerapp.droneconnection;
+package com.leidossd.dronecontrollerapp.droneconnection.wired;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,17 +8,14 @@ import android.view.ViewGroup;
 
 import com.leidossd.dronecontrollerapp.R;
 
-/**
- * User chooses to go through connection or skip to main screen.
- * Designed to be used in ViewPager.
- */
-public class ChooseToConnectFragment extends Fragment {
+public class WiredPage1Fragment extends Fragment {
+    // TODO: Rename parameter arguments, choose names that match
     private static final String ARG_PARAM1 = "param1";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
 
-    public ChooseToConnectFragment() {
+    public WiredPage1Fragment() {
         // Required empty public constructor
     }
 
@@ -29,10 +24,11 @@ public class ChooseToConnectFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @return A new instance of fragment ChooseToConnectFragment.
+     * @return A new instance of fragment WiredPage1Fragment.
      */
-    public static ChooseToConnectFragment newInstance(String param1) {
-        ChooseToConnectFragment fragment = new ChooseToConnectFragment();
+    // TODO: Rename and change types and number of parameters
+    public static WiredPage1Fragment newInstance(String param1) {
+        WiredPage1Fragment fragment = new WiredPage1Fragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         fragment.setArguments(args);
@@ -51,6 +47,6 @@ public class ChooseToConnectFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_choose_to_connect, container, false);
+        return inflater.inflate(R.layout.fragment_wired_page1, container, false);
     }
 }

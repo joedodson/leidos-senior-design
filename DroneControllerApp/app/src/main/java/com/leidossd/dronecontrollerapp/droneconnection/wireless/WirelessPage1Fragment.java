@@ -1,7 +1,5 @@
-package com.leidossd.dronecontrollerapp.droneconnection;
+package com.leidossd.dronecontrollerapp.droneconnection.wireless;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,17 +8,16 @@ import android.view.ViewGroup;
 
 import com.leidossd.dronecontrollerapp.R;
 
-/**
- * User chooses to go through connection or skip to main screen.
- * Designed to be used in ViewPager.
- */
-public class ChooseToConnectFragment extends Fragment {
+
+public class WirelessPage1Fragment extends Fragment {
+    // TODO: Rename parameter arguments, choose names that match
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
 
-    public ChooseToConnectFragment() {
+    public WirelessPage1Fragment() {
         // Required empty public constructor
     }
 
@@ -29,10 +26,11 @@ public class ChooseToConnectFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @return A new instance of fragment ChooseToConnectFragment.
+     * @return A new instance of fragment WirelessPage1Fragment.
      */
-    public static ChooseToConnectFragment newInstance(String param1) {
-        ChooseToConnectFragment fragment = new ChooseToConnectFragment();
+    // TODO: Rename and change types and number of parameters
+    public static WirelessPage1Fragment newInstance(String param1) {
+        WirelessPage1Fragment fragment = new WirelessPage1Fragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         fragment.setArguments(args);
@@ -51,6 +49,6 @@ public class ChooseToConnectFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_choose_to_connect, container, false);
+        return inflater.inflate(R.layout.fragment_wireless_page1, container, false);
     }
 }

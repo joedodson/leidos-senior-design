@@ -11,7 +11,8 @@ import android.view.ViewGroup;
 import com.leidossd.dronecontrollerapp.R;
 
 /**
- * Represents the connect or continue 'page' in ConnectionDecisionActivity ViewPager.
+ * User chooses wired or wireless connection type.
+ * Designed to be used in ViewPager.
  */
 public class ChooseConnectTypeFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
