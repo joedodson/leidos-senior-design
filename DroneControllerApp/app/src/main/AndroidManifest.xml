@@ -101,8 +101,14 @@
             android:name=".droneconnection.ConnectWalkthroughActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme" />
-        <activity android:name=".droneconnection.wired.WiredConnectActivity" />
-        <activity android:name=".droneconnection.wireless.WirelessConnectActivity"></activity>
+        <activity
+            android:name=".droneconnection.wired.WiredConnectActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".droneconnection.wireless.WirelessConnectActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

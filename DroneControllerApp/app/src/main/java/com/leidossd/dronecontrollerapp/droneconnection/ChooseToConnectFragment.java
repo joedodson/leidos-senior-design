@@ -1,7 +1,6 @@
 package com.leidossd.dronecontrollerapp.droneconnection;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,6 +15,9 @@ import com.leidossd.dronecontrollerapp.R;
  */
 public class ChooseToConnectFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
+
+    private View.OnClickListener clickListener;
+    private fragmentInteractionListener fragmentInteractionListener;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -45,12 +47,55 @@ public class ChooseToConnectFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
         }
+
+        clickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.btn_choose_connect_connect:
+                        fragmentInteractionListener.onConnectDecision(ConnectDecision.CONNECT);
+                        break;
+                    case R.id.btn_choose_connect_skip:
+                        fragmentInteractionListener.onConnectDecision(ConnectDecision.SKIP);
+                }
+            }
+        };
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_choose_to_connect, container, false);
+        View view = inflater.inflate(R.layout.fragment_choose_to_connect, container, false);
+
+        view.findViewById(R.id.btn_choose_connect_connect).setOnClickListener(clickListener);
+        view.findViewById(R.id.btn_choose_connect_skip).setOnClickListener(clickListener);
+
+        return view;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof ChooseToConnectFragment.fragmentInteractionListener) {
+            fragmentInteractionListener = (ChooseToConnectFragment.fragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement fragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        fragmentInteractionListener = null;
+    }
+
+    public interface fragmentInteractionListener {
+        void onConnectDecision(ConnectDecision action);
+    }
+
+    protected enum ConnectDecision {
+        CONNECT, SKIP
     }
 }

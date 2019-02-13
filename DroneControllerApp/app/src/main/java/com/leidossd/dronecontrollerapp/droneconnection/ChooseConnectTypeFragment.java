@@ -1,7 +1,6 @@
 package com.leidossd.dronecontrollerapp.droneconnection;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,6 +15,9 @@ import com.leidossd.dronecontrollerapp.R;
  */
 public class ChooseConnectTypeFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
+
+    private fragmentInteractionListener fragmentInteractionListener;
+    private View.OnClickListener clickListener;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -46,12 +48,56 @@ public class ChooseConnectTypeFragment extends Fragment {
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
         }
+
+        clickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.btn_connect_type_wired:
+                        fragmentInteractionListener.onConnectTypeDecision(ConnectType.WIRED);
+                        break;
+                    case R.id.btn_connect_type_wireless:
+                        fragmentInteractionListener.onConnectTypeDecision(ConnectType.WIRELESS);
+                        break;
+                }
+            }
+        };
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_choose_connect_type, container, false);
+        View view = inflater.inflate(R.layout.fragment_choose_connect_type, container, false);
+
+        view.findViewById(R.id.btn_connect_type_wired).setOnClickListener(clickListener);
+        view.findViewById(R.id.btn_connect_type_wireless).setOnClickListener(clickListener);
+
+        return view;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof ChooseConnectTypeFragment.fragmentInteractionListener) {
+            fragmentInteractionListener = (ChooseConnectTypeFragment.fragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement fragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        fragmentInteractionListener = null;
+    }
+
+    public interface fragmentInteractionListener {
+        void onConnectTypeDecision(ConnectType decision);
+    }
+
+    protected enum ConnectType {
+        WIRED, WIRELESS
     }
 }
