@@ -24,7 +24,7 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="5dp"
+        android:layout_margin="10dp"
         android:text="Connect" />
 
     <Button
@@ -32,7 +32,7 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="5dp"
+        android:layout_margin="10dp"
         android:text="Skip" />
 
 </LinearLayout>

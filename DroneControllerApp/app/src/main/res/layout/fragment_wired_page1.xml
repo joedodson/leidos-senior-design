@@ -24,7 +24,7 @@
         android:layout_height="202dp"
         android:layout_gravity="center"
         android:layout_weight="1"
-        android:src="@drawable/img_drone_unfolded" />
+        android:src="@drawable/img_drone_power_highlight" />
 
     <LinearLayout
         android:id="@+id/linearLayout"

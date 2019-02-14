@@ -10,39 +10,10 @@ import com.leidossd.dronecontrollerapp.R;
 
 
 public class WirelessPage1Fragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
+    public WirelessPage1Fragment() { }
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-
-    public WirelessPage1Fragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @return A new instance of fragment WirelessPage1Fragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static WirelessPage1Fragment newInstance(String param1) {
-        WirelessPage1Fragment fragment = new WirelessPage1Fragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-        }
+    public static WirelessPage1Fragment newInstance() {
+        return new WirelessPage1Fragment();
     }
 
     @Override

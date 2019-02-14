@@ -68,7 +68,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="4. After 10-15 seconds, drone should automatically connect"
+            android:text="4. Tap Test Connection. After 10-15 seconds, drone should automatically connect"
             android:textAlignment="center" />
     </LinearLayout>
 

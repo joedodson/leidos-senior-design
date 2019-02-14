@@ -103,10 +103,12 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".droneconnection.wired.WiredConnectActivity"
+            android:parentActivityName=".droneconnection.ConnectWalkthroughActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".droneconnection.wireless.WirelessConnectActivity"
+            android:parentActivityName=".droneconnection.ConnectWalkthroughActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
