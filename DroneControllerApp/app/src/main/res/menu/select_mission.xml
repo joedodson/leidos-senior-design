@@ -2,17 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/mtype_one"
+        android:id="@+id/mtype_default"
         android:title="@string/mission_default">
     </item>
 
     <item
-        android:id="@+id/mtype_two"
+        android:id="@+id/mtype_waypoint"
         android:title="@string/mission_waypoint">
     </item>
 
     <item
-        android:id="@+id/mtype_three"
+        android:id="@+id/mtype_custom"
         android:title="@string/mission_custom">
     </item>
 </menu>
