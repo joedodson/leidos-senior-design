@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -19,7 +18,7 @@ public class ConnectWalkthroughActivity
         ChooseConnectTypeFragment.fragmentInteractionListener {
 
     FragmentPagerAdapter fragmentPagerAdapter;
-    ViewPager viewPager;
+    CustomViewPager viewPager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,6 +28,7 @@ public class ConnectWalkthroughActivity
         viewPager = findViewById(R.id.view_pager_connect_walkthrough);
         fragmentPagerAdapter = new UserDecisionPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(fragmentPagerAdapter);
+        viewPager.setPagingEnabled(false);
     }
 
     @Override
@@ -80,14 +80,13 @@ public class ConnectWalkthroughActivity
     }
 
     public void onConnectTypeDecision(ChooseConnectTypeFragment.ConnectType connectType) {
-        if(connectType == ChooseConnectTypeFragment.ConnectType.WIRED) {
+        if (connectType == ChooseConnectTypeFragment.ConnectType.WIRED) {
             startActivity(new Intent(this, WiredConnectActivity.class));
             finish();
-        } else if(connectType == ChooseConnectTypeFragment.ConnectType.WIRELESS) {
+        } else if (connectType == ChooseConnectTypeFragment.ConnectType.WIRELESS) {
             startActivity(new Intent(this, WirelessConnectActivity.class));
             finish();
         }
     }
-
 }
 

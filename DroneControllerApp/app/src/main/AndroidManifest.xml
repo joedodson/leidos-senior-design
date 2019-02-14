@@ -63,7 +63,7 @@
 
         <activity
             android:name=".SplashActivity"
-            android:screenOrientation="sensorLandscape"
+            android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -99,16 +99,16 @@
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".droneconnection.ConnectWalkthroughActivity"
-            android:screenOrientation="sensorLandscape"
-            android:theme="@style/AppTheme" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".droneconnection.wired.WiredConnectActivity"
-            android:screenOrientation="sensorLandscape"
-            android:theme="@style/AppTheme" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".droneconnection.wireless.WirelessConnectActivity"
-            android:screenOrientation="sensorLandscape"
-            android:theme="@style/AppTheme" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

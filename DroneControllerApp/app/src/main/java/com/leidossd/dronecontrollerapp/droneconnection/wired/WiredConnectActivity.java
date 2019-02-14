@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.leidossd.dronecontrollerapp.MainApplication;
 import com.leidossd.dronecontrollerapp.R;
 
 public class WiredConnectActivity extends AppCompatActivity {
@@ -22,11 +23,9 @@ public class WiredConnectActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.view_pager_wired_connect);
         fragmentPagerAdapter = new WiredConnectPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(fragmentPagerAdapter);
-
-        findViewById(R.id.btn_wired_connect_prev).setEnabled(false);
-        if (WiredConnectPagerAdapter.NUM_ITEMS <= 1) {
-            findViewById(R.id.btn_wired_connect_next).setEnabled(false);
-        }
+        viewPager.setClipToPadding(false);
+        viewPager.setPadding(40, 20, 40, 20);
+        viewPager.setPageMargin(20);
     }
 
     @Override
@@ -38,31 +37,8 @@ public class WiredConnectActivity extends AppCompatActivity {
         }
     }
 
-    public void onNext(View view) {
-        int currentItem = viewPager.getCurrentItem();
-        if (currentItem < WiredConnectPagerAdapter.NUM_ITEMS-1) {
-            viewPager.setCurrentItem(++currentItem);
-
-            if (currentItem >= WiredConnectPagerAdapter.NUM_ITEMS-1) {
-                findViewById(R.id.btn_wired_connect_next).setEnabled(false);
-            }
-
-            findViewById(R.id.btn_wired_connect_prev).setEnabled(true);
-        }
-
-    }
-
-    public void onPrev(View view) {
-        int currentItem = viewPager.getCurrentItem();
-        if (currentItem > 0) {
-            viewPager.setCurrentItem(--currentItem);
-
-            if (currentItem == 0) {
-                findViewById(R.id.btn_wired_connect_prev).setEnabled(false);
-            }
-
-            findViewById(R.id.btn_wired_connect_next).setEnabled(true);
-        }
+    public void testConnection(View view) {
+        MainApplication.showToast("Testing Connection");
     }
 
     public static class WiredConnectPagerAdapter extends FragmentPagerAdapter {

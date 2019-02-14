@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:gravity="center"
     tools:context=".droneconnection.ChooseConnectTypeFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -12,38 +15,22 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/fragment_chooseconnecttype_main_text"
-        android:textSize="@dimen/text_size_large"
         android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.375" />
+        android:textSize="@dimen/text_size_large"
+        android:layout_marginBottom="20dp"/>
 
     <Button
         android:id="@+id/btn_connect_type_wired"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="@string/fragment_chooseconnecttype_wired"
-        style="@style/CustomWidget.Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.8" />
+        android:layout_margin="10dp"
+        android:text="@string/fragment_chooseconnecttype_wired" />
 
     <Button
         android:id="@+id/btn_connect_type_wireless"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="@string/fragment_chooseconnecttype_wireless"
-        style="@style/CustomWidget.Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.591" />
+        android:layout_margin="10dp"
+        android:text="@string/fragment_chooseconnecttype_wireless" />
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
