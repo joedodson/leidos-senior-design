@@ -88,7 +88,7 @@ public class GridFragment extends Fragment {
             gridInteractionListener = (GridInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement WaypointFragmentListener");
         }
     }
 

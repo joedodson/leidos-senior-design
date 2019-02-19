@@ -94,6 +94,8 @@
             android:name=".GridParentActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="sensorLandscape" />
+        <activity android:name=".ConfirmMissionActivity" />
+        <activity android:name=".CreateMissionActivity" />
     </application>
 
 </manifest>

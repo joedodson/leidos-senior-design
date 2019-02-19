@@ -8,10 +8,10 @@
     tools:context=".MissionActivity">
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayout"
+        android:id="@+id/constraintLayout2"
         android:layout_width="match_parent"
-        android:layout_height="53dp"
-        android:background="@color/primary_dark"
+        android:layout_height="49dp"
+        android:background="@color/primary"
         android:elevation="@dimen/menu_header_elevation"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp">
@@ -20,9 +20,15 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:text="Create a mission to start."
-            tools:layout_editor_absoluteX="169dp"
-            tools:layout_editor_absoluteY="13dp" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -44,9 +50,9 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/saved_missions"
         android:layout_width="match_parent"
-        android:layout_height="476dp"
+        android:layout_height="379dp"
         android:scrollbars="vertical"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout"
-        tools:layout_editor_absoluteX="56dp" />
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+        tools:layout_editor_absoluteX="0dp" />
 
 </android.support.constraint.ConstraintLayout>

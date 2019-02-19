@@ -27,6 +27,7 @@ public class MissionActivity extends AppCompatActivity {
     //Constants for inner classes
     private static final int DEFAULT_VH = 0;
     private static final int MISSION_VH = 1;
+    private static final int CONFIRM_MISSION = 1001;
     private static final int[] ATTRS = new int[]{android.R.attr.listDivider};
 
     private FloatingActionButton createMissionButton;
@@ -36,9 +37,7 @@ public class MissionActivity extends AppCompatActivity {
     private RecyclerView listView;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter adapter;
-    private ArrayList<String> savedMissions;
-    private ArrayList<String> missionType;
-    private ArrayList<String> command;
+    private ArrayList<MissionFrame> savedMissions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,23 +54,21 @@ public class MissionActivity extends AppCompatActivity {
         listView.addItemDecoration(new DividerItemDecoration(this));
 
         savedMissions = new ArrayList<>();
-        missionType = new ArrayList<>();
-        command = new ArrayList<>();
         for(int i = 0; i < 30; i++){
-            savedMissions.add("Default Mission " + i);
-            missionType.add("Waypoint Mission");
+            String command;
             //TODO: DEBUG CODE -- FIX WHEN DONE
             if(i == 0) {
-                command.add("Go West and do surveillance.");
+                command = "Go West and do surveillance.";
             } else if (i == 1){
-                command.add("Go North and do surveillance.");
+                command = "Go North and do surveillance.";
             } else if (i == 2){
-                command.add("Go South-East and do surveillance.");
+                command = "Go South-East and do surveillance.";
             } else {
-                command.add("Does Nothing.");
+                command = "Does Nothing.";
             }
+            savedMissions.add(new MissionFrame("Default Mission " + i, MissionAction.WAYPOINT_MISSION,true, command));
         }
-        adapter = new MissionAdapter(savedMissions, missionType, command);
+        adapter = new MissionAdapter(savedMissions);
         listView.setAdapter(adapter);
     }
 
@@ -105,15 +102,27 @@ public class MissionActivity extends AppCompatActivity {
         popupMenu.show();
     }
 
-    private class MissionAdapter extends RecyclerView.Adapter<MissionAdapter.ViewHolder> {
-        private ArrayList<String> savedMissions;
-        private ArrayList<String> missionType;
-        private ArrayList<String> command;
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (resultCode == AppCompatActivity.RESULT_CANCELED) {
+            Toast.makeText(MissionActivity.this, "Cancelled Request.", Toast.LENGTH_SHORT).show();
+        }
+        else if (resultCode == AppCompatActivity.RESULT_OK) {
+            Toast.makeText(MissionActivity.this, "Mission Started.", Toast.LENGTH_SHORT).show();
+        }
+    }
 
-        MissionAdapter(ArrayList<String> savedMissions, ArrayList<String> missionType, ArrayList<String>command) {
+    /**
+     * Mission Adapter Class.  Contains the logic for putting items in the saved missions list, by defining
+     * view holders, which are the containers for each item in the list, defining the text for each item in
+     * the list, and handling the logic when an item on the list is clicked on.
+     */
+    private class MissionAdapter extends RecyclerView.Adapter<MissionAdapter.ViewHolder> {
+        private ArrayList<MissionFrame> savedMissions;
+
+        MissionAdapter(ArrayList<MissionFrame> savedMissions) {
             this.savedMissions = savedMissions;
-            this.missionType = missionType;
-            this.command = command;
         }
 
         @NonNull
@@ -121,15 +130,15 @@ public class MissionActivity extends AppCompatActivity {
         public MissionAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
             View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.saved_mission_rows, viewGroup, false);
             ViewHolder vh;
-            if(i == DEFAULT_VH) {
+            if(i == DEFAULT_VH) {  //Hard-coded missions
                 vh = new DefaultHolder(v);
                 v.setOnClickListener(view -> {
                    // Toast.makeText(MissionActivity.this, "This is a default holder.", Toast.LENGTH_SHORT).show();
-                    Context c = v.getContext();
-                    Intent intent = new Intent(c, ConfirmMissionActivity.class);
-                    c.startActivity(intent);
+                    AppCompatActivity a = (AppCompatActivity)v.getContext();
+                    Intent intent = new Intent(a, ConfirmMissionActivity.class);
+                    a.startActivityForResult(intent, CONFIRM_MISSION);
                 });
-            } else if (i == MISSION_VH) {
+            } else if (i == MISSION_VH) {  //Saved missions
                 vh = new MissionHolder(v);
                 v.setOnClickListener(view -> {
                     TextView text = view.findViewById(R.id.title);
@@ -143,9 +152,9 @@ public class MissionActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull MissionAdapter.ViewHolder viewHolder, int i) {
-            viewHolder.mTitle.setText(savedMissions.get(i));
-            viewHolder.mType.setText(missionType.get(i));
-            viewHolder.description.setText(command.get(i));
+            viewHolder.mTitle.setText(savedMissions.get(i).getMissionName());
+            viewHolder.mType.setText(savedMissions.get(i).getMissionTypeString());
+            viewHolder.description.setText(savedMissions.get(i).getMissionDescription());
         }
 
         @Override
@@ -189,24 +198,17 @@ public class MissionActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Used to define the barriers between each item on the saved missions list.
+     */
     private class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
         private Drawable divider;
 
-        /**
-         * Default divider will be used
-         */
         public DividerItemDecoration(Context context) {
             final TypedArray styledAttributes = context.obtainStyledAttributes(ATTRS);
             divider = styledAttributes.getDrawable(0);
             styledAttributes.recycle();
-        }
-
-        /**
-         * Custom divider will be used
-         */
-        public DividerItemDecoration(Context context, int resId) {
-            divider = ContextCompat.getDrawable(context, resId);
         }
 
         @Override
@@ -226,6 +228,41 @@ public class MissionActivity extends AppCompatActivity {
                 divider.setBounds(left, top, right, bottom);
                 divider.draw(c);
             }
+        }
+    }
+
+    private class MissionFrame {
+        private final String missionName;
+        private final MissionAction missionType;
+        private final boolean isDefault;
+        private final String missionDescription;
+
+        public MissionFrame(String missionName, MissionAction missionType, boolean isDefault, String missionDescription){
+            this.missionName = missionName;
+            this.missionType = missionType;
+            this.isDefault = isDefault;
+            this.missionDescription = missionDescription;
+        }
+
+        public String getMissionName() {
+            return missionName;
+        }
+
+        public MissionAction getMissionType() {
+            return missionType;
+        }
+
+        public String getMissionTypeString() {
+            if(missionType == MissionAction.WAYPOINT_MISSION) return "Waypoint Mission.";
+            return "This mission does not have a type.";
+        }
+
+        public boolean getIsDefault() {
+            return isDefault;
+        }
+
+        public String getMissionDescription() {
+            return missionDescription;
         }
     }
 }
