@@ -43,58 +43,6 @@ public class WaypointFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        gridSelectListener = view -> {
-            int id = view.getId();
-            ImageButton gridButton = (ImageButton)view;
-            if(direction != null) {
-                changeView();
-            }
-            switch(id) {
-                case R.id.button_nw:
-                    gridButton.setImageResource(R.drawable.ic_arrow_nw_l);
-                    direction = Direction.NW;
-                    break;
-                case R.id.button_n:
-                    gridButton.setImageResource(R.drawable.ic_arrow_up_l);
-                    direction = Direction.N;
-                    break;
-                case R.id.button_ne:
-                    gridButton.setImageResource(R.drawable.ic_arrow_ne_l);
-                    direction = Direction.NE;
-                    break;
-                case R.id.button_w:
-                    gridButton.setImageResource(R.drawable.ic_arrow_left_l);
-                    direction = Direction.W;
-                    break;
-                case R.id.button_e:
-                    gridButton.setImageResource(R.drawable.ic_arrow_right_l);
-                    direction = Direction.E;
-                    break;
-                case R.id.button_sw:
-                    gridButton.setImageResource(R.drawable.ic_arrow_sw_l);
-                    direction = Direction.SW;
-                    break;
-                case R.id.button_s:
-                    gridButton.setImageResource(R.drawable.ic_arrow_down_l);
-                    direction = Direction.S;
-                    break;
-                case R.id.button_se:
-                    gridButton.setImageResource(R.drawable.ic_arrow_se_l);
-                    direction = Direction.SE;
-                    break;
-                default:
-                    return;
-            }
-            currentButton = gridButton;
-            if(!pressedOnce) {
-                title.setVisibility(View.VISIBLE);
-                description.setText("Here is some text that hopefully passes onto here somehow.");
-                droneImage.setVisibility(View.VISIBLE);
-                createButton.setVisibility(View.VISIBLE);
-                pressedOnce = true;
-            }
-        };
     }
 
     @Override
@@ -107,14 +55,68 @@ public class WaypointFragment extends Fragment {
                 R.id.button_w, R.id.button_e,
                 R.id.button_sw, R.id.button_s, R.id.button_se};
 
-        for (int i : buttons){
-            view.findViewById(i).setOnClickListener(gridSelectListener);
-        }
-
         title = view.findViewById(R.id.mission_name);
         description = view.findViewById(R.id.mission_description);
         droneImage = view.findViewById(R.id.drone_image);
         createButton = view.findViewById(R.id.button_create);
+
+        gridSelectListener = new View.OnClickListener() {
+            public void onClick(View view) {
+                int id = view.getId();
+                ImageButton gridButton = (ImageButton) view;
+                if (direction != null) {
+                    changeView();
+                }
+                switch (id) {
+                    case R.id.button_nw:
+                        gridButton.setImageResource(R.drawable.ic_arrow_nw_l);
+                        direction = Direction.NW;
+                        break;
+                    case R.id.button_n:
+                        gridButton.setImageResource(R.drawable.ic_arrow_up_l);
+                        direction = Direction.N;
+                        break;
+                    case R.id.button_ne:
+                        gridButton.setImageResource(R.drawable.ic_arrow_ne_l);
+                        direction = Direction.NE;
+                        break;
+                    case R.id.button_w:
+                        gridButton.setImageResource(R.drawable.ic_arrow_left_l);
+                        direction = Direction.W;
+                        break;
+                    case R.id.button_e:
+                        gridButton.setImageResource(R.drawable.ic_arrow_right_l);
+                        direction = Direction.E;
+                        break;
+                    case R.id.button_sw:
+                        gridButton.setImageResource(R.drawable.ic_arrow_sw_l);
+                        direction = Direction.SW;
+                        break;
+                    case R.id.button_s:
+                        gridButton.setImageResource(R.drawable.ic_arrow_down_l);
+                        direction = Direction.S;
+                        break;
+                    case R.id.button_se:
+                        gridButton.setImageResource(R.drawable.ic_arrow_se_l);
+                        direction = Direction.SE;
+                        break;
+                    default:
+                        return;
+                }
+                currentButton = gridButton;
+                if (!pressedOnce) {
+                    title.setVisibility(View.VISIBLE);
+                    description.setText("Here is some text that hopefully passes onto here somehow.");
+                    droneImage.setVisibility(View.VISIBLE);
+                    createButton.setVisibility(View.VISIBLE);
+                    pressedOnce = true;
+                }
+            }
+        };
+
+        for (int i : buttons){
+            view.findViewById(i).setOnClickListener(gridSelectListener);
+        }
 
         return view;
     }
