@@ -2,18 +2,24 @@ package com.leidossd.dronecontrollerapp;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.leidossd.djiwrapper.Coordinate;
+import com.leidossd.djiwrapper.FlightControllerWrapper;
 
 
 public class GridFragment extends Fragment {
     private GridInteractionListener gridInteractionListener;
     private OnClickListener gridSelectListener;
+    private FlightControllerWrapper flightControllerWrapper;
+
+    private TextView currentPosition;
 
     private static final float MOVEMENT_MULTI = 1.0f;
 
@@ -62,6 +68,8 @@ public class GridFragment extends Fragment {
                 gridInteractionListener.sendInput(coordinate);
             }
         };
+
+        scheduleTextUpdate();
     }
 
     @Override
@@ -77,7 +85,8 @@ public class GridFragment extends Fragment {
         for (int i : buttons){
             view.findViewById(i).setOnClickListener(gridSelectListener);
         }
-
+        currentPosition = view.findViewById(R.id.current_position);
+        flightControllerWrapper = FlightControllerWrapper.getInstance();
         return view;
     }
 
@@ -100,5 +109,20 @@ public class GridFragment extends Fragment {
 
     public interface GridInteractionListener {
         void sendInput(Coordinate coordinate);
+    }
+
+    private void scheduleTextUpdate() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(flightControllerWrapper != null) {
+                    currentPosition.setText("x: " + flightControllerWrapper.getPosition().getX() +
+                            ", y: " + flightControllerWrapper.getPosition().getY() +
+                            ", z: " + flightControllerWrapper.getPosition().getZ());
+                }
+                handler.postDelayed(this, 1000);
+            }
+        }, 1000);
     }
 }
