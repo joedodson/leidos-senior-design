@@ -32,8 +32,6 @@ public class MissionActivity extends AppCompatActivity {
 
     private FloatingActionButton createMissionButton;
 
-    private MissionAction action;
-
     private RecyclerView listView;
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter adapter;
@@ -78,6 +76,8 @@ public class MissionActivity extends AppCompatActivity {
 
         //TODO: Clean-up Toast call.
         popupMenu.setOnMenuItemClickListener(menuItem -> {
+            MissionAction action = null;
+
             switch(menuItem.getItemId()){
                 case (R.id.mtype_waypoint):
                     action = MissionAction.WAYPOINT_MISSION;
@@ -88,7 +88,6 @@ public class MissionActivity extends AppCompatActivity {
                     Toast.makeText(MissionActivity.this, "" + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
                     break;
                 default:
-                    action = null;
                     break;
             }
             if(action != null){

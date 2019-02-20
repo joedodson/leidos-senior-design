@@ -1,10 +1,7 @@
 package com.leidossd.dronecontrollerapp;
 
-import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,23 +12,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class WaypointFragment extends Fragment {
+import com.leidossd.djiwrapper.Mission;
+import com.leidossd.utils.Direction;
+import com.leidossd.utils.MissionAction;
 
-    private enum Direction {
-        NW, N, NE,
-        W, E,
-        SW, S, SE
-    };
+public class WaypointFragment extends Fragment {
 
     private Direction direction;
     private String directionMessage;
     private ImageButton currentButton;
 
-    private WaypointFragmentListener waypointFragmentListener;
+    private MissionCreateListener waypointFragmentListener;
     private View.OnClickListener gridSelectListener;
+    private View.OnClickListener createButtonListener;
 
     private TextView title;
     private TextView description;
+    private TextView textDir;
     private ImageView droneImage;
     private Button createButton;
 
@@ -43,22 +40,6 @@ public class WaypointFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_waypoint, container, false);
-
-        int[] buttons = {R.id.button_nw, R.id.button_n, R.id.button_ne,
-                R.id.button_w, R.id.button_e,
-                R.id.button_sw, R.id.button_s, R.id.button_se};
-
-        title = view.findViewById(R.id.mission_name);
-        description = view.findViewById(R.id.mission_description);
-        droneImage = view.findViewById(R.id.drone_image);
-        createButton = view.findViewById(R.id.button_create);
 
         gridSelectListener = new View.OnClickListener() {
             public void onClick(View view) {
@@ -104,38 +85,67 @@ public class WaypointFragment extends Fragment {
                         return;
                 }
                 currentButton = gridButton;
+                textDir.setText("Direction to go: " + direction.getDir());
                 if (!pressedOnce) {
                     title.setVisibility(View.VISIBLE);
-                    description.setText("Here is some text that hopefully passes onto here somehow.");
+                    description.setVisibility(View.VISIBLE);
+                    textDir.setVisibility(View.VISIBLE);
                     droneImage.setVisibility(View.VISIBLE);
                     createButton.setVisibility(View.VISIBLE);
+                    noPressed.setVisibility(View.INVISIBLE);
                     pressedOnce = true;
                 }
             }
         };
 
+        createButtonListener = new View.OnClickListener() {
+            public void onClick(View view) {
+                Mission mission = null;
+                waypointFragmentListener.createMission(mission);
+            }
+        };
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_waypoint, container, false);
+
+        int[] buttons = {R.id.button_nw, R.id.button_n, R.id.button_ne,
+                R.id.button_w, R.id.button_e,
+                R.id.button_sw, R.id.button_s, R.id.button_se};
+
         for (int i : buttons){
             view.findViewById(i).setOnClickListener(gridSelectListener);
         }
 
-        return view;
-    }
+        title = view.findViewById(R.id.mission_name);
+        description = view.findViewById(R.id.mission_description);
+        textDir = view.findViewById(R.id.mission_direction);
+        droneImage = view.findViewById(R.id.drone_image);
+        createButton = view.findViewById(R.id.button_create);
+        noPressed = view.findViewById(R.id.text_nopressed);
+        createButton.setOnClickListener(createButtonListener);
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (waypointFragmentListener != null) {
-            waypointFragmentListener.onFragmentInteraction(uri);
-        }
+        title.setVisibility(View.INVISIBLE);
+        description.setVisibility(View.INVISIBLE);
+        textDir.setVisibility(View.INVISIBLE);
+        droneImage.setVisibility(View.INVISIBLE);
+        createButton.setVisibility(View.INVISIBLE);
+        noPressed.setVisibility(View.VISIBLE);
+
+        return view;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof WaypointFragmentListener) {
-            waypointFragmentListener = (WaypointFragmentListener) context;
+        if (context instanceof MissionCreateListener) {
+            waypointFragmentListener = (MissionCreateListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement WaypointFragmentListener");
+                    + " must implement MissionCreateListener");
         }
     }
 
@@ -143,21 +153,6 @@ public class WaypointFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         waypointFragmentListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface WaypointFragmentListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 
     private void changeView() {
