@@ -72,11 +72,6 @@ public class CoordinateUnitTest {
     }
 
     @Test
-    public void angleBetweenCoordinate(){
-        assertEquals(new Coordinate(1,0,0).angleBetween(new Coordinate(0,1,0)), 90, .01);
-    }
-
-    @Test
     public void inBasis_simple(){
         assertEquals(new Coordinate(5,5,0).inBasis(new Coordinate(-1, 0, 0), new Coordinate(0,-1,0)), new Coordinate(-5,-5,0));
     }
