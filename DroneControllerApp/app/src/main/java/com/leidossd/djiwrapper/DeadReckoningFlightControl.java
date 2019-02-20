@@ -41,10 +41,15 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl {
 
         // Distinguish between absolute/relative
         if(flightMode == FlightMode.ABSOLUTE){
+            lowLevelFlightControl.rotate(direction.angleBetween(theta));
+            this.direction = this.direction.rotateByAngle(this.direction.angleBetween(theta));
 
         } else if(flightMode == FlightMode.RELATIVE){
-
+            lowLevelFlightControl.rotate(theta);
+            this.direction  = this.direction.rotateByAngle(theta);
         }
+        else
+            throw new IllegalStateException("FlightMode not set!");
     }
 
     public void relativeGoTo(Coordinate destination){

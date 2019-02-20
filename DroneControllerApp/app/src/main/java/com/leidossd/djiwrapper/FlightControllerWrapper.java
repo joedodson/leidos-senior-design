@@ -51,6 +51,10 @@ public class FlightControllerWrapper {
         coordinateFlightControl.goTo(destination);
     }
 
+    public void rotateTo(float angle){
+        coordinateFlightControl.rotateTo(angle);
+    }
+
     public void setFlightMode(CoordinateFlightControl.FlightMode flightMode){
         coordinateFlightControl.setFlightMode(flightMode);
     }
