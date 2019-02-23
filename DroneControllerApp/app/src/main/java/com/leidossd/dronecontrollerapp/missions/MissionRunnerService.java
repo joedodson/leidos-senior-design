@@ -5,13 +5,10 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
-import android.widget.Toast;
 
 import java.util.Random;
 
 public class MissionRunnerService extends IntentService {
-    private final static String TAG = MissionRunnerService.class.getName();
-
     private final MissionRunnerBinder missionRunnerBinder = new MissionRunnerBinder();
     private static final String MISSION_BUNDLE_EXTRA_NAME = "MISSION_EXTRA";
     public Mission mission;
@@ -30,15 +27,15 @@ public class MissionRunnerService extends IntentService {
         }
     }
 
+    // Needed to allow components to create persistent binding to service to access its methods
     @Override
     public IBinder onBind(Intent intent) {
         localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
         return missionRunnerBinder;
     }
 
+    // What actually gets called when service.startForeground() is called
     protected void onHandleIntent(Intent missionIntent) {
-        Toast.makeText(this, "Handling intent", Toast.LENGTH_LONG).show();
-
         mission = missionIntent.getParcelableExtra(MISSION_BUNDLE_EXTRA_NAME);
         mission.setMissionUpdateCallback(new Mission.MissionUpdateCallback() {
             @Override
@@ -48,7 +45,7 @@ public class MissionRunnerService extends IntentService {
 
             @Override
             public void onMissionFinish(String missionFinishResult) {
-                sendServiceStatusUpdate(ServiceStatusUpdate.MISSION_FINISH, "from service " + missionFinishResult);
+                sendServiceStatusUpdate(ServiceStatusUpdate.MISSION_FINISH, missionFinishResult);
             }
 
             @Override
@@ -57,7 +54,6 @@ public class MissionRunnerService extends IntentService {
             }
         });
 
-        Toast.makeText(this, "Starting mission: " + mission.title, Toast.LENGTH_LONG).show();
         mission.start();
     }
 
@@ -65,12 +61,14 @@ public class MissionRunnerService extends IntentService {
         return mission;
     }
 
+    // Sends a local broadcast whenever it gets something from a mission callback
     private void sendServiceStatusUpdate(ServiceStatusUpdate serviceStatusUpdate, String message) {
         Intent intent = new Intent(serviceStatusUpdate.action);
         intent.putExtra(ServiceStatusUpdate.getResultKey(), message);
         localBroadcastManager.sendBroadcast(intent);
     }
 
+    // Simple enum for readability with intents and intent parameters
     protected enum ServiceStatusUpdate {
         MISSION_START("Mission start"),
         MISSION_FINISH("Mission finish"),

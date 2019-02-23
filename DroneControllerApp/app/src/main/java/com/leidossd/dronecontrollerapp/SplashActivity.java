@@ -86,9 +86,6 @@ public class SplashActivity extends AppCompatActivity {
         registrationSuccess = new AtomicBoolean(false);
         permissionsGranted = new AtomicBoolean(false);
 
-        startActivity(new Intent(SplashActivity.this, MissionServiceTestActivity.class));
-        finish();
-
         // listens for broadcast that indicates DJI registration was compeleted
         BroadcastReceiver registrationReceiver = new BroadcastReceiver() {
             @Override

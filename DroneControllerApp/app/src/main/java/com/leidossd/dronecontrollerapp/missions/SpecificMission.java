@@ -4,8 +4,6 @@ import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.leidossd.dronecontrollerapp.MainApplication;
-
 public class SpecificMission extends Mission{
 
     public SpecificMission(String title){
@@ -34,14 +32,14 @@ public class SpecificMission extends Mission{
     protected void start() {
         currentState = MissionState.RUNNING;
         Handler handler = new Handler();
-        handler.postDelayed(() -> stop(), 5000);
+        handler.postDelayed(this::stop, 5000);
         missionUpdateCallback.onMissionStart(currentState.toString());
     }
 
     @Override
     protected void stop() {
         currentState = MissionState.COMPLETED;
-        missionUpdateCallback.onMissionFinish("from mission " + currentState.toString());
+        missionUpdateCallback.onMissionFinish(currentState.toString());
     }
 
     @Override
@@ -50,7 +48,7 @@ public class SpecificMission extends Mission{
     }
 
     // Parcelable functionality
-    public SpecificMission(Parcel in) {
+    private SpecificMission(Parcel in) {
         super(in);
     }
 

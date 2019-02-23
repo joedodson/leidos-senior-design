@@ -8,10 +8,9 @@ import com.leidossd.dronecontrollerapp.missions.Mission;
 import com.leidossd.dronecontrollerapp.missions.SpecificMission;
 import com.leidossd.dronecontrollerapp.missions.MissionRunner;
 
-public class MissionServiceTestActivity extends AppCompatActivity {
+public class MissionServiceExampleActivity extends AppCompatActivity {
 
     MissionRunner missionRunner;
-    MissionRunner missionRunner2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +18,6 @@ public class MissionServiceTestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mission_service_test);
 
         missionRunner = new MissionRunner(this);
-        missionRunner2 = new MissionRunner(this);
     }
 
     public void startService(View view) {
@@ -37,23 +35,6 @@ public class MissionServiceTestActivity extends AppCompatActivity {
             @Override
             public void onMissionError(String missionErrorMessage) {
                 MainApplication.showToast(missionErrorMessage);
-            }
-        }));
-
-        missionRunner2.startMission(this, new SpecificMission("NewSpecificMission", new Mission.MissionUpdateCallback() {
-            @Override
-            public void onMissionStart(String missionStartResult) {
-                MainApplication.showToast("m2 "+missionStartResult);
-            }
-
-            @Override
-            public void onMissionFinish(String missionFinishResult) {
-                MainApplication.showToast("m2 "+missionFinishResult);
-            }
-
-            @Override
-            public void onMissionError(String missionErrorMessage) {
-                MainApplication.showToast("m2 "+missionErrorMessage);
             }
         }));
     }

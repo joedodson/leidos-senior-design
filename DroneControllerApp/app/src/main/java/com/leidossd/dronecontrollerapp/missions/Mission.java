@@ -3,13 +3,11 @@ package com.leidossd.dronecontrollerapp.missions;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Map;
-
 abstract public class Mission implements Parcelable {
     protected String title;
-    protected MissionState currentState;
+    MissionState currentState;
 
-    protected MissionUpdateCallback missionUpdateCallback;
+    MissionUpdateCallback missionUpdateCallback;
 
     Mission(String title) {
         this(title, null);
@@ -37,11 +35,11 @@ abstract public class Mission implements Parcelable {
         void onMissionError(String missionErrorMessage);
     }
 
-    public void setMissionUpdateCallback(MissionUpdateCallback missionUpdateCallback) {
+    void setMissionUpdateCallback(MissionUpdateCallback missionUpdateCallback) {
         this.missionUpdateCallback = missionUpdateCallback;
     }
 
-    public MissionUpdateCallback getMissionUpdateCallback() {
+    MissionUpdateCallback getMissionUpdateCallback() {
         return missionUpdateCallback;
     }
 

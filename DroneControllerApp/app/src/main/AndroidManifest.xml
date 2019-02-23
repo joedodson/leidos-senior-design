@@ -97,7 +97,7 @@
             android:parentActivityName=".MainActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
-            android:name=".MissionServiceTestActivity"
+            android:name=".MissionServiceExampleActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme" />
