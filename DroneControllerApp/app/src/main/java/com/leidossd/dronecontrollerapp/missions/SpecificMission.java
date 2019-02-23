@@ -6,14 +6,24 @@ import android.os.Parcelable;
 
 import com.leidossd.dronecontrollerapp.MainApplication;
 
-public class SpecificMission extends Mission {
+public class SpecificMission extends Mission{
 
     public SpecificMission(String title){
-        super(title, null);
+        super(title, new MissionUpdateCallback() {
+            @Override
+            public void onMissionStart(String missionStartResult) { }
+
+            @Override
+            public void onMissionFinish(String missionFinishResult) { }
+
+            @Override
+            public void onMissionError(String missionErrorMessage) { }
+        });
     }
 
     public SpecificMission(String title, MissionUpdateCallback missionUpdateCallback) {
         super(title, missionUpdateCallback);
+        this.missionUpdateCallback = missionUpdateCallback;
     }
 
     public String getTitle() {
@@ -22,27 +32,16 @@ public class SpecificMission extends Mission {
 
     @Override
     protected void start() {
-        MainApplication.showToast("Starting");
-        status = "RUNNING";
+        currentState = MissionState.RUNNING;
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                stop();
-            }
-        }, 5000);
-        missionUpdateCallback.onMissionStart(status);
+        handler.postDelayed(() -> stop(), 5000);
+        missionUpdateCallback.onMissionStart(currentState.toString());
     }
 
     @Override
     protected void stop() {
-        MainApplication.showToast("Stopping");
-        status = "COMPLETED SUCCESSFULLY";
-        missionUpdateCallback.onMissionFinish(status);
-    }
-
-    public void testing() {
-        MainApplication.showToast("Testing");
+        currentState = MissionState.COMPLETED;
+        missionUpdateCallback.onMissionFinish("from mission " + currentState.toString());
     }
 
     @Override
@@ -58,7 +57,7 @@ public class SpecificMission extends Mission {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
-        dest.writeString(status);
+        dest.writeString(currentState.toString());
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

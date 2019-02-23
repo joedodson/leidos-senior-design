@@ -18,7 +18,6 @@ import com.secneo.sdk.Helper;
 public class BootstrapApplication extends Application {
 
     private static MainApplication mainApplication;
-    private static MissionRunner missionRunnerInstance = null;
 
     @Override
     protected void attachBaseContext(Context paramContext) {
@@ -47,7 +46,6 @@ public class BootstrapApplication extends Application {
         mainApplication.onCreate();
 
         createNotificationChannel();
-        missionRunnerInstance = MissionRunner.getInstance(this);
     }
 
     @Override
@@ -66,10 +64,6 @@ public class BootstrapApplication extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-    }
-
-    public static MissionRunner getMissionRunnerInstance() {
-        return missionRunnerInstance;
     }
 
     private void createNotificationChannel() {
