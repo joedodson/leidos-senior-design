@@ -1,16 +1,16 @@
 package com.leidossd.dronecontrollerapp.droneconnection.wired;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
-import com.leidossd.dronecontrollerapp.MainApplication;
 import com.leidossd.dronecontrollerapp.R;
 import com.leidossd.dronecontrollerapp.droneconnection.ConnectWalkthroughActivity;
 
@@ -18,6 +18,9 @@ public class WiredConnectActivity extends AppCompatActivity {
     FragmentPagerAdapter fragmentPagerAdapter;
     ViewPager viewPager;
     TextView currentPageTextView;
+    Button testConnectButton;
+
+    LocalBroadcastManager localBroadcastManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,29 @@ public class WiredConnectActivity extends AppCompatActivity {
                 currentPageTextView.setText(fragmentPagerAdapter.getPageTitle(viewPager.getCurrentItem()));
             }
         });
+
+//        testConnectButton = findViewById(R.id.btn_frag_wired_test_connect);
+
+//        localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
+//
+//        BroadcastReceiver connectionChangeReceiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent connectionChangeIntent) {
+//                String droneStatus = connectionChangeIntent.getStringExtra(CONNECTION_CHANGE.getResultKey());
+//                testConnectButton.setText("Connect Success - Continue");
+//                testConnectButton.setEnabled(true);
+//                testConnectButton.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+//                        finish();
+//                    }
+//                });
+//
+//                MainApplication.showToast("Got broadcast");
+//            }
+//        };
+//        LocalBroadcastManager.getInstance(this).registerReceiver(connectionChangeReceiver, new IntentFilter(CONNECTION_CHANGE.getActionString()));
     }
 
     @Override
@@ -60,9 +86,29 @@ public class WiredConnectActivity extends AppCompatActivity {
         }
     }
 
-    public void testConnection(View view) {
-        MainApplication.showToast("Testing Connection");
-    }
+//    public void testConnection(View view) {
+//        DJISDKManager.getInstance().startConnectionToProduct();
+//        testConnectButton.setText("Connecting...");
+//        testConnectButton.setEnabled(false);
+//
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                broadcastConnectionChange(DroneConnectionStatus.DRONE_CONNECTED);
+//            }
+//        }, 5000);
+//
+//
+//        MainApplication.showToast("Testing Connection");
+//    }
+//
+//    private void broadcastConnectionChange(DroneConnectionStatus droneStatus) {
+//        Intent connectionChangeIntent = new Intent(CONNECTION_CHANGE.getActionString());
+//        connectionChangeIntent.putExtra(CONNECTION_CHANGE.getResultKey(), droneStatus.toString());
+//
+//        localBroadcastManager.sendBroadcast(connectionChangeIntent);
+//    }
 
     public static class WiredConnectPagerAdapter extends FragmentPagerAdapter {
         private static int NUM_ITEMS = 2;
