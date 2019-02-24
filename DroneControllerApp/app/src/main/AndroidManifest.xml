@@ -98,6 +98,15 @@
             android:parentActivityName=".MainActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
+            android:name=".MissionServiceExampleActivity"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".MissionStatusActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme"/>
+        <activity
             android:name=".droneconnection.ConnectWalkthroughActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -111,6 +120,7 @@
             android:parentActivityName=".droneconnection.ConnectWalkthroughActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-    </application>
 
+        <service android:name=".missions.MissionRunnerService" />
+    </application>
 </manifest>

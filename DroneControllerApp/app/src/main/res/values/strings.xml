@@ -8,6 +8,11 @@
     <!-- Splash Screen Progress Bar Text -->
     <string name="activity_splashscreen_progressBarText">Registering DJI SDK…</string>
 
+    <!-- Notification Strings -->
+    <string name="notification_channel_name">SimpliFly Channel</string>
+    <string name="notification_channel_description">Notications for Mission Updates</string>
+
+
     <!-- Drone Connection -->
     <string name="fragment_choosetoconnect_main_text">Would you like to connect to a drone or skip for now?</string>
     <string name="fragment_chooseconnecttype_main_text">How would you like to connect to the drone?</string>
