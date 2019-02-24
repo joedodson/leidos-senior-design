@@ -26,6 +26,9 @@ public class WirelessPage2Fragment extends Fragment {
     private Handler handler;
     private Button testConnectButton;
 
+    LocalBroadcastManager localBroadcastManager;
+    BroadcastReceiver connectionChangeReceiver;
+
     public WirelessPage2Fragment() { }
 
     public static WirelessPage2Fragment newInstance() {
@@ -41,9 +44,9 @@ public class WirelessPage2Fragment extends Fragment {
         handler = new Handler();
 
         if(getActivity() != null) {
-            LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getActivity().getApplicationContext());
+            localBroadcastManager = LocalBroadcastManager.getInstance(getActivity().getApplicationContext());
 
-            BroadcastReceiver connectionChangeReceiver = new BroadcastReceiver() {
+            connectionChangeReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent connectionChangeIntent) {
                     handler.removeCallbacksAndMessages(null);
@@ -75,5 +78,12 @@ public class WirelessPage2Fragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        handler.removeCallbacksAndMessages(null);
+        localBroadcastManager.unregisterReceiver(connectionChangeReceiver);
+        super.onDestroy();
     }
 }

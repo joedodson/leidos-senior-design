@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
@@ -28,6 +29,8 @@ public class WiredPage2Fragment extends Fragment {
 
     LocalBroadcastManager localBroadcastManager;
 
+    BroadcastReceiver connectionChangeReceiver;
+
     public WiredPage2Fragment() { }
 
     public static WiredPage2Fragment newInstance(String param1) {
@@ -35,7 +38,7 @@ public class WiredPage2Fragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_wired_page2, container, false);
@@ -45,7 +48,7 @@ public class WiredPage2Fragment extends Fragment {
         if(getActivity() != null) {
             localBroadcastManager = LocalBroadcastManager.getInstance(getActivity().getApplicationContext());
 
-            BroadcastReceiver connectionChangeReceiver = new BroadcastReceiver() {
+            connectionChangeReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent connectionChangeIntent) {
                     handler.removeCallbacksAndMessages(null);
@@ -62,6 +65,7 @@ public class WiredPage2Fragment extends Fragment {
                     }
                 }
             };
+
             LocalBroadcastManager.getInstance(getActivity()).registerReceiver(connectionChangeReceiver, new IntentFilter(CONNECTION_CHANGE.getActionString()));
         }
 
@@ -78,5 +82,12 @@ public class WiredPage2Fragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        handler.removeCallbacksAndMessages(null);
+        localBroadcastManager.unregisterReceiver(connectionChangeReceiver);
+        super.onDestroy();
     }
 }

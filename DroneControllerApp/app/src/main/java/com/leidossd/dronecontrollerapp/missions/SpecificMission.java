@@ -22,6 +22,7 @@ public class SpecificMission extends Mission{
     public SpecificMission(String title, MissionUpdateCallback missionUpdateCallback) {
         super(title, missionUpdateCallback);
         this.missionUpdateCallback = missionUpdateCallback;
+        this.currentState = MissionState.READY;
     }
 
     public String getTitle() {
