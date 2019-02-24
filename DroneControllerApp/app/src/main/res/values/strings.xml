@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">SimpliFly</string>
 
+    <!-- Common -->
+    <string name="button_next">Next</string>
+    <string name="button_previous">Previous</string>
+
     <!-- Splash Screen Progress Bar Text -->
     <string name="activity_splashscreen_progressBarText">Registering DJI SDK…</string>
 
@@ -10,14 +14,22 @@
 
 
     <!-- Drone Connection -->
+    <string name="fragment_choosetoconnect_main_text">Would you like to connect to a drone or skip for now?</string>
+    <string name="fragment_chooseconnecttype_main_text">How would you like to connect to the drone?</string>
+    <string name="fragment_chooseconnecttype_wired">Wired</string>
+    <string name="fragment_chooseconnecttype_wireless">Wireless</string>
+    <string name="activity_wired_connect_title">Wired Connection Walkthrough</string>
+    <string name="activity_wireless_connect_title">Wireless Connection Walkthrough</string>
+    <string name="drone_connection_default_subtitle">Step 1</string>
     <string name="activity_droneconnection_infoText">Please ensure drone is connected to the device via USB or WiFi</string>
     <string name="activity_droneconnection_buttonText">Connect</string>
     <string name="activity_droneconnection_statusLabel">Status: </string>
     <string name="activity_droneconnection_statusDisconnected">Disconnected</string>
     <string name="activity_droneconnection_statusConnected">Connected</string>
     <string name="activity_droneconnection_statusChanged">Component Changed</string>
-    <string name="activity_droneconnection_connecting">Connecting</string>
-    <string name="activity_droneconnection_connectError">Failed to Connect</string>
+    <string name="activity_droneconnection_connecting">Connecting…</string>
+    <string name="activity_droneconnection_connectSuccess">Connection Success - Continue</string>
+    <string name="activity_droneconnection_connectError">Failed to Connect - Retry</string>
 
     <!-- Error Strings -->
     <string name="activity_sdkregistrationerror_text">DJI SDK Registration Failed</string>
