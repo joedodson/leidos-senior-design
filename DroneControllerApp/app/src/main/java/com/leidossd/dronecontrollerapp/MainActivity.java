@@ -29,6 +29,8 @@ import static com.leidossd.utils.DroneConnectionStatus.DRONE_DISCONNECTED;
 import static com.leidossd.utils.IntentAction.CONNECTION_CHANGE;
 import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
+import com.leidossd.dronecontrollerapp.compass.CompassCalibrationActivity;
+
 public class MainActivity extends AppCompatActivity implements
         MenuFragment.fragmentInteractionListener {
 
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements
                 DJISDKManager.getInstance().startConnectionToProduct();
                 break;
             case R.id.action_bar_compass:
+                startActivity(new Intent(this, CompassCalibrationActivity.class));
                 showToast("Compass");
                 // show compass stuff
                 break;

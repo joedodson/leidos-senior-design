@@ -105,6 +105,10 @@ public class FlightControllerWrapper {
         flightController.confirmLanding(callback);
     }
 
+    public boolean compassHasError(){
+        return flightController.getCompass().hasError();
+    }
+
     public void getCompassCalibrationState(@Nullable CommonCallbacks.CompletionCallback callback){
         flightController.getCompass().getCalibrationState();
     }
