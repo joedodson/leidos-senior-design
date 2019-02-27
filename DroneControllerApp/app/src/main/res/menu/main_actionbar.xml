@@ -8,6 +8,12 @@
         app:showAsAction="always|withText" />
 
     <item
+        android:id="@+id/action_bar_compass"
+        android:title=""
+        android:icon="@drawable/ic_compass_white"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/action_bar_gps"
         android:icon="@drawable/ic_satellite_white"
         android:title=""

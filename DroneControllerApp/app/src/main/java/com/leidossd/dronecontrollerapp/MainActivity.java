@@ -90,6 +90,10 @@ public class MainActivity extends AppCompatActivity implements
                 showToast("Status");
                 DJISDKManager.getInstance().startConnectionToProduct();
                 break;
+            case R.id.action_bar_compass:
+                showToast("Compass");
+                // show compass stuff
+                break;
             case R.id.action_bar_gps:
                 showToast("GPS");
                 break;
