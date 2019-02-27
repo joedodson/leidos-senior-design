@@ -18,6 +18,7 @@ public class WirelessConnectActivity extends AppCompatActivity {
     FragmentPagerAdapter fragmentPagerAdapter;
     ViewPager viewPager;
     TextView currentPageTextView;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

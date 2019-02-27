@@ -18,9 +18,6 @@ public class WiredConnectActivity extends AppCompatActivity {
     FragmentPagerAdapter fragmentPagerAdapter;
     ViewPager viewPager;
     TextView currentPageTextView;
-    Button testConnectButton;
-
-    LocalBroadcastManager localBroadcastManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,29 +48,6 @@ public class WiredConnectActivity extends AppCompatActivity {
                 currentPageTextView.setText(fragmentPagerAdapter.getPageTitle(viewPager.getCurrentItem()));
             }
         });
-
-//        testConnectButton = findViewById(R.id.btn_frag_wired_test_connect);
-
-//        localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
-//
-//        BroadcastReceiver connectionChangeReceiver = new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent connectionChangeIntent) {
-//                String droneStatus = connectionChangeIntent.getStringExtra(CONNECTION_CHANGE.getResultKey());
-//                testConnectButton.setText("Connect Success - Continue");
-//                testConnectButton.setEnabled(true);
-//                testConnectButton.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-//                        finish();
-//                    }
-//                });
-//
-//                MainApplication.showToast("Got broadcast");
-//            }
-//        };
-//        LocalBroadcastManager.getInstance(this).registerReceiver(connectionChangeReceiver, new IntentFilter(CONNECTION_CHANGE.getActionString()));
     }
 
     @Override
@@ -85,30 +59,6 @@ public class WiredConnectActivity extends AppCompatActivity {
             viewPager.setCurrentItem(viewPager.getCurrentItem() - 1); // go to prev slide
         }
     }
-
-//    public void testConnection(View view) {
-//        DJISDKManager.getInstance().startConnectionToProduct();
-//        testConnectButton.setText("Connecting...");
-//        testConnectButton.setEnabled(false);
-//
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                broadcastConnectionChange(DroneConnectionStatus.DRONE_CONNECTED);
-//            }
-//        }, 5000);
-//
-//
-//        MainApplication.showToast("Testing Connection");
-//    }
-//
-//    private void broadcastConnectionChange(DroneConnectionStatus droneStatus) {
-//        Intent connectionChangeIntent = new Intent(CONNECTION_CHANGE.getActionString());
-//        connectionChangeIntent.putExtra(CONNECTION_CHANGE.getResultKey(), droneStatus.toString());
-//
-//        localBroadcastManager.sendBroadcast(connectionChangeIntent);
-//    }
 
     public static class WiredConnectPagerAdapter extends FragmentPagerAdapter {
         private static int NUM_ITEMS = 2;
