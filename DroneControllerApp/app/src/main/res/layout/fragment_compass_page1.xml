@@ -5,19 +5,9 @@ xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:gravity="center"
-
 android:orientation="horizontal"
 android:background="@color/primary"
 tools:context=".compass.CompassPage1Fragment">
-
-<!--<TextView-->
-    <!--android:id="@+id/tv_wireless_frag_p1"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="center"-->
-    <!--android:layout_weight=".1"-->
-    <!--android:text="Set up Drone"-->
-    <!--android:textSize="@dimen/text_size_medium" />-->
 
 <ImageView
     android:id="@+id/imageView"
@@ -32,12 +22,10 @@ tools:context=".compass.CompassPage1Fragment">
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight=".85"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:textAlignment="center">
+        android:orientation="vertical">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
@@ -48,7 +36,7 @@ tools:context=".compass.CompassPage1Fragment">
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
             android:paddingBottom="10dp"

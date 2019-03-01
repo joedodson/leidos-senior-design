@@ -1,7 +1,5 @@
 package com.leidossd.dronecontrollerapp.compass;
 
-
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -20,23 +18,25 @@ import com.leidossd.djiwrapper.FlightControllerWrapper;
 import com.leidossd.dronecontrollerapp.MainActivity;
 import com.leidossd.dronecontrollerapp.R;
 
+import dji.sdk.sdkmanager.DJISDKManager;
 
-public class CompassPage2Fragment extends Fragment {
+
+public class CompassStartPageFragment extends Fragment {
 
     Button testConnectButton;
 
-    public CompassPage2Fragment() {
+    public CompassStartPageFragment() {
     }
 
-    public static CompassPage2Fragment newInstance(String param1) {
-        return new CompassPage2Fragment();
+    public static CompassStartPageFragment newInstance(String param1) {
+        return new CompassStartPageFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_compass_page2, container, false);
+        View view = inflater.inflate(R.layout.fragment_compass_startpage, container, false);
 
         //handler = new Handler();
 

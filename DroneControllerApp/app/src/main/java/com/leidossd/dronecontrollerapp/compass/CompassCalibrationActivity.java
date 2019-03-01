@@ -55,16 +55,15 @@ public class CompassCalibrationActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (viewPager.getCurrentItem() == 0) {
-            //startActivity(new Intent(getApplicationContext(), MainActivity.class));
             finish();
         } else {
-            viewPager.setCurrentItem(viewPager.getCurrentItem() - 1); // go to prev slide
+            viewPager.setCurrentItem(0); // go to first slide and reset calibration
         }
     }
 
 
     public static class CompassPagerAdapter extends FragmentPagerAdapter {
-        private static int NUM_ITEMS = 2;
+        private static int NUM_ITEMS = 3;
 
         public CompassPagerAdapter(FragmentManager fragmentManager) {
             super(fragmentManager);
@@ -79,8 +78,10 @@ public class CompassCalibrationActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return CompassPage1Fragment.newInstance("");
+                    return CompassStartPageFragment.newInstance("");
                 case 1:
+                    return CompassPage1Fragment.newInstance("");
+                case 2:
                     return CompassPage2Fragment.newInstance("");
                 default:
                     return null;
@@ -89,7 +90,7 @@ public class CompassCalibrationActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return String.format("Page %s of %s", position+1, NUM_ITEMS);
+            return String.format("%s of %s", position+1, NUM_ITEMS);
         }
     }
 }
