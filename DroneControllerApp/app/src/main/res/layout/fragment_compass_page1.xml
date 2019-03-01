@@ -43,5 +43,34 @@ tools:context=".compass.CompassPage1Fragment">
             android:text="Lift the drone off of the ground and rotate it 360 degrees. Be sure to do this motion smoothly."
             android:textAlignment="center" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textSize="@dimen/text_size_medium"
+            android:background="@drawable/rounded_status_green"
+            android:text=" Calibrated "/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textSize="@dimen/text_size_medium"
+            android:background="@drawable/rounded_status_red"
+            android:text=" Not Calibrated "/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textSize="@dimen/text_size_medium"
+            android:background="@drawable/rounded_status_yellow"
+            android:text=" Horizontal "/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textSize="@dimen/text_size_medium"
+            android:background="@drawable/rounded_status_yellow"
+            android:text=" Vertical "/>
     </LinearLayout>
 </LinearLayout>

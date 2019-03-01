@@ -27,6 +27,13 @@ tools:context=".compass.CompassCalibrationActivity">
         android:text="Current Status: "
         android:textSize="@dimen/text_size_medium" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_medium"
+        android:text=" Test Status "
+        android:background="@drawable/rounded_status_red"/>
+
 </LinearLayout>
 
 <TextView
