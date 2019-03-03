@@ -37,7 +37,7 @@ public class MainApplication extends Application {
 
     LocalBroadcastManager localBroadcastManager;
 
-    private static Application baseApplication;
+    private static BootstrapApplication baseApplication;
 
     private static Aircraft droneInstance;
     private static Camera cameraInstance;
@@ -46,7 +46,7 @@ public class MainApplication extends Application {
     public MainApplication() {
     }
 
-    public static void setContext(Application application) {
+    public void setContext(BootstrapApplication application) {
         baseApplication = application;
     }
 
