@@ -16,9 +16,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.leidossd.dronecontrollerapp.missions.Mission;
+import com.leidossd.dronecontrollerapp.missions.MissionRunner;
 import com.leidossd.utils.MissionAction;
 
 import java.util.ArrayList;
@@ -36,12 +39,28 @@ public class MissionActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager layoutManager;
     private RecyclerView.Adapter adapter;
     private ArrayList<MissionFrame> savedMissions;
+    private MissionRunner missionRunner;
+
+    private TextView noMissionText;
+    private TextView missionText;
+    private ImageView droneImage;
+    private ImageView nextArrow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mission);
+
+        noMissionText = findViewById(R.id.text_no_mission);
+        missionText = findViewById(R.id.text_mission);
+        droneImage = findViewById(R.id.drone_image);
+        nextArrow = findViewById(R.id.next_arrow);
+
+        noMissionText.setVisibility(View.VISIBLE);
+        missionText.setVisibility(View.INVISIBLE);
+        droneImage.setVisibility(View.INVISIBLE);
+        nextArrow.setVisibility(View.INVISIBLE);
 
         createMissionButton = findViewById(R.id.create_mission);
         listView = findViewById(R.id.saved_missions);
@@ -67,6 +86,7 @@ public class MissionActivity extends AppCompatActivity {
             savedMissions.add(new MissionFrame("Default Mission " + i, MissionAction.WAYPOINT_MISSION,true, command));
         }
         adapter = new MissionAdapter(savedMissions);
+        missionRunner = new MissionRunner(this);
         listView.setAdapter(adapter);
     }
 
@@ -83,7 +103,6 @@ public class MissionActivity extends AppCompatActivity {
                     action = MissionAction.WAYPOINT_MISSION;
                     break;
                 //TODO: Define other mission types.
-                case (R.id.mtype_default):
                 case (R.id.mtype_custom):
                     Toast.makeText(MissionActivity.this, "" + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
                     break;
@@ -108,7 +127,19 @@ public class MissionActivity extends AppCompatActivity {
             Toast.makeText(MissionActivity.this, "Cancelled Request.", Toast.LENGTH_SHORT).show();
         }
         else if (resultCode == AppCompatActivity.RESULT_OK) {
-            Toast.makeText(MissionActivity.this, "Mission Started.", Toast.LENGTH_SHORT).show();
+            Mission mission;
+            Bundle resMission = getIntent().getExtras();
+            if(resMission != null){
+                mission = resMission.getParcelable("Mission");
+                if (mission != null) {
+                    Toast.makeText(MissionActivity.this, "Mission Started.", Toast.LENGTH_SHORT).show();
+//                    missionRunner.startMission(this, mission);
+                } else {
+                    throw new RuntimeException("Attempted to create mission; received invalid mission.");
+                }
+            } else {
+                throw new RuntimeException("Attempted to create mission, but no mission received.");
+            }
         }
     }
 

@@ -97,7 +97,6 @@
             android:screenOrientation="sensorLandscape" />
         <activity android:name=".ConfirmMissionActivity" />
         <activity android:name=".CreateMissionActivity" />
-    </application>
         <activity
             android:name=".MissionServiceExampleActivity"
             android:parentActivityName=".MainActivity"

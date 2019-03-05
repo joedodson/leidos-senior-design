@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -133,7 +134,11 @@ public class MissionRunner {
                             .setTicker("New Mission");
 
             missionStartTime = System.currentTimeMillis();
-            missionRunnerService.startForegroundService(missionIntent);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                missionRunnerService.startForegroundService(missionIntent);
+            } else {
+                missionRunnerService.startService(missionIntent);
+            }
             missionRunnerService.startForeground(notificationId, notificationBuilder.build());
 
             // Repeatedly updates the notification with mission run time

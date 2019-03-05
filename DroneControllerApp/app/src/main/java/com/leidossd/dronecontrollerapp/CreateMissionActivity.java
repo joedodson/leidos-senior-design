@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
-import com.leidossd.djiwrapper.Mission;
+import com.leidossd.dronecontrollerapp.missions.Mission;
 import com.leidossd.utils.MissionAction;
 
 public class CreateMissionActivity extends AppCompatActivity implements MissionCreateListener {

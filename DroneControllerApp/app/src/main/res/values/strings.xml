@@ -64,6 +64,8 @@
     <string name="compass_action_calib_stop">Stop Compass Calibration</string>
     <string name="compass_action_calib_status">Compass Calibration Status</string>
 
+    <string name="mission_blank">Create a mission to start.</string>
+
     <string name="mission_default">Default Mission</string>
     <string name="mission_waypoint">Waypoint Mission</string>
     <string name="mission_custom">Custom Mission</string>

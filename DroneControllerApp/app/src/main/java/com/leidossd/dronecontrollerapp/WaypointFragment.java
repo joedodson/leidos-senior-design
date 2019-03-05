@@ -12,7 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.leidossd.djiwrapper.Mission;
+import com.leidossd.dronecontrollerapp.missions.Mission;
+import com.leidossd.dronecontrollerapp.missions.SpecificMission;
 import com.leidossd.utils.Direction;
 import com.leidossd.utils.MissionAction;
 
@@ -100,7 +101,7 @@ public class WaypointFragment extends Fragment {
 
         createButtonListener = new View.OnClickListener() {
             public void onClick(View view) {
-                Mission mission = null;
+                SpecificMission mission = new SpecificMission("Waypoint Mission");
                 waypointFragmentListener.createMission(mission);
             }
         };
