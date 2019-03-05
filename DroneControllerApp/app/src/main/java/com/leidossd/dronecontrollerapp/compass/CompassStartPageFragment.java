@@ -16,6 +16,7 @@ import android.widget.Button;
 
 import com.leidossd.djiwrapper.FlightControllerWrapper;
 import com.leidossd.dronecontrollerapp.MainActivity;
+import com.leidossd.dronecontrollerapp.MenuFragment;
 import com.leidossd.dronecontrollerapp.R;
 
 import dji.sdk.sdkmanager.DJISDKManager;
@@ -23,7 +24,8 @@ import dji.sdk.sdkmanager.DJISDKManager;
 
 public class CompassStartPageFragment extends Fragment {
 
-    Button testConnectButton;
+    Button exitButton;
+    Button startButton;
 
     public CompassStartPageFragment() {
     }
@@ -37,6 +39,22 @@ public class CompassStartPageFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_compass_startpage, container, false);
+
+        startButton = view.findViewById(R.id.btn_compass_start);
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((StartPage) getActivity()).startCalibration();
+            }
+        });
+
+        exitButton = view.findViewById(R.id.btn_compass_exit);
+        exitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((StartPage) getActivity()).exitCalibration();
+            }
+        });
 
         //handler = new Handler();
 
@@ -76,5 +94,10 @@ public class CompassStartPageFragment extends Fragment {
         //});
 
         return view;
+    }
+
+    interface StartPage {
+        void startCalibration();
+        void exitCalibration();
     }
 }

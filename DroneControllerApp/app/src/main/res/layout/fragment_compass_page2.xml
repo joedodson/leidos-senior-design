@@ -29,7 +29,7 @@ tools:context=".compass.CompassPage1Fragment">
 <LinearLayout
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_weight=".85"
     android:gravity="center"
     android:orientation="vertical"
@@ -38,6 +38,8 @@ tools:context=".compass.CompassPage1Fragment">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="bottom"
         android:paddingBottom="10dp"
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
@@ -54,6 +56,19 @@ tools:context=".compass.CompassPage1Fragment">
         android:text="With the camera facing down, rotate the drone 360 degrees again. Be sure to do this motion smoothly."
         android:textAlignment="center" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_margin="10dp"
+        android:gravity="bottom|end">
+
+        <Button
+            android:id="@+id/btn_compass_pg2_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel Calibration"/>
+    </LinearLayout>
 </LinearLayout>
 
 </LinearLayout>

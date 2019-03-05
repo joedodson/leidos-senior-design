@@ -17,6 +17,7 @@
     <color name="background_success">#47D476</color>
     <color name="background_inprogress">#DECC1B</color>
     <color name="background_failure">#E53935</color>
+    <color name="background_unknown">#333333</color>
 
     <color name="white_transparent_full">#00ffffff</color>
     <color name="white_transparent_medium">#45ffffff</color>

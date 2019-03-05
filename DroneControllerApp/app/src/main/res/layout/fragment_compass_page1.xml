@@ -20,13 +20,15 @@ tools:context=".compass.CompassPage1Fragment">
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight=".85"
         android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="bottom"
+            android:layout_weight="1"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
             android:paddingBottom="10dp"
@@ -43,34 +45,18 @@ tools:context=".compass.CompassPage1Fragment">
             android:text="Lift the drone off of the ground and rotate it 360 degrees. Be sure to do this motion smoothly."
             android:textAlignment="center" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:textSize="@dimen/text_size_medium"
-            android:background="@drawable/rounded_status_green"
-            android:text=" Calibrated "/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:textSize="@dimen/text_size_medium"
-            android:background="@drawable/rounded_status_red"
-            android:text=" Not Calibrated "/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:textSize="@dimen/text_size_medium"
-            android:background="@drawable/rounded_status_yellow"
-            android:text=" Horizontal "/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:gravity="bottom|end">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:textSize="@dimen/text_size_medium"
-            android:background="@drawable/rounded_status_yellow"
-            android:text=" Vertical "/>
+            <Button
+                android:id="@+id/btn_compass_pg1_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel Calibration"/>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

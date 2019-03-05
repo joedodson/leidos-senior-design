@@ -23,7 +23,7 @@ import com.leidossd.dronecontrollerapp.R;
 
 public class CompassPage2Fragment extends Fragment {
 
-    Button testConnectButton;
+    Button cancelButton;
 
     public CompassPage2Fragment() {
     }
@@ -36,8 +36,16 @@ public class CompassPage2Fragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_compass_page2, container, false);
 
+        cancelButton = view.findViewById(R.id.btn_compass_pg2_cancel);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((Page2) getActivity()).cancelPage2();
+            }
+        });
         //handler = new Handler();
 
         //if (getActivity() != null) {
@@ -76,5 +84,9 @@ public class CompassPage2Fragment extends Fragment {
         //});
 
         return view;
+    }
+
+    interface Page2 {
+        void cancelPage2();
     }
 }

@@ -27,10 +27,12 @@ tools:context=".compass.CompassStartPageFragment">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="bottom"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
             android:paddingBottom="10dp"
-            android:text="Getting Started"
+            android:text="Calibrating the Compass"
             android:textSize="@dimen/text_size_medium"
             android:textAlignment="center" />
 
@@ -40,8 +42,8 @@ tools:context=".compass.CompassStartPageFragment">
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
             android:paddingBottom="10dp"
-            android:text="The compass may lose track of its heading and need to be recalibrated before flying.\n\nIf you find this happening frequently, make sure that there are no large metal objects or magnets near the drone.\n\nTap start below to begin calibrating."
-            android:textAlignment="textStart" />
+            android:text="The compass may lose track of its heading and need to be recalibrated before flying.\nIf you need to do this frequently, make sure that there are no large metal objects or magnets near the drone.\nTap start below to begin calibrating."
+            android:textAlignment="center" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,13 +54,14 @@ tools:context=".compass.CompassStartPageFragment">
             android:gravity="bottom|center">
 
             <Button
+                android:id="@+id/btn_compass_exit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:layout_marginEnd="30dp"
-                android:text="Cancel" />
+                android:text="Exit" />
 
             <Button
+                android:id="@+id/btn_compass_start"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
