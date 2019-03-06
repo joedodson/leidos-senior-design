@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * service. Provides simple API to use everywhere else in the app.
  */
 public class MissionRunner {
-    private static MissionRunnerService missionRunnerService = null;
+    public static MissionRunnerService missionRunnerService = null;
 
     /** Static atomics are the best way around Singleton pattern for now. Multiple mission runners
      * can be instantiated, but static atomics help prevent them from running more than one mission at

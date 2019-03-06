@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.leidossd.dronecontrollerapp.missions.Mission;
 import com.leidossd.dronecontrollerapp.missions.MissionRunner;
+import com.leidossd.dronecontrollerapp.missions.SpecificMission;
 import com.leidossd.utils.MissionAction;
 
 import java.util.ArrayList;
@@ -31,7 +32,8 @@ public class MissionActivity extends AppCompatActivity {
     //Constants for inner classes
     private static final int DEFAULT_VH = 0;
     private static final int MISSION_VH = 1;
-    private static final int CONFIRM_MISSION = 1001;
+    private static final int CREATE_MISSION = 1001;
+    private static final int CONFIRM_MISSION = 1002;
     private static final int[] ATTRS = new int[]{android.R.attr.listDivider};
 
     private FloatingActionButton createMissionButton;
@@ -41,7 +43,6 @@ public class MissionActivity extends AppCompatActivity {
     private RecyclerView.Adapter adapter;
     private ArrayList<MissionFrame> savedMissions;
     private MissionRunner missionRunner;
-    private Mission currentMission = null;
 
     private TextView noMissionText;
     private TextView missionText;
@@ -95,6 +96,12 @@ public class MissionActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateStatus();
+    }
+
     public void onClicked(View view) {
         PopupMenu popupMenu = new PopupMenu(MissionActivity.this, createMissionButton);
         popupMenu.getMenuInflater().inflate(R.menu.select_mission, popupMenu.getMenu());
@@ -117,7 +124,7 @@ public class MissionActivity extends AppCompatActivity {
             if(action != null){
                 Intent intent = new Intent(this, CreateMissionActivity.class);
                 intent.putExtra("MissionType", action);
-                startActivity(intent);
+                startActivityForResult(intent, CREATE_MISSION);
             }
             return true;
         });
@@ -126,57 +133,44 @@ public class MissionActivity extends AppCompatActivity {
     }
 
     public void updateStatus(){
-        if(currentMission != null) {
-            if (currentMission.getStatus().equals("READY")) {
-                missionRunner.startMission(this, currentMission);
-                noMissionText.setVisibility(View.INVISIBLE);
-                missionText.setVisibility(View.VISIBLE);
-                droneImage.setVisibility(View.VISIBLE);
-                nextArrow.setVisibility(View.VISIBLE);
-                missionBar.setClickable(true);
-            } else if (currentMission.getStatus().equals("COMPLETED") ||
-                    currentMission.getStatus().equals("FAILED")){
-                currentMission = null;
-                noMissionText.setVisibility(View.VISIBLE);
-                missionText.setVisibility(View.INVISIBLE);
-                droneImage.setVisibility(View.INVISIBLE);
-                nextArrow.setVisibility(View.INVISIBLE);
-                missionBar.setClickable(false);
+        if(MissionRunner.missionRunnerService != null) {
+            if (MissionRunner.missionRunnerService.getCurrentMission() != null) {
+                if (MissionRunner.missionRunnerService.getCurrentMission().getStatus().equals("RUNNING")) {
+                    noMissionText.setVisibility(View.INVISIBLE);
+                    missionText.setVisibility(View.VISIBLE);
+                    droneImage.setVisibility(View.VISIBLE);
+                    nextArrow.setVisibility(View.VISIBLE);
+                    missionBar.setClickable(true);
+                } else if (MissionRunner.missionRunnerService.getCurrentMission().getStatus().equals("COMPLETED") ||
+                        MissionRunner.missionRunnerService.getCurrentMission().getStatus().equals("FAILED")) {
+                    noMissionText.setVisibility(View.VISIBLE);
+                    missionText.setVisibility(View.INVISIBLE);
+                    droneImage.setVisibility(View.INVISIBLE);
+                    nextArrow.setVisibility(View.INVISIBLE);
+                    missionBar.setClickable(false);
+                }
             }
-        } else {
-            throw new RuntimeException("No mission to start");
         }
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == AppCompatActivity.RESULT_CANCELED) {
             Toast.makeText(MissionActivity.this, "Cancelled Request.", Toast.LENGTH_SHORT).show();
         }
         else if (resultCode == AppCompatActivity.RESULT_OK) {
-//            Bundle resMission = data.getExtras();
-            String resMission = "Filler";
-            if(resMission != null){
-                if(currentMission == null) {
-                    currentMission = data.getParcelableExtra("Mission");
-                } else {
-                    Toast.makeText(MissionActivity.this, "Mission already Started.", Toast.LENGTH_SHORT).show();
-                }
-                if (currentMission != null) {
-                    Toast.makeText(MissionActivity.this, "Mission Started.", Toast.LENGTH_SHORT).show();
-                    updateStatus();
-                } else {
-                    throw new RuntimeException("Attempted to create mission; received invalid mission.");
-                }
-            } else {
-                throw new RuntimeException("Attempted to create mission, but no mission received.");
+            Mission mission = data.getParcelableExtra("Mission");
+            if (mission != null){
+                SpecificMission m = new SpecificMission("Waypoint Mission");
+                missionRunner.startMission(this, m);
+                updateStatus();
             }
         }
     }
 
     public void checkMission(View view) {
-        Toast.makeText(MissionActivity.this, "Mission Status.", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, MissionStatusActivity.class);
+        startActivity(intent);
     }
 
     /**
