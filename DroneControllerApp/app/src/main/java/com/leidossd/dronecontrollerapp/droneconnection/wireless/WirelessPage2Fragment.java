@@ -54,6 +54,7 @@ public class WirelessPage2Fragment extends Fragment {
                     String droneStatus = connectionChangeIntent.getStringExtra(CONNECTION_CHANGE.getResultKey());
 
                     if(droneStatus.equals(DroneConnectionStatus.DRONE_CONNECTED.toString())) {
+                        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(connectionChangeReceiver);
                         testConnectButton.setText(getString(R.string.activity_droneconnection_connectSuccess));
                         testConnectButton.setEnabled(true);
                         testConnectButton.setOnClickListener(v -> {
@@ -63,18 +64,20 @@ public class WirelessPage2Fragment extends Fragment {
                     }
                 }
             };
-            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(connectionChangeReceiver, new IntentFilter(CONNECTION_CHANGE.getActionString()));
         }
         testConnectButton = view.findViewById(R.id.btn_frag_wireless_test_connect);
         testConnectButton.setOnClickListener(v -> {
-            DJISDKManager.getInstance().startConnectionToProduct();
-            testConnectButton.setText(getString(R.string.activity_droneconnection_connecting));
-            testConnectButton.setEnabled(false);
+            if(getActivity() != null) {
+                LocalBroadcastManager.getInstance(getActivity()).registerReceiver(connectionChangeReceiver, new IntentFilter(CONNECTION_CHANGE.getActionString()));
+                DJISDKManager.getInstance().startConnectionToProduct();
+                testConnectButton.setText(getString(R.string.activity_droneconnection_connecting));
+                testConnectButton.setEnabled(false);
 
-            handler.postDelayed(() -> {
-                testConnectButton.setText(getString(R.string.activity_droneconnection_connectError));
-                testConnectButton.setEnabled(true);
-            }, 10000);
+                handler.postDelayed(() -> {
+                    testConnectButton.setText(getString(R.string.activity_droneconnection_connectError));
+                    testConnectButton.setEnabled(true);
+                }, 10000);
+            }
         });
 
         return view;

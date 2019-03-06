@@ -72,7 +72,7 @@ public class ConnectWalkthroughActivity
 
     public void onConnectDecision(ChooseToConnectFragment.ConnectDecision connectDecision) {
         if (connectDecision == ChooseToConnectFragment.ConnectDecision.CONNECT) {
-            viewPager.setCurrentItem(1);
+            startActivity(new Intent(this, WirelessConnectActivity.class));
         } else if (connectDecision == ChooseToConnectFragment.ConnectDecision.SKIP) {
             startActivity(new Intent(this, MainActivity.class));
             finish();

@@ -53,9 +53,6 @@ public class ChooseConnectTypeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
-                    case R.id.btn_connect_type_wired:
-                        fragmentInteractionListener.onConnectTypeDecision(ConnectType.WIRED);
-                        break;
                     case R.id.btn_connect_type_wireless:
                         fragmentInteractionListener.onConnectTypeDecision(ConnectType.WIRELESS);
                         break;
@@ -70,7 +67,6 @@ public class ChooseConnectTypeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_choose_connect_type, container, false);
 
-        view.findViewById(R.id.btn_connect_type_wired).setOnClickListener(clickListener);
         view.findViewById(R.id.btn_connect_type_wireless).setOnClickListener(clickListener);
 
         return view;

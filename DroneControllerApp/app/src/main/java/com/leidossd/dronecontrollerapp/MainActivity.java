@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GestureDetectorCompat;
@@ -16,6 +17,7 @@ import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.widget.TextView;
 
 import com.leidossd.dronecontrollerapp.missions.MissionRunner;
 import com.leidossd.dronecontrollerapp.simulator.SimulatorActivity;
@@ -82,6 +84,15 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_actionbar, menu);
+
+        Handler handler = new Handler();
+
+        handler.postDelayed(() -> {
+            TextView status = findViewById(R.id.action_bar_status);
+            if(MainApplication.getDroneInstance() != null && status != null) {
+                status.setText(DRONE_CONNECTED.toString());
+            }
+        }, 500);
         return true;
     }
 
