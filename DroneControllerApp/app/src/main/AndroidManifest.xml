@@ -96,7 +96,14 @@
         <activity
             android:name=".GridParentActivity"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="sensorLandscape" />
+            android:screenOrientation="sensorLandscape"/>
+
+        <activity
+            android:name=".compass.CompassCalibrationActivity"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".MissionServiceExampleActivity"
             android:parentActivityName=".MainActivity"
