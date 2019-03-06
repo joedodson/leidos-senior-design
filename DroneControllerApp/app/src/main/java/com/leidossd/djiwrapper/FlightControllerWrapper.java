@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import dji.common.error.DJIError;
 
 import dji.common.flightcontroller.CompassCalibrationState;
+import dji.common.flightcontroller.CompassState;
 import dji.common.util.CommonCallbacks;
 import dji.sdk.flightcontroller.FlightController;
 import dji.sdk.sdkmanager.DJISDKManager;
@@ -120,5 +121,9 @@ public class FlightControllerWrapper {
 
     public void compassStopCalibration(CommonCallbacks.CompletionCallback callback){
         flightController.getCompass().stopCalibration(callback);
+    }
+
+    public void compassSetCalibrationStateCallback(@Nullable CompassCalibrationState.Callback callback){
+        flightController.getCompass().setCalibrationStateCallback(callback);
     }
 }

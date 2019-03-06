@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GestureDetectorCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +17,7 @@ import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
 
 import com.leidossd.dronecontrollerapp.simulator.SimulatorActivity;
 import com.leidossd.utils.MenuAction;
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements
     FragmentManager fragmentManager;
     MenuFragment menuFragment;
     LiveVideoFragment liveVideoFragment;
+    AlertDialog droneNotConnectedDialog;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -64,6 +67,12 @@ public class MainActivity extends AppCompatActivity implements
         fragmentManager = getSupportFragmentManager();
         menuFragment = new MenuFragment();
         liveVideoFragment = new LiveVideoFragment();
+
+        droneNotConnectedDialog = new AlertDialog.Builder(this)
+                .setTitle("No Aircraft Connected")
+                .setMessage("This feature is not available without a connected aircraft.")
+                .setPositiveButton("OK", null)
+                .create();
 
         // add the menu fragment, but don't show it
         fragmentManager.beginTransaction()
@@ -93,9 +102,10 @@ public class MainActivity extends AppCompatActivity implements
                 DJISDKManager.getInstance().startConnectionToProduct();
                 break;
             case R.id.action_bar_compass:
-                startActivity(new Intent(this, CompassCalibrationActivity.class));
-                showToast("Compass");
-                // show compass stuff
+                if(MainApplication.getDroneInstance() == null || !MainApplication.getDroneInstance().isConnected())
+                    droneNotConnectedDialog.show();
+                else
+                    startActivity(new Intent(this, CompassCalibrationActivity.class));
                 break;
             case R.id.action_bar_gps:
                 showToast("GPS");
