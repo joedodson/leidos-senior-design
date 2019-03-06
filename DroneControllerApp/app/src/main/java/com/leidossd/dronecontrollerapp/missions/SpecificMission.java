@@ -17,11 +17,11 @@ public class SpecificMission extends Mission{
             @Override
             public void onMissionError(String missionErrorMessage) { }
         });
+        this.currentState = MissionState.READY;
     }
 
     public SpecificMission(String title, MissionUpdateCallback missionUpdateCallback) {
         super(title, missionUpdateCallback);
-        this.missionUpdateCallback = missionUpdateCallback;
         this.currentState = MissionState.READY;
     }
 

@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -40,11 +41,13 @@ public class MissionActivity extends AppCompatActivity {
     private RecyclerView.Adapter adapter;
     private ArrayList<MissionFrame> savedMissions;
     private MissionRunner missionRunner;
+    private Mission currentMission = null;
 
     private TextView noMissionText;
     private TextView missionText;
     private ImageView droneImage;
     private ImageView nextArrow;
+    private ConstraintLayout missionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +59,13 @@ public class MissionActivity extends AppCompatActivity {
         missionText = findViewById(R.id.text_mission);
         droneImage = findViewById(R.id.drone_image);
         nextArrow = findViewById(R.id.next_arrow);
+        missionBar = findViewById(R.id.mission_bar);
 
         noMissionText.setVisibility(View.VISIBLE);
         missionText.setVisibility(View.INVISIBLE);
         droneImage.setVisibility(View.INVISIBLE);
         nextArrow.setVisibility(View.INVISIBLE);
+        missionBar.setClickable(false);
 
         createMissionButton = findViewById(R.id.create_mission);
         listView = findViewById(R.id.saved_missions);
@@ -120,6 +125,29 @@ public class MissionActivity extends AppCompatActivity {
         popupMenu.show();
     }
 
+    public void updateStatus(){
+        if(currentMission != null) {
+            if (currentMission.getStatus().equals("READY")) {
+                missionRunner.startMission(this, currentMission);
+                noMissionText.setVisibility(View.INVISIBLE);
+                missionText.setVisibility(View.VISIBLE);
+                droneImage.setVisibility(View.VISIBLE);
+                nextArrow.setVisibility(View.VISIBLE);
+                missionBar.setClickable(true);
+            } else if (currentMission.getStatus().equals("COMPLETED") ||
+                    currentMission.getStatus().equals("FAILED")){
+                currentMission = null;
+                noMissionText.setVisibility(View.VISIBLE);
+                missionText.setVisibility(View.INVISIBLE);
+                droneImage.setVisibility(View.INVISIBLE);
+                nextArrow.setVisibility(View.INVISIBLE);
+                missionBar.setClickable(false);
+            }
+        } else {
+            throw new RuntimeException("No mission to start");
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -127,13 +155,17 @@ public class MissionActivity extends AppCompatActivity {
             Toast.makeText(MissionActivity.this, "Cancelled Request.", Toast.LENGTH_SHORT).show();
         }
         else if (resultCode == AppCompatActivity.RESULT_OK) {
-            Mission mission;
-            Bundle resMission = getIntent().getExtras();
+//            Bundle resMission = data.getExtras();
+            String resMission = "Filler";
             if(resMission != null){
-                mission = resMission.getParcelable("Mission");
-                if (mission != null) {
+                if(currentMission == null) {
+                    currentMission = data.getParcelableExtra("Mission");
+                } else {
+                    Toast.makeText(MissionActivity.this, "Mission already Started.", Toast.LENGTH_SHORT).show();
+                }
+                if (currentMission != null) {
                     Toast.makeText(MissionActivity.this, "Mission Started.", Toast.LENGTH_SHORT).show();
-//                    missionRunner.startMission(this, mission);
+                    updateStatus();
                 } else {
                     throw new RuntimeException("Attempted to create mission; received invalid mission.");
                 }
@@ -141,6 +173,10 @@ public class MissionActivity extends AppCompatActivity {
                 throw new RuntimeException("Attempted to create mission, but no mission received.");
             }
         }
+    }
+
+    public void checkMission(View view) {
+        Toast.makeText(MissionActivity.this, "Mission Status.", Toast.LENGTH_SHORT).show();
     }
 
     /**
