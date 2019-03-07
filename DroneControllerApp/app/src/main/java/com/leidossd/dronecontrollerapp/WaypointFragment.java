@@ -86,7 +86,7 @@ public class WaypointFragment extends Fragment {
                         return;
                 }
                 currentButton = gridButton;
-                textDir.setText("Direction to go: " + direction.getDir());
+                textDir.setText(String.format("Direction to go: %s", direction.getDir()));
                 if (!pressedOnce) {
                     title.setVisibility(View.VISIBLE);
                     description.setVisibility(View.VISIBLE);

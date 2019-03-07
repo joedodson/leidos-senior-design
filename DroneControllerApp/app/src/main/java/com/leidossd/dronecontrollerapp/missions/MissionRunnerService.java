@@ -53,7 +53,6 @@ public class MissionRunnerService extends IntentService {
                 sendServiceStatusUpdate(ServiceStatusUpdate.MISSION_ERROR, missionErrorMessage);
             }
         });
-
         mission.start();
     }
 

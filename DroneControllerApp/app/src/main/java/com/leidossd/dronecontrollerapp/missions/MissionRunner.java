@@ -193,7 +193,7 @@ public class MissionRunner {
                                         missionRunnerService.getCurrentMission().getTitle(),
                                         missionRunnerService.getCurrentMission().getStatus()))
                                 .build());
-                mission.getMissionUpdateCallback().onMissionError(intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
+                mission.getMissionUpdateCallback().onMissionFinish(intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
             }
         };
 

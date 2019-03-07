@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.leidossd.dronecontrollerapp.missions.Mission;
 import com.leidossd.dronecontrollerapp.missions.MissionRunner;
+import com.leidossd.dronecontrollerapp.missions.MissionRunnerService;
 import com.leidossd.dronecontrollerapp.missions.SpecificMission;
 import com.leidossd.utils.MissionAction;
 
@@ -133,16 +134,19 @@ public class MissionActivity extends AppCompatActivity {
     }
 
     public void updateStatus(){
-        if(MissionRunner.missionRunnerService != null) {
-            if (MissionRunner.missionRunnerService.getCurrentMission() != null) {
-                if (MissionRunner.missionRunnerService.getCurrentMission().getStatus().equals("RUNNING")) {
+        MissionRunnerService missionRunnerService = MissionRunner.missionRunnerService;
+        if(missionRunnerService != null) {
+            Mission mission = missionRunnerService.getCurrentMission();
+            if (mission != null) {
+                if (mission.getStatus().equals("RUNNING")) {
+                    missionText.setText(String.format("%s - %s", mission.getTitle(), mission.getStatus()));
                     noMissionText.setVisibility(View.INVISIBLE);
                     missionText.setVisibility(View.VISIBLE);
                     droneImage.setVisibility(View.VISIBLE);
                     nextArrow.setVisibility(View.VISIBLE);
                     missionBar.setClickable(true);
-                } else if (MissionRunner.missionRunnerService.getCurrentMission().getStatus().equals("COMPLETED") ||
-                        MissionRunner.missionRunnerService.getCurrentMission().getStatus().equals("FAILED")) {
+                } else if (mission.getStatus().equals("COMPLETED") ||
+                        mission.getStatus().equals("FAILED")) {
                     noMissionText.setVisibility(View.VISIBLE);
                     missionText.setVisibility(View.INVISIBLE);
                     droneImage.setVisibility(View.INVISIBLE);
@@ -161,9 +165,21 @@ public class MissionActivity extends AppCompatActivity {
         else if (resultCode == AppCompatActivity.RESULT_OK) {
             Mission mission = data.getParcelableExtra("Mission");
             if (mission != null){
-                SpecificMission m = new SpecificMission("Waypoint Mission");
-                missionRunner.startMission(this, m);
-                updateStatus();
+                mission.setMissionUpdateCallback(new Mission.MissionUpdateCallback() {
+                    @Override
+                    public void onMissionStart(String missionStartResult) {
+                        updateStatus();
+                    }
+
+                    @Override
+                    public void onMissionFinish(String missionFinishResult) {
+                        updateStatus();
+                    }
+
+                    @Override
+                    public void onMissionError(String missionErrorMessage) { }
+                });
+                missionRunner.startMission(this, mission);
             }
         }
     }
