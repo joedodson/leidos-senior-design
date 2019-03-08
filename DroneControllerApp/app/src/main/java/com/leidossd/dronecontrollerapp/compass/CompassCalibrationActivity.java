@@ -92,7 +92,7 @@ public class CompassCalibrationActivity extends AppCompatActivity implements Com
         }
     }
 
-    public synchronized void updateStatus(CompassCalibrationState calibrationState) {
+    public void updateStatus(CompassCalibrationState calibrationState) {
         currentCalibState = calibrationState;
         int oldPage = viewPager.getCurrentItem();
         boolean compassHasError = FlightControllerWrapper.getInstance().compassHasError();
@@ -100,29 +100,24 @@ public class CompassCalibrationActivity extends AppCompatActivity implements Com
         switch(calibrationState){
             case NOT_CALIBRATING:
                 runOnUiThread(() -> {
-                    if(oldPage != 0)
+                    if (oldPage != 0)
                         viewPager.setCurrentItem(0);
-                });
-                if(compassHasError) {
-                    runOnUiThread(() -> {
+                    if (compassHasError) {
                         statusTextView.setText(" Not Calibrated ");
                         ((GradientDrawable) statusTextView.getBackground()).setColor(getColor(R.color.background_failure));
-                    });
-                    if(calibStarted) {
-                        runOnUiThread(() -> calibFailedDialog.show());
-                        calibStarted = false;
-                    }
-                }
-                else {
-                    runOnUiThread(() -> {
+                        if (calibStarted) {
+                            calibFailedDialog.show();
+                            calibStarted = false;
+                        }
+                    } else {
                         statusTextView.setText(" Calibrated ");
                         ((GradientDrawable) statusTextView.getBackground()).setColor(getColor(R.color.background_success));
-                    });
-                    if(calibStarted) {
-                        runOnUiThread(() -> calibSuccessDialog.show());
-                        calibStarted = false;
+                        if (calibStarted) {
+                            calibSuccessDialog.show();
+                            calibStarted = false;
+                        }
                     }
-                }
+                });
                 break;
 
             case HORIZONTAL:
