@@ -21,7 +21,6 @@ public class CompassCalibrationActivity extends AppCompatActivity implements Com
     TextView currentPageTextView;
     TextView statusTextView;
     boolean calibStarted = false;
-    boolean cancelUpdates = false;
     AlertDialog calibFailedDialog;
     AlertDialog calibSuccessDialog;
     CompassCalibrationState currentCalibState;
@@ -58,7 +57,6 @@ public class CompassCalibrationActivity extends AppCompatActivity implements Com
             }
         });
 
-
         // tell the user that the calibration failed
         calibFailedDialog = new AlertDialog.Builder(this)
                 .setTitle("Calibration Failed!")
@@ -76,11 +74,12 @@ public class CompassCalibrationActivity extends AppCompatActivity implements Com
                 .setNegativeButton("No", null)
                 .create();
 
-            FlightControllerWrapper.getInstance().compassSetCalibrationStateCallback(compassCalibrationState -> {
-                if(compassCalibrationState != currentCalibState) {
-                    updateStatus(compassCalibrationState);
-                }
-            });
+        FlightControllerWrapper.getInstance().compassSetCalibrationStateCallback(compassCalibrationState -> {
+            // only update if there is a change
+            if(compassCalibrationState != currentCalibState) {
+                updateStatus(compassCalibrationState);
+            }
+        });
     }
 
     @Override
@@ -91,10 +90,6 @@ public class CompassCalibrationActivity extends AppCompatActivity implements Com
             FlightControllerWrapper.getInstance().compassStopCalibration(null);
             viewPager.setCurrentItem(0); // go to first slide and reset calibration
         }
-    }
-
-    public void updateStatus(){
-        updateStatus(FlightControllerWrapper.getInstance().getCompassCalibrationState(null));
     }
 
     public synchronized void updateStatus(CompassCalibrationState calibrationState) {
@@ -172,15 +167,6 @@ public class CompassCalibrationActivity extends AppCompatActivity implements Com
                     ((GradientDrawable) statusTextView.getBackground()).setColor(getColor(R.color.background_unknown));
                 });
         }
-
-    }
-
-    public void enableStatusUpdate(){
-        cancelUpdates = false;
-    }
-
-    public void disableStatusUpdate(){
-        cancelUpdates = true;
     }
 
     public static class CompassPagerAdapter extends FragmentPagerAdapter {
