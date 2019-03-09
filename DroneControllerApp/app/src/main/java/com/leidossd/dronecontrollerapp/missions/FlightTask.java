@@ -29,6 +29,7 @@ public class FlightTask extends Task {
     void start(){
         FlightControllerWrapper.getInstance()
                 .setFlightMode(CoordinateFlightControl.FlightMode.ABSOLUTE);
+        // when i implement callbacks in the flightcontroller, I'll need to inject the status update
         FlightControllerWrapper.getInstance().gotoXYZ(this.destination);
     }
 

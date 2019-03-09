@@ -20,8 +20,10 @@ abstract public class Mission extends Task implements Task.StatusUpdateListener 
 
     Mission(Parcel in) {
         // get title out
+        String title;
         // get tasks out
-        super(in.readString());
+        Iterable<Task> tasks;
+        super(title);
     }
 
     private void nextTask(){
