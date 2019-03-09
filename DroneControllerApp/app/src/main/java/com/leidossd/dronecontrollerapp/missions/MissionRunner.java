@@ -54,15 +54,15 @@ public class MissionRunner {
 
     private static final String MISSION_BUNDLE_EXTRA_NAME = "MISSION_EXTRA";
 
-    public MissionRunner(Context applicationContext) {
+    public MissionRunner(Context context) {
         Random random = new Random();
         notificationId = random.nextInt(1000) + 1;
-        notificationManager = NotificationManagerCompat.from(applicationContext);
+        notificationManager = NotificationManagerCompat.from(context.getApplicationContext());
         handler = new Handler();
 
         if (!serviceBindingInProgress.get()) {
             serviceBindingInProgress.set(true);
-            bindService(applicationContext);
+            bindService(context.getApplicationContext());
         }
     }
 
