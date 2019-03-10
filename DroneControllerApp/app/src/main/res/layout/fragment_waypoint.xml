@@ -141,16 +141,16 @@
             android:layout_width="117dp"
             android:layout_height="95dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="92dp"
             android:layout_marginEnd="8dp"
             android:src="@drawable/drone_icon_white"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.494"
+            app:layout_constraintHorizontal_bias="0.495"
             app:layout_constraintStart_toEndOf="@+id/view"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/mission_name"
+            android:id="@+id/mission_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -166,42 +166,42 @@
             android:id="@+id/mission_description"
             android:layout_width="228dp"
             android:layout_height="51dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:text="Drone flies in a direction, performs surveillance, then flies back."
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.529"
+            app:layout_constraintHorizontal_bias="0.528"
             app:layout_constraintStart_toEndOf="@+id/view"
             app:layout_constraintTop_toBottomOf="@+id/drone_image"
-            app:layout_constraintVertical_bias="0.021" />
+            app:layout_constraintVertical_bias="0.328" />
 
         <Button
             android:id="@+id/button_create"
-            android:layout_width="187dp"
+            android:layout_width="184dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:text="Create"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.532"
-            app:layout_constraintStart_toEndOf="@+id/view"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/mission_save"
             app:layout_constraintTop_toBottomOf="@+id/mission_description"
-            app:layout_constraintVertical_bias="0.925" />
+            app:layout_constraintVertical_bias="0.843" />
 
         <TextView
             android:id="@+id/text_nopressed"
             android:layout_width="wrap_content"
             android:layout_height="23dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:text="Select a direction for the drone to fly to."
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -212,17 +212,47 @@
             android:id="@+id/mission_direction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:text="TextView"
             app:layout_constraintBottom_toTopOf="@+id/button_create"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintHorizontal_bias="0.503"
             app:layout_constraintStart_toEndOf="@+id/view"
             app:layout_constraintTop_toBottomOf="@+id/mission_description"
-            app:layout_constraintVertical_bias="0.152" />
+            app:layout_constraintVertical_bias="0.2" />
+
+        <EditText
+            android:id="@+id/mission_name"
+            android:layout_width="wrap_content"
+            android:layout_height="47dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:hint="Enter mission name..."
+
+            android:inputType="textPersonName"
+            app:layout_constraintBottom_toTopOf="@+id/drone_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/view"
+            app:layout_constraintTop_toBottomOf="@+id/mission_type" />
+
+        <CheckBox
+            android:id="@+id/mission_save"
+            android:layout_width="82dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Save Mission"
+            android:textSize="@dimen/text_size_xsmall"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/view"
+            app:layout_constraintTop_toBottomOf="@+id/mission_description"
+            app:layout_constraintVertical_bias="0.87" />
 
     </android.support.constraint.ConstraintLayout>
 </FrameLayout>

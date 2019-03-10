@@ -22,7 +22,7 @@ public class CreateMissionActivity extends AppCompatActivity implements MissionC
         super.onCreate(savedInstanceState);
         setTheme(R.style.AppTheme_NoActionBar);
         setContentView(R.layout.activity_create_mission);
-        MissionAction action = (MissionAction) getIntent().getSerializableExtra("MissionType");
+        MissionAction action = (MissionAction) getIntent().getSerializableExtra("Mission Type");
         defineFragment(action);
     }
 
@@ -33,7 +33,6 @@ public class CreateMissionActivity extends AppCompatActivity implements MissionC
                 case WAYPOINT_MISSION:
                     baseFragment = new WaypointFragment();
                     break;
-                case DEFAULT_MISSION:
                 case CUSTOM_MISSION:
                     break;
             }
@@ -50,9 +49,10 @@ public class CreateMissionActivity extends AppCompatActivity implements MissionC
     }
 
     @Override
-    public void createMission(Mission mission){
+    public void createMission(Mission mission, boolean saveMission){
         Intent intent = new Intent();
         intent.putExtra("Mission", mission);
+        intent.putExtra("Save Mission", saveMission);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }

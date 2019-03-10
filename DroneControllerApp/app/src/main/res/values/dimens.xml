@@ -3,6 +3,7 @@
     <dimen name="text_size_large">24sp</dimen>
     <dimen name="text_size_medium">20sp</dimen>
     <dimen name="text_size_small">16sp</dimen>
+    <dimen name="text_size_xsmall">12sp</dimen>
 
     <dimen name="button_std_width">500dp</dimen>
     <dimen name="button_std_padding_top_bottom">10sp</dimen>

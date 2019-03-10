@@ -7,15 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.leidossd.dronecontrollerapp.missions.Mission;
 import com.leidossd.dronecontrollerapp.missions.SpecificMission;
 import com.leidossd.utils.Direction;
-import com.leidossd.utils.MissionAction;
 
 public class WaypointFragment extends Fragment {
 
@@ -32,6 +31,8 @@ public class WaypointFragment extends Fragment {
     private TextView textDir;
     private ImageView droneImage;
     private Button createButton;
+    private EditText missionName;
+    private CheckBox saveCheckbox;
 
     private TextView noPressed;
     private boolean pressedOnce = false;
@@ -93,6 +94,8 @@ public class WaypointFragment extends Fragment {
                     textDir.setVisibility(View.VISIBLE);
                     droneImage.setVisibility(View.VISIBLE);
                     createButton.setVisibility(View.VISIBLE);
+                    missionName.setVisibility(View.VISIBLE);
+                    saveCheckbox.setVisibility(View.VISIBLE);
                     noPressed.setVisibility(View.INVISIBLE);
                     pressedOnce = true;
                 }
@@ -101,8 +104,13 @@ public class WaypointFragment extends Fragment {
 
         createButtonListener = new View.OnClickListener() {
             public void onClick(View view) {
-                SpecificMission mission = new SpecificMission("Waypoint Mission");
-                waypointFragmentListener.createMission(mission);
+                SpecificMission mission;
+                String mName = missionName.getText().toString();
+                if(mName.equals(""))
+                    mission = new SpecificMission("Waypoint Mission");
+                else
+                    mission = new SpecificMission(mName);
+                waypointFragmentListener.createMission(mission, saveCheckbox.isChecked());
             }
         };
     }
@@ -121,12 +129,14 @@ public class WaypointFragment extends Fragment {
             view.findViewById(i).setOnClickListener(gridSelectListener);
         }
 
-        title = view.findViewById(R.id.mission_name);
+        title = view.findViewById(R.id.mission_type);
         description = view.findViewById(R.id.mission_description);
         textDir = view.findViewById(R.id.mission_direction);
         droneImage = view.findViewById(R.id.drone_image);
         createButton = view.findViewById(R.id.button_create);
         noPressed = view.findViewById(R.id.text_nopressed);
+        missionName = view.findViewById(R.id.mission_name);
+        saveCheckbox = view.findViewById(R.id.mission_save);
         createButton.setOnClickListener(createButtonListener);
 
         title.setVisibility(View.INVISIBLE);
@@ -134,6 +144,8 @@ public class WaypointFragment extends Fragment {
         textDir.setVisibility(View.INVISIBLE);
         droneImage.setVisibility(View.INVISIBLE);
         createButton.setVisibility(View.INVISIBLE);
+        missionName.setVisibility(View.INVISIBLE);
+        saveCheckbox.setVisibility(View.INVISIBLE);
         noPressed.setVisibility(View.VISIBLE);
 
         return view;

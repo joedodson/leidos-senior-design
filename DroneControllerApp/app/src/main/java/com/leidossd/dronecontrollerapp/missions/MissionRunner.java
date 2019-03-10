@@ -134,6 +134,7 @@ public class MissionRunner {
                             .setTicker("New Mission");
 
             missionStartTime = System.currentTimeMillis();
+            //Added in version check for testing purposes.  Can be removed once version is finalized.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 missionRunnerService.startForegroundService(missionIntent);
             } else {
