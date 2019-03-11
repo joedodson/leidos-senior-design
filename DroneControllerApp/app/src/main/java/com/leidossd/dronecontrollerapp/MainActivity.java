@@ -141,11 +141,11 @@ public class MainActivity extends AppCompatActivity implements
     public void onMenuSelect(MenuAction action) {
         switch (action) {
             case OPEN_MISSIONS:
-//                startActivity(new Intent(this, MissionActivity.class));
+                startActivity(new Intent(this, MissionActivity.class));
                 break;
             case OPEN_DEVELOPER:
                 // Start Brians Activity
-//                startActivity(new Intent(this, MissionServiceExampleActivity.class));
+                startActivity(new Intent(this, MissionServiceExampleActivity.class));
                 break;
             case OPEN_SIMULATOR:
 //                startActivity(new Intent(this, SimulatorActivity.class));
@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements
 //                showToast("Settings");
                 break;
             case OPEN_COMPASS:
-                startActivity(new Intent(this, CompassActivity.class));
+//                startActivity(new Intent(this, CompassActivity.class));
                 break;
             case OPEN_GRID_VIEW:
 //                startActivity(new Intent(this, GridParentActivity.class));
