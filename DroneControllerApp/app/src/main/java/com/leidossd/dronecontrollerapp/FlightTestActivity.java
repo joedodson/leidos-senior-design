@@ -63,7 +63,7 @@ public class FlightTestActivity extends AppCompatActivity {
                 break;
 
             } case(R.id.button_3): { //Confirm button
-                FlightControllerWrapper.getInstance().gotoRelativeXYZ(new Coordinate((float) toIntEmpty(xBox),(float) toIntEmpty(yBox),(float) toIntEmpty(zBox)));
+                FlightControllerWrapper.getInstance().gotoRelativeXYZ(new Coordinate((float) toIntEmpty(xBox),(float) toIntEmpty(yBox),(float) toIntEmpty(zBox)), null);
                 break;
 
             } case(R.id.button_4): { //Takeoff button

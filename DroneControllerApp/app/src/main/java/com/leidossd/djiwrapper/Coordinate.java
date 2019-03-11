@@ -1,6 +1,9 @@
 package com.leidossd.djiwrapper;
 
-public class Coordinate {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Coordinate implements Parcelable {
 
     private float x;
     private float y;
@@ -164,4 +167,31 @@ public class Coordinate {
     public String toString(){
         return String.format("(%.3f,%.3f,%.3f)", x,y,z);
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeFloat(x);
+        dest.writeFloat(y);
+        dest.writeFloat(z);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static Creator<Coordinate> CREATOR = new Creator<Coordinate>(){
+        @Override
+        public Coordinate createFromParcel(Parcel source) {
+            float x = source.readFloat();
+            float y = source.readFloat();
+            float z = source.readFloat();
+            return new Coordinate(x,y,z);
+        }
+
+        @Override
+        public Coordinate[] newArray(int size) {
+            return new Coordinate[0];
+        }
+    };
 }

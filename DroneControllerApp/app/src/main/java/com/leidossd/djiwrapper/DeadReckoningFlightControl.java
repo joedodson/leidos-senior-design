@@ -1,6 +1,8 @@
 package com.leidossd.djiwrapper;
 
 
+import android.support.annotation.Nullable;
+
 import dji.common.util.CommonCallbacks;
 
 public class DeadReckoningFlightControl implements CoordinateFlightControl {
@@ -28,7 +30,7 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl {
         return position;
     }
 
-    public void goTo(Coordinate destination, CommonCallbacks.CompletionCallback callback){
+    public void goTo(Coordinate destination, @Nullable CommonCallbacks.CompletionCallback callback){
         if(flightMode == FlightMode.RELATIVE)
             relativeGoTo(destination, callback);
         else if(flightMode == FlightMode.ABSOLUTE)
@@ -37,7 +39,7 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl {
             throw new IllegalStateException("FlightMode not set!");
     }
 
-    public void rotateTo(float theta, CommonCallbacks.CompletionCallback callback){
+    public void rotateTo(float theta, @Nullable CommonCallbacks.CompletionCallback callback){
         if(rotationLock)
             return;
 
@@ -54,7 +56,7 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl {
             throw new IllegalStateException("FlightMode not set!");
     }
 
-    public void relativeGoTo(Coordinate destination, CommonCallbacks.CompletionCallback callback){
+    public void relativeGoTo(Coordinate destination, @Nullable CommonCallbacks.CompletionCallback callback){
         // Don't need to rotate.
         // Move the drone to the destination, which is easy since it's in the relative coordinates
         lowLevelFlightControl.move(destination, callback);
@@ -69,13 +71,17 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl {
                      .add(direction.scale(direction.getY())));
     }
 
-    public void absoluteGoTo(Coordinate destination, CommonCallbacks.CompletionCallback callback){
+    public void absoluteGoTo(Coordinate destination, @Nullable CommonCallbacks.CompletionCallback callback){
         // If rotations not locked, then rotate so that you're facing the right way, then do a
         // normal relative goTo.
         Coordinate movement = destination.add(position.scale(-1));
         lowLevelFlightControl.move(movement.inBasis(direction.perpendicularUnit(), direction), callback);
         position = destination;
     }
+
+//    public void incrementPosition(Coordinate increment){
+//        position = position.add(increment.inBasis(direction, direction.perpendicularUnit()));
+//    }
 
     public boolean isInFlight(){
         return lowLevelFlightControl.isInFlight();

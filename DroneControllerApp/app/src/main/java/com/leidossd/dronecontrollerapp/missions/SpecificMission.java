@@ -10,12 +10,14 @@ public class SpecificMission extends Mission {
         ArrayList<Task> tasks = new ArrayList<>();
         tasks.add(new ToastTask("Starting..."));
         tasks.add(new WaitTask(5000));
+        tasks.add(new TakeOffTask());
         tasks.add(new ToastTask("1..."));
         tasks.add(new WaitTask(5000));
         tasks.add(new ToastTask("2..."));
         tasks.add(new WaitTask(5000));
         tasks.add(new ToastTask("3..."));
         tasks.add(new WaitTask(5000));
+        tasks.add(new LandingTask());
         tasks.add(new ToastTask("Ending..."));
         taskIterable = tasks;
     }
