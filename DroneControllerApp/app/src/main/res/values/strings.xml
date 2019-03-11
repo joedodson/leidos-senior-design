@@ -60,6 +60,8 @@
     <string name="simulator_telemetry">Yaw: %1$.2f \tPitch: %2$.2f \tRoll: %3$.2f\n
         X: %4$.2f \tY:%5$.2f \tZ:%6$.2f</string>
 
+    <string name="activity_compass_guide_title">Compass Calibration</string>
+    <string name="drone_compass_default_subtitle">Compass subtitle</string>
     <string name="compass_action_calib_start">Start Compass Calibration</string>
     <string name="compass_action_calib_stop">Stop Compass Calibration</string>
     <string name="compass_action_calib_status">Compass Calibration Status</string>

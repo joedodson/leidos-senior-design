@@ -4,6 +4,8 @@ import android.support.annotation.Nullable;
 
 import dji.common.error.DJIError;
 
+import dji.common.flightcontroller.CompassCalibrationState;
+import dji.common.flightcontroller.CompassState;
 import dji.common.util.CommonCallbacks;
 import dji.sdk.flightcontroller.FlightController;
 import dji.sdk.sdkmanager.DJISDKManager;
@@ -49,6 +51,10 @@ public class FlightControllerWrapper {
 
     public void gotoXYZ(Coordinate destination){
         coordinateFlightControl.goTo(destination);
+    }
+
+    public void rotateTo(float angle){
+        coordinateFlightControl.rotateTo(angle);
     }
 
     public void setFlightMode(CoordinateFlightControl.FlightMode flightMode){
@@ -101,8 +107,12 @@ public class FlightControllerWrapper {
         flightController.confirmLanding(callback);
     }
 
-    public void getCompassCalibrationState(@Nullable CommonCallbacks.CompletionCallback callback){
-        flightController.getCompass().getCalibrationState();
+    public boolean compassHasError(){
+        return flightController.getCompass().hasError();
+    }
+
+    public CompassCalibrationState getCompassCalibrationState(@Nullable CommonCallbacks.CompletionCallback callback){
+        return flightController.getCompass().getCalibrationState();
     }
 
     public void compassStartCalibration(CommonCallbacks.CompletionCallback callback){
@@ -111,5 +121,9 @@ public class FlightControllerWrapper {
 
     public void compassStopCalibration(CommonCallbacks.CompletionCallback callback){
         flightController.getCompass().stopCalibration(callback);
+    }
+
+    public void compassSetCalibrationStateCallback(@Nullable CompassCalibrationState.Callback callback){
+        flightController.getCompass().setCalibrationStateCallback(callback);
     }
 }

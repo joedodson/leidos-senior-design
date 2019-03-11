@@ -63,27 +63,43 @@ public class Coordinate {
     // To do that, we'll have to rotate the movement vector by negative theta
 
     public Coordinate rotateByAngle(float theta){
-        // this is a cute way of multiplying by a rotation matrix
+        // this is a cute way of multiplying by a rotation matrix with negative theta
         float newX = this.dot(new Coordinate((float) Math.cos(Math.toRadians(theta)),
-                (float) -Math.sin(Math.toRadians(theta)),0));
-        float newY = this.dot(new Coordinate((float) Math.sin(Math.toRadians(theta)),
+                (float) Math.sin(Math.toRadians(theta)),0));
+        float newY = this.dot(new Coordinate((float) -Math.sin(Math.toRadians(theta)),
                 (float) Math.cos(Math.toRadians(theta)),0));
 
         return new Coordinate(newX, newY, this.z);
     }
 
+    public float angleFacing(){
+        float sin = this.x/this.magnitude();
+        float angle = (float) (180*Math.asin(Math.abs(this.x/this.magnitude()))/Math.PI);
+        if(this.x >= 0 && y >= 0)
+            return (float) (180*Math.asin(this.x/this.magnitude())/Math.PI);
+        else if(this.x >= 0)
+            return (float) (90 + 180*Math.asin(-this.y/this.magnitude())/Math.PI);
+        else if(this.y >= 0)
+            return (float) (-180*Math.asin(-this.x/this.magnitude())/Math.PI);
+        else
+            return (float) (-90 - 180*Math.asin(-this.y/this.magnitude())/Math.PI);
+    }
+
     // The angle between the given angle and the angle that the current vector points at
-    // Not complete, don't rely on this
     public float angleBetween(float angle){
-        Coordinate dir = new Coordinate((float) Math.cos(Math.toRadians(angle)),
-                (float) Math.sin(Math.toRadians(angle)), 0);
+        float diff = angle - angleFacing();
+        if(diff > 180)
+            return 360 - diff;
+        if(diff < -180)
+            return 360 + diff;
 
-        return (float) Math.acos(this.unit().dot(dir));
+        return diff;
     }
 
-    public float angleBetween(Coordinate other){
-        return (float) (180*Math.acos(this.unit().dot(other.unit()))/Math.PI);
-    }
+    // do not use
+    // public float angleBetween(Coordinate other){
+    //     return (float) (180*Math.acos(this.unit().dot(other.unit()))/Math.PI);
+    // }
 
     // representation of a coordinate in a basis formed with x, y
     // we do not care about z-axis here

@@ -72,11 +72,6 @@ public class CoordinateUnitTest {
     }
 
     @Test
-    public void angleBetweenCoordinate(){
-        assertEquals(new Coordinate(1,0,0).angleBetween(new Coordinate(0,1,0)), 90, .01);
-    }
-
-    @Test
     public void inBasis_simple(){
         assertEquals(new Coordinate(5,5,0).inBasis(new Coordinate(-1, 0, 0), new Coordinate(0,-1,0)), new Coordinate(-5,-5,0));
     }
@@ -84,5 +79,65 @@ public class CoordinateUnitTest {
     @Test
     public void inBasis_Complicated(){
         assertEquals(new Coordinate(5,5,0).inBasis(new Coordinate(7,2,0), new Coordinate(-5, 3, 0)), new Coordinate((float) 1.2903, (float) 0.80645, 0));
+    }
+
+    @Test
+    public void angleFacing_10(){
+        assertEquals(new Coordinate(1,0,0).angleFacing(), 90, .1);
+    }
+
+    @Test
+    public void angleFacing_01(){
+        assertEquals(new Coordinate(0,1,0).angleFacing(), 0,.1);
+    }
+
+    @Test
+    public void angleFacing_neg1neg1(){
+        assertEquals(new Coordinate(-1,-1,0).angleFacing(), -135,.1);
+    }
+
+    @Test
+    public void angleFacing_0neg1(){
+        assertEquals(new Coordinate(0,-1,0).angleFacing(), 180,.1);
+    }
+
+    @Test
+    public void angleFacing_neg10(){
+        assertEquals(new Coordinate(-1,0,0).angleFacing(), -90,.1);
+    }
+
+    @Test
+    public void angleBetween_ang0_neg90(){
+        assertEquals(new Coordinate(0,1,0).angleBetween(-90), -90,0.1);
+    }
+
+    @Test
+    public void angleBetween_135_neg135(){
+        assertEquals(new Coordinate(1,-1,0).angleBetween(-135), 90,0.1);
+    }
+
+    @Test
+    public void angleBetween_neg45_45(){
+        assertEquals(new Coordinate(-1,1,0).angleBetween(45), 90,0.1);
+    }
+
+    @Test
+    public void angleBetween_45_neg45(){
+        assertEquals(new Coordinate(1,1,0).angleBetween(-45), -90,0.1);
+    }
+
+    @Test
+    public void rotateByAngle_neg45(){
+        assertEquals(new Coordinate(1,1,0).rotateByAngle(-45), new Coordinate(0, (float) Math.sqrt(2), 0));
+    }
+
+    @Test
+    public void rotateByAngle_neg90(){
+        assertEquals(new Coordinate(1,1,0).rotateByAngle(-90), new Coordinate(-1, 1, 0));
+    }
+
+    @Test
+    public void rotateByAngle_180(){
+        assertEquals(new Coordinate(1,1,0).rotateByAngle(180), new Coordinate(-1, -1, 0));
     }
 }

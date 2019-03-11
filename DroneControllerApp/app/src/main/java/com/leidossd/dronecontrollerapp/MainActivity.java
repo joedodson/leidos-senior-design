@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GestureDetectorCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +18,8 @@ import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.TextView;
 
 import com.leidossd.dronecontrollerapp.missions.MissionRunner;
 import com.leidossd.dronecontrollerapp.simulator.SimulatorActivity;
@@ -30,6 +34,8 @@ import static com.leidossd.utils.DroneConnectionStatus.DRONE_DISCONNECTED;
 import static com.leidossd.utils.IntentAction.CONNECTION_CHANGE;
 import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
+import com.leidossd.dronecontrollerapp.compass.CompassCalibrationActivity;
+
 public class MainActivity extends AppCompatActivity implements
         MenuFragment.fragmentInteractionListener {
 
@@ -42,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements
     FragmentManager fragmentManager;
     MenuFragment menuFragment;
     LiveVideoFragment liveVideoFragment;
+    AlertDialog droneNotConnectedDialog;
 
     private static MissionRunner missionRunner;
 
@@ -66,6 +73,12 @@ public class MainActivity extends AppCompatActivity implements
         menuFragment = new MenuFragment();
         liveVideoFragment = new LiveVideoFragment();
 
+        droneNotConnectedDialog = new AlertDialog.Builder(this)
+                .setTitle("No Aircraft Connected")
+                .setMessage("This feature is not available without a connected aircraft.")
+                .setPositiveButton("OK", null)
+                .create();
+
         // add the menu fragment, but don't show it
         fragmentManager.beginTransaction()
                 .add(R.id.menu_fragment_container, menuFragment)
@@ -82,6 +95,15 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_actionbar, menu);
+
+        Handler handler = new Handler();
+
+        handler.postDelayed(() -> {
+            TextView status = findViewById(R.id.action_bar_status);
+            if(MainApplication.getDroneInstance() != null && status != null) {
+                status.setText(DRONE_CONNECTED.toString());
+            }
+        }, 500);
         return true;
     }
 
@@ -92,6 +114,12 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.action_bar_status:
                 showToast("Status");
                 DJISDKManager.getInstance().startConnectionToProduct();
+                break;
+            case R.id.action_bar_compass:
+                if(MainApplication.getDroneInstance() == null || !MainApplication.getDroneInstance().isConnected())
+                    droneNotConnectedDialog.show();
+                else
+                    startActivity(new Intent(this, CompassCalibrationActivity.class));
                 break;
             case R.id.action_bar_gps:
                 showToast("GPS");

@@ -188,7 +188,6 @@ public class SplashActivity extends AppCompatActivity {
     // continue on to main screen if all requirements fulfilled
     public void startNextActivityConditionally() {
         if(registrationSuccess.get() && permissionsGranted.get()) {
-            DJISDKManager.getInstance().startConnectionToProduct();
             startActivity(new Intent(SplashActivity.this, ConnectWalkthroughActivity.class));
             finish();
         } else {
