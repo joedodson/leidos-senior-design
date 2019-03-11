@@ -71,11 +71,11 @@ public class VirtualStickFlightControl  {
         return inFlight;
     }
 
-    public void move(Coordinate movement){
-       move(movement, FlightCoordinateSystem.BODY);
+    public void move(Coordinate movement, CommonCallbacks.CompletionCallback callback){
+       move(movement, FlightCoordinateSystem.BODY, callback);
     }
 
-    public void move(Coordinate movement, FlightCoordinateSystem flightCoordinateSystem){
+    public void move(Coordinate movement, FlightCoordinateSystem flightCoordinateSystem, CommonCallbacks.CompletionCallback callback){
         flightController.setRollPitchCoordinateSystem(flightCoordinateSystem);
 
         float duration = (float) movement.magnitude()/speed;
@@ -84,13 +84,13 @@ public class VirtualStickFlightControl  {
         float r = (float) movement.getX()/duration;
         float t = (float) movement.getZ()/duration;
 
-        startTask(r,p,0, t, (long) (duration*1000));
+        startTask(r,p,0, t, (long) (duration*1000), callback);
     }
 
-    public void rotate(float theta){
+    public void rotate(float theta, CommonCallbacks.CompletionCallback callback){
         float duration = (float) theta/angularVelocity;
 
-        startTask(0,0, angularVelocity,0, (long) (duration*1000));
+        startTask(0,0, angularVelocity,0, (long) (duration*1000), callback);
     }
 
     public void halt(){
@@ -99,7 +99,7 @@ public class VirtualStickFlightControl  {
         flightController.setVirtualStickModeEnabled(false, null);
     }
 
-    private void startTask(float roll, float pitch, float yaw, float throttle, long duration){
+    private void startTask(float roll, float pitch, float yaw, float throttle, long duration, CommonCallbacks.CompletionCallback callback){
         // make sure we aren't doing yaw with anything else simultaneously
         // may need to throw some kind of exception, for now just do nothing.
         if(yaw != 0 && (pitch != 0 || roll != 0 || throttle != 0))
@@ -121,13 +121,19 @@ public class VirtualStickFlightControl  {
 
         // schedule a halt after the time has passed
         endTimer = new Timer();
-        endTimer.schedule(new VirtualSticksClearTask(), duration);
+        endTimer.schedule(new VirtualSticksClearTask(callback), duration);
     }
 
     class VirtualSticksClearTask extends TimerTask {
+        CommonCallbacks.CompletionCallback callback;
+
+        VirtualSticksClearTask(CommonCallbacks.CompletionCallback callback){
+            this.callback = callback;
+        }
         @Override
         public void run(){
             halt();
+            callback.onResult(null);
         }
     }
 

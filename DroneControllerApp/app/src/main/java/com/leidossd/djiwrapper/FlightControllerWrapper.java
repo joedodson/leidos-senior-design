@@ -39,22 +39,22 @@ public class FlightControllerWrapper {
         coordinateFlightControl.halt();
     }
 
-    public void gotoRelativeXYZ(Coordinate destination){
+    public void gotoRelativeXYZ(Coordinate destination, CommonCallbacks.CompletionCallback callback){
         coordinateFlightControl.setFlightMode(CoordinateFlightControl.FlightMode.RELATIVE);
-        coordinateFlightControl.goTo(destination);
+        coordinateFlightControl.goTo(destination, callback);
     }
 
-    public void gotoAbsoluteXYZ(Coordinate destination){
+    public void gotoAbsoluteXYZ(Coordinate destination, CommonCallbacks.CompletionCallback callback){
         coordinateFlightControl.setFlightMode(CoordinateFlightControl.FlightMode.ABSOLUTE);
-        coordinateFlightControl.goTo(destination);
+        coordinateFlightControl.goTo(destination, callback);
     }
 
-    public void gotoXYZ(Coordinate destination){
-        coordinateFlightControl.goTo(destination);
+    public void gotoXYZ(Coordinate destination, CommonCallbacks.CompletionCallback callback){
+        coordinateFlightControl.goTo(destination, callback);
     }
 
-    public void rotateTo(float angle){
-        coordinateFlightControl.rotateTo(angle);
+    public void rotateTo(float angle, CommonCallbacks.CompletionCallback callback){
+        coordinateFlightControl.rotateTo(angle, callback);
     }
 
     public void setFlightMode(CoordinateFlightControl.FlightMode flightMode){
