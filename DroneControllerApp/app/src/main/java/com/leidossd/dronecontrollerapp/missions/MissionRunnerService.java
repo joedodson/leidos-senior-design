@@ -8,7 +8,7 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import java.util.Random;
 
-public class MissionRunnerService extends IntentService {
+public class MissionRunnerService extends IntentService implements Task.StatusUpdateListener {
     private final MissionRunnerBinder missionRunnerBinder = new MissionRunnerBinder();
     private static final String MISSION_BUNDLE_EXTRA_NAME = "MISSION_EXTRA";
     public Mission mission;
@@ -37,22 +37,22 @@ public class MissionRunnerService extends IntentService {
     // What actually gets called when service.startForeground() is called
     protected void onHandleIntent(Intent missionIntent) {
         mission = missionIntent.getParcelableExtra(MISSION_BUNDLE_EXTRA_NAME);
-        mission.setMissionUpdateCallback(new Mission.MissionUpdateCallback() {
-            @Override
-            public void onMissionStart(String missionStartResult) {
-                sendServiceStatusUpdate(ServiceStatusUpdate.MISSION_START, missionStartResult);
-            }
+//        mission.setMissionUpdateCallback(new Mission.MissionUpdateCallback() {
+//            @Override
+//            public void onMissionStart(String missionStartResult) {
+//                sendServiceStatusUpdate(ServiceStatusUpdate.MISSION_START, missionStartResult);
+//            }
 
-            @Override
-            public void onMissionFinish(String missionFinishResult) {
-                sendServiceStatusUpdate(ServiceStatusUpdate.MISSION_FINISH, missionFinishResult);
-            }
+//            @Override
+//            public void onMissionFinish(String missionFinishResult) {
+//                sendServiceStatusUpdate(ServiceStatusUpdate.MISSION_FINISH, missionFinishResult);
+//            }
 
-            @Override
-            public void onMissionError(String missionErrorMessage) {
-                sendServiceStatusUpdate(ServiceStatusUpdate.MISSION_ERROR, missionErrorMessage);
-            }
-        });
+//            @Override
+//            public void onMissionError(String missionErrorMessage) {
+//                sendServiceStatusUpdate(ServiceStatusUpdate.MISSION_ERROR, missionErrorMessage);
+//            }
+//        });
 
         mission.start();
     }
@@ -83,6 +83,25 @@ public class MissionRunnerService extends IntentService {
 
         public static String getResultKey() {
             return resultKey;
+        }
+
+    }
+
+
+    @Override
+    public void statusUpdate(Task.TaskState status, String message){
+        switch(status){
+            case RUNNING:
+                sendServiceStatusUpdate(ServiceStatusUpdate.MISSION_START, message);
+                break;
+            case FAILED:
+                sendServiceStatusUpdate(ServiceStatusUpdate.MISSION_ERROR, message);
+                break;
+            case COMPLETED:
+                sendServiceStatusUpdate(ServiceStatusUpdate.MISSION_FINISH, message);
+                break;
+            default:
+                break;
         }
     }
 }

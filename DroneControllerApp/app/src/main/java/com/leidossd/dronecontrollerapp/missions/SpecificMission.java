@@ -4,43 +4,35 @@ import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class SpecificMission extends Mission{
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
+public class SpecificMission extends Mission {
+    public static final Creator<SpecificMission> CREATOR = new Creator<SpecificMission>(){
+        @Override
+        public SpecificMission createFromParcel(Parcel source) {
+            String title = source.readString();
+            LinkedList<Task> tasks = null;
+            source.readParcelableArray(tasks, CREATOR);
+            source.readTypedObject()
+            return null;
+        }
+
+        @Override
+        public SpecificMission[] newArray(int size) {
+            return new SpecificMission[size];
+        }
+    };
 
     public SpecificMission(String title){
-        super(title, new MissionUpdateCallback() {
-            @Override
-            public void onMissionStart(String missionStartResult) { }
+        super(title);
+        List<Task> tasks = new LinkedList<>();
+        tasks.add(new ToastTask("Starting..."));
+        tasks.add(new WaitTask(5000));
+        tasks.add(new ToastTask("Ending..."));
 
-            @Override
-            public void onMissionFinish(String missionFinishResult) { }
-
-            @Override
-            public void onMissionError(String missionErrorMessage) { }
-        });
-    }
-
-    public SpecificMission(String title, MissionUpdateCallback missionUpdateCallback) {
-        super(title, missionUpdateCallback);
-        this.missionUpdateCallback = missionUpdateCallback;
-        this.currentState = MissionState.READY;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    @Override
-    protected void start() {
-        currentState = MissionState.RUNNING;
-        Handler handler = new Handler();
-        handler.postDelayed(this::stop, 5000);
-        missionUpdateCallback.onMissionStart(currentState.toString());
-    }
-
-    @Override
-    protected void stop() {
-        currentState = MissionState.COMPLETED;
-        missionUpdateCallback.onMissionFinish(currentState.toString());
+        taskIterable = tasks;
     }
 
     @Override
@@ -50,13 +42,14 @@ public class SpecificMission extends Mission{
 
     // Parcelable functionality
     private SpecificMission(Parcel in) {
-        super(in);
+
+        super(in.readString(), in.readTypedList(k, SpecificMission.CREATOR));
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
-        dest.writeString(currentState.toString());
+        dest.writeTypedList((LinkedList<Task>) taskIterable);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
@@ -68,4 +61,10 @@ public class SpecificMission extends Mission{
             return new SpecificMission[size];
         }
     };
+
+    @Override
+    public void statusUpdate(TaskState status, String message){
+        listener.statusUpdate(status, message);
+
+    }
 }

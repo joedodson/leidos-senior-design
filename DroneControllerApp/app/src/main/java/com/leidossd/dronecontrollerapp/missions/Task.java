@@ -8,6 +8,11 @@ abstract public class Task implements Parcelable {
     TaskState currentState;
     StatusUpdateListener listener;
 
+
+    // To add a new task type you'll need to add it to the enum, and the switch statement below
+    // NOTE: DO NOT ADD MISSION TYPES HERE, THEY BELONG IN THE MISSION ABSTRACT CLASS
+
+
     abstract void start();
     abstract void stop();
 
@@ -34,9 +39,11 @@ abstract public class Task implements Parcelable {
         this.listener = null;
     }
 
-    interface StatusUpdateListener {
-        void statusUpdate(TaskState newStatus);
+    public interface StatusUpdateListener {
+        void statusUpdate(TaskState newStatus, String message);
     }
+
+
 
     public enum TaskState {
         NOT_READY,
