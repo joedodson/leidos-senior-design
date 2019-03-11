@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Build;
+
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -51,14 +53,17 @@ public class MissionRunner {
     private Timer timer;
     private long missionStartTime = 0;
 
+    Task.StatusUpdateListener listener;
+
     private static LocalBroadcastManager localBroadcastManager;
 
     private static final String MISSION_BUNDLE_EXTRA_NAME = "MISSION_EXTRA";
 
-    public MissionRunner(Context context) {
+    public MissionRunner(Context applicationContext, Task.StatusUpdateListener listener) {
         Random random = new Random();
         notificationId = random.nextInt(1000) + 1;
-        notificationManager = NotificationManagerCompat.from(context.getApplicationContext());
+        notificationManager = NotificationManagerCompat.from(applicationContext);
+        this.listener = listener;
         handler = new Handler();
 
         if (!serviceBindingInProgress.get()) {
@@ -105,15 +110,18 @@ public class MissionRunner {
      */
     public synchronized void startMission(Context applicationContext, Mission mission) {
         if (!missionRunnerServiceIsBound.get()) {
-            mission.getMissionUpdateCallback().onMissionError("MissionRunner unable to bind to service");
+//            mission.getMissionUpdateCallback().onMissionError("MissionRunner unable to bind to service");
+            listener.statusUpdate(Task.TaskState.FAILED, "MissionRunner unable to bind to service");
         } else if (!missionInProgress.compareAndSet(false, true)) {
-            mission.getMissionUpdateCallback().onMissionError("Mission already in progress");
+//            mission.getMissionUpdateCallback().onMissionError("Mission already in progress");
+            listener.statusUpdate(Task.TaskState.FAILED, "Mission already in progress");
         } else {
 
             // Put mission into an intent as an extra (make sure the mission implements Parcelable correctly
             Intent missionIntent = new Intent(applicationContext, MissionRunnerService.class);
 
-            if (mission.getMissionUpdateCallback() != null) {
+//            if (mission.getMissionUpdateCallback() != null) {
+            if(listener != null){
                 registerReceivers(mission);
             }
 
@@ -180,7 +188,8 @@ public class MissionRunner {
         missionStartBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                mission.getMissionUpdateCallback().onMissionStart(intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
+//                mission.getMissionUpdateCallback().onMissionStart(intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
+                listener.statusUpdate(Task.TaskState.RUNNING, intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
             }
         };
 
@@ -194,14 +203,17 @@ public class MissionRunner {
                                         missionRunnerService.getCurrentMission().getTitle(),
                                         missionRunnerService.getCurrentMission().getStatus()))
                                 .build());
-                mission.getMissionUpdateCallback().onMissionFinish(intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
+
+//                mission.getMissionUpdateCallback().onMissionError(intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
+                listener.statusUpdate(Task.TaskState.FAILED, intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
             }
         };
 
         missionErrorBroadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                mission.getMissionUpdateCallback().onMissionError(intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
+//                mission.getMissionUpdateCallback().onMissionError(intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
+                listener.statusUpdate(Task.TaskState.FAILED, intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
             }
         };
 
@@ -209,6 +221,7 @@ public class MissionRunner {
         localBroadcastManager.registerReceiver(missionFinishBroadcastReceiver, new IntentFilter(ServiceStatusUpdate.MISSION_FINISH.action));
         localBroadcastManager.registerReceiver(missionErrorBroadcastReceiver, new IntentFilter(ServiceStatusUpdate.MISSION_ERROR.action));
     }
+
 
     /**
      * For code readability. All tasks that should be done in between missions.

@@ -1,46 +1,28 @@
 package com.leidossd.dronecontrollerapp.missions;
 
-import android.os.Handler;
 import android.os.Parcel;
-import android.os.Parcelable;
+import java.util.ArrayList;
 
-public class SpecificMission extends Mission{
-
+public class SpecificMission extends Mission {
     public SpecificMission(String title){
-        super(title, new MissionUpdateCallback() {
-            @Override
-            public void onMissionStart(String missionStartResult) { }
 
-            @Override
-            public void onMissionFinish(String missionFinishResult) { }
-
-            @Override
-            public void onMissionError(String missionErrorMessage) { }
-        });
-        this.currentState = MissionState.READY;
+        super(title);
+        ArrayList<Task> tasks = new ArrayList<>();
+        tasks.add(new ToastTask("Starting..."));
+        tasks.add(new WaitTask(5000));
+        tasks.add(new ToastTask("1..."));
+        tasks.add(new WaitTask(5000));
+        tasks.add(new ToastTask("2..."));
+        tasks.add(new WaitTask(5000));
+        tasks.add(new ToastTask("3..."));
+        tasks.add(new WaitTask(5000));
+        tasks.add(new ToastTask("Ending..."));
+        taskIterable = tasks;
     }
 
-    public SpecificMission(String title, MissionUpdateCallback missionUpdateCallback) {
-        super(title, missionUpdateCallback);
-        this.currentState = MissionState.READY;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    @Override
-    protected void start() {
-        currentState = MissionState.RUNNING;
-        Handler handler = new Handler();
-        handler.postDelayed(this::stop, 5000);
-        missionUpdateCallback.onMissionStart(currentState.toString());
-    }
-
-    @Override
-    protected void stop() {
-        currentState = MissionState.COMPLETED;
-        missionUpdateCallback.onMissionFinish(currentState.toString());
+    SpecificMission(String title, ArrayList<Task> tasks){
+        super(title, tasks);
+        currentState = TaskState.READY;
     }
 
     @Override
@@ -49,23 +31,24 @@ public class SpecificMission extends Mission{
     }
 
     // Parcelable functionality
-    private SpecificMission(Parcel in) {
-        super(in);
-    }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeString(currentState.toString());
+        write(dest);
     }
 
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public SpecificMission createFromParcel(Parcel in) {
-            return new SpecificMission(in);
-        }
 
-        public SpecificMission[] newArray(int size) {
-            return new SpecificMission[size];
-        }
-    };
+    public static SpecificMission create(Parcel in){
+        String title = in.readString();
+        ArrayList<Task> tasks = new ArrayList<>();
+        in.readTypedList(tasks, TaskCreator.CREATOR);
+        return new SpecificMission(title, tasks);
+    }
+
+    @Override
+    public void write(Parcel out){
+        out.writeString("SPECIFIC_MISSION");
+        out.writeString(title);
+        out.writeTypedList(taskIterable);
+    }
 }

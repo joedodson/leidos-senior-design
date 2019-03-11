@@ -1,56 +1,65 @@
 package com.leidossd.dronecontrollerapp.missions;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.util.ArrayList;
 
-abstract public class Mission implements Parcelable {
-    protected String title;
-    MissionState currentState;
 
-    MissionUpdateCallback missionUpdateCallback;
+abstract public class Mission extends Task implements Task.StatusUpdateListener {
+    private Task currentTask;
+    private int currentTaskId = 0;
+    ArrayList<Task> taskIterable;
+    public static final Creator CREATOR = MissionCreator.CREATOR;
 
     Mission(String title) {
-        this(title, null);
+        super(title);
     }
 
-    Mission(String title, MissionUpdateCallback missionUpdateCallback) {
-        this.title = title;
-        this.missionUpdateCallback = missionUpdateCallback;
-        this.currentState = MissionState.NOT_READY;
+    Mission(String title, ArrayList<Task> taskIterable){
+        super(title);
+        this.taskIterable = taskIterable;
     }
 
-    Mission(Parcel in) {
-        title = in.readString();
-        currentState = MissionState.valueOf(in.readString());
+    private void nextTask(){
+        if(!(currentTaskId < taskIterable.size())) {
+            currentState = TaskState.COMPLETED;
+            listener.statusUpdate(currentState, "Mission finished.");
+            return;
+        }
+
+        currentTask = taskIterable.get(currentTaskId);
+        currentTaskId += 1;
+
+        currentTask.setListener(this);
+        currentTask.start();
     }
 
-    public String getTitle() {
-        return title;
-    }
-    public String getStatus() { return currentState.toString(); }
+    void start(){
+        if(currentState != TaskState.READY)
+            return;
 
-    public interface MissionUpdateCallback {
-        void onMissionStart(String missionStartResult);
-        void onMissionFinish(String missionFinishResult);
-        void onMissionError(String missionErrorMessage);
+        currentState = TaskState.RUNNING;
+        listener.statusUpdate(currentState, String.format("Mission \"%s\" started", title));
+        nextTask();
     }
 
-    public void setMissionUpdateCallback(MissionUpdateCallback missionUpdateCallback) {
-        this.missionUpdateCallback = missionUpdateCallback;
+    void stop(){
+        currentTask.stop();
+        currentState = TaskState.COMPLETED;
+        listener.statusUpdate(currentState, String.format("Mission \"%s\" stopped", title));
     }
 
-    public MissionUpdateCallback getMissionUpdateCallback() {
-        return missionUpdateCallback;
-    }
-
-    abstract protected void start();
-    abstract protected void stop();
-
-    public enum MissionState {
-        NOT_READY,
-        READY,
-        RUNNING,
-        COMPLETED,
-        FAILED
+    @Override
+    public void statusUpdate(Task.TaskState state, String message){
+        // Tasks shouldn't report ready/notready/running
+        switch(state){
+            case COMPLETED:
+//                listener.statusUpdate(TaskState.RUNNING, message + " " + Integer.toString(currentTaskId));
+                nextTask();
+                break;
+            case FAILED:
+                listener.statusUpdate(state, message);
+                break;
+            default:
+                break;
+        }
     }
 }

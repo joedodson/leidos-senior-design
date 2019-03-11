@@ -8,8 +8,9 @@ import android.widget.TextView;
 import com.leidossd.dronecontrollerapp.missions.Mission;
 import com.leidossd.dronecontrollerapp.missions.SpecificMission;
 import com.leidossd.dronecontrollerapp.missions.MissionRunner;
+import com.leidossd.dronecontrollerapp.missions.Task;
 
-public class MissionServiceExampleActivity extends AppCompatActivity {
+public class MissionServiceExampleActivity extends AppCompatActivity implements Task.StatusUpdateListener {
 
     MissionRunner missionRunner;
     TextView missionStatusTextView;
@@ -22,25 +23,24 @@ public class MissionServiceExampleActivity extends AppCompatActivity {
 
         missionStatusTextView = findViewById(R.id.tv_activity_mission_service_example_status);
 
-        mission = new SpecificMission("SpecificMission", new Mission.MissionUpdateCallback() {
-            @Override
-            public void onMissionStart(String missionStartResult) {
-                setMissionStatus(missionStartResult);
-            }
-
-            @Override
-            public void onMissionFinish(String missionFinishResult) {
-                setMissionStatus(missionFinishResult);
-            }
-
-            @Override
-            public void onMissionError(String missionErrorMessage) {
-                setMissionStatus(missionErrorMessage);
-            }
-        });
-
-        missionStatusTextView.setText(mission.getStatus());
-        missionRunner = new MissionRunner(this);
+        mission = new SpecificMission("SpecificMission");//, new Mission.MissionUpdateCallback() {
+//            @Override
+//            public void onMissionStart(String missionStartResult) {
+//                setMissionStatus(missionStartResult);
+//            }
+//
+//            @Override
+//            public void onMissionFinish(String missionFinishResult) {
+//                setMissionStatus(missionFinishResult);
+//            }
+//
+//            @Override
+//            public void onMissionError(String missionErrorMessage) {
+//                setMissionStatus(missionErrorMessage);
+//            }
+//        });
+//        missionStatusTextView.setText(mission.getStatus());
+        missionRunner = new MissionRunner(this, this);
     }
 
     public void startService(View view) {
@@ -48,6 +48,11 @@ public class MissionServiceExampleActivity extends AppCompatActivity {
     }
 
     private void setMissionStatus(String status) {
-        missionStatusTextView.setText(String.format("Status: %s", status));
+        runOnUiThread(()->missionStatusTextView.setText(String.format("Status: %s", status)));
+    }
+
+    @Override
+    public void statusUpdate(Task.TaskState status, String message){
+        setMissionStatus(message);
     }
 }
