@@ -95,11 +95,7 @@ public class SplashActivity extends AppCompatActivity {
                 registrationSuccess.set(registrationIntent.getBooleanExtra(REGISTRATION_RESULT.getResultKey(), false));
                 if (registrationSuccess.get()) {
                     Log.i(TAG, "SDK Registration Success");
-                    if (permissionsGranted.get()) {
-                        startNextActivityConditionally();
-                    } else {
-                        Log.d(TAG, "Waiting for permissions");
-                    }
+                    startNextActivityConditionally();
                 } else {
                     startActivity(new Intent(SplashActivity.this, SDKRegistrationErrorActivity.class));
                     finish();
@@ -178,6 +174,7 @@ public class SplashActivity extends AppCompatActivity {
         // If no missing permissions, continue to MainActivity
         if(missingPermissions.isEmpty()) {
             permissionsGranted.set(true);
+            MainApplication.restartSdkRegistration();
             startNextActivityConditionally();
         } else {
             startActivity(new Intent(SplashActivity.this, SDKRegistrationErrorActivity.class));
