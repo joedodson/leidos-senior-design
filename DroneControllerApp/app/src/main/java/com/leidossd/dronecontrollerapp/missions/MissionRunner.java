@@ -123,11 +123,7 @@ public class MissionRunner {
                 registerReceivers(mission);
             }
 
-            Bundle b = new Bundle();
-            b.putParcelable(MISSION_BUNDLE_EXTRA_NAME, mission);
-            b.setClassLoader(SpecificMission.class.getClassLoader());
-            missionIntent.putExtra("bundle",b);
-//            missionIntent.putExtra(MISSION_BUNDLE_EXTRA_NAME, mission);
+            missionIntent.putExtra(MISSION_BUNDLE_EXTRA_NAME, mission);
 
             // Foreground services HAVE to display notification to user while running
             Intent notificationIntent = new Intent(applicationContext, MissionStatusActivity.class);

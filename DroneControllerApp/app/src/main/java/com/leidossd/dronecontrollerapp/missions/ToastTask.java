@@ -8,20 +8,6 @@ import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
 public class ToastTask extends Task {
     String toast;
-//    public static final Creator<ToastTask> CREATOR = new Creator<ToastTask>(){
-//        @Override
-//        public ToastTask createFromParcel(Parcel source) {
-//            return new ToastTask(source);
-////            Bundle bundle = source.readBundle();
-////            String tst = bundle.getString("toast");
-////            return new ToastTask(tst);
-//        }
-//
-//        @Override
-//        public ToastTask[] newArray(int size) {
-//            return new ToastTask[size];
-//        }
-//    };
 
     public static ToastTask create(Parcel in){
         return new ToastTask(in.readString());
@@ -38,15 +24,12 @@ public class ToastTask extends Task {
         this.toast = toast;
     }
 
-    ToastTask(Parcel in){
-        this(in.readString());
-    }
-
     void start(){
         currentState = TaskState.RUNNING;
         listener.statusUpdate(currentState, String.format("Task \"%s\" started.", title));
         showToast(toast);
         currentState = TaskState.COMPLETED;
+        listener.statusUpdate(currentState, String.format("Task \"%s\" finished.", title));
     }
 
     void stop(){
@@ -56,8 +39,6 @@ public class ToastTask extends Task {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         write(dest);
-//        dest.writeString("TOAST_TASK");
-//        dest.writeString(toast);
     }
 
     @Override

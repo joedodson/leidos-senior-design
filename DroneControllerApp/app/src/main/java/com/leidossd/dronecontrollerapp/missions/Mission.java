@@ -1,52 +1,32 @@
 package com.leidossd.dronecontrollerapp.missions;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.util.ArrayList;
 
 
 abstract public class Mission extends Task implements Task.StatusUpdateListener {
     private Task currentTask;
     private int currentTaskId = 0;
-    Iterable<Task> taskIterable;
+    ArrayList<Task> taskIterable;
     public static final Creator CREATOR = MissionCreator.CREATOR;
 
     Mission(String title) {
         super(title);
     }
 
-    Mission(String title, Iterable<Task> taskIterable){
+    Mission(String title, ArrayList<Task> taskIterable){
         super(title);
         this.taskIterable = taskIterable;
     }
 
-//    enum MissionType {
-//        SPECIFIC_MISSION,
-//    }
-//
-//    public static final Creator<Mission> CREATOR = new Creator<Mission>(){
-//        @Override
-//        public Mission createFromParcel(Parcel source) {
-//            switch(MissionType.valueOf(source.readString()))
-//            return null;
-//        }
-//
-//        @Override
-//        public Mission[] newArray(int size) {
-//            return new Mission[0];
-//        }
-//    }
-
     private void nextTask(){
-        if(!taskIterable.iterator().hasNext()) {
+        if(!(currentTaskId < taskIterable.size())) {
             currentState = TaskState.COMPLETED;
             listener.statusUpdate(currentState, "Mission finished.");
             return;
         }
 
-//        currentTask.clearListener();
-
+        currentTask = taskIterable.get(currentTaskId);
         currentTaskId += 1;
-        currentTask = taskIterable.iterator().next();
 
         currentTask.setListener(this);
         currentTask.start();
@@ -72,6 +52,7 @@ abstract public class Mission extends Task implements Task.StatusUpdateListener 
         // Tasks shouldn't report ready/notready/running
         switch(state){
             case COMPLETED:
+//                listener.statusUpdate(TaskState.RUNNING, message + " " + Integer.toString(currentTaskId));
                 nextTask();
                 break;
             case FAILED:

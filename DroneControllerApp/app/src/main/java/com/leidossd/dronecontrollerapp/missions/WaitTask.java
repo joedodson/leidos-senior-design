@@ -1,6 +1,5 @@
 package com.leidossd.dronecontrollerapp.missions;
 
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcel;
 
@@ -10,19 +9,8 @@ public class WaitTask extends Task {
     WaitTask(long milliseconds) {
         super(String.format("Waiting for %dms", milliseconds));
         this.milliseconds = milliseconds;
+        currentState = TaskState.READY;
     }
-
-//    public static final Creator<WaitTask> CREATOR = new Creator<WaitTask>(){
-//        @Override
-//        public WaitTask createFromParcel(Parcel source) {
-//            return new WaitTask(source);
-//        }
-//
-//        @Override
-//        public WaitTask[] newArray(int size) {
-//            return new WaitTask[size];
-//        }
-//    };
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
@@ -33,10 +21,6 @@ public class WaitTask extends Task {
     @Override
     public int describeContents() {
         return 0;
-    }
-
-    private WaitTask(Parcel in){
-        this(in.readLong());
     }
 
     static public WaitTask create(Parcel in){
@@ -53,7 +37,7 @@ public class WaitTask extends Task {
         Handler handler = new Handler();
         handler.postDelayed(() -> {
             currentState = TaskState.COMPLETED;
-            listener.statusUpdate(currentState, "Wait finished");
+            listener.statusUpdate(TaskState.COMPLETED, "Wait finished");
         }, milliseconds);
     }
 

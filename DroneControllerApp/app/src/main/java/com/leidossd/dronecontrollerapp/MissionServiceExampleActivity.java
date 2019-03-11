@@ -48,7 +48,7 @@ public class MissionServiceExampleActivity extends AppCompatActivity implements 
     }
 
     private void setMissionStatus(String status) {
-        missionStatusTextView.setText(String.format("Status: %s", status));
+        runOnUiThread(()->missionStatusTextView.setText(String.format("Status: %s", status)));
     }
 
     @Override
