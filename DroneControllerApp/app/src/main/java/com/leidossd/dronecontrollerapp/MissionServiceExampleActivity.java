@@ -25,8 +25,8 @@ public class MissionServiceExampleActivity extends AppCompatActivity implements 
 
         missionStatusTextView = findViewById(R.id.tv_activity_mission_service_example_status);
 
-//        mission = new SpecificMission("SpecificMission");
-        mission = new WaypointMission(new Coordinate(1,1,0));
+        mission = new SpecificMission("SpecificMission");
+//        mission = new WaypointMission(new Coordinate(1,1,0));
         missionRunner = new MissionRunner(this, this);
     }
 
