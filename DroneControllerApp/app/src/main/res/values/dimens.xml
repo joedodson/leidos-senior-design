@@ -3,6 +3,7 @@
     <dimen name="text_size_large">24sp</dimen>
     <dimen name="text_size_medium">20sp</dimen>
     <dimen name="text_size_small">16sp</dimen>
+    <dimen name="text_size_xsmall">12sp</dimen>
 
     <dimen name="button_std_width">500dp</dimen>
     <dimen name="button_std_padding_top_bottom">10sp</dimen>
@@ -14,6 +15,8 @@
     <dimen name="menu_header_elevation">6dp</dimen>
     <dimen name="menu_logo_width">150dp</dimen>
     <dimen name="menu_elevation">8dp</dimen>
+
+    <dimen name="button_grid_size">75dp</dimen>
 
     <dimen name="margin_tiny">5sp</dimen>
     <dimen name="margin_small">10sp</dimen>

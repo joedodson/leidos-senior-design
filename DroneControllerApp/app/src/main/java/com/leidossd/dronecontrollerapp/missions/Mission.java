@@ -35,11 +35,11 @@ abstract public class Mission implements Parcelable {
         void onMissionError(String missionErrorMessage);
     }
 
-    void setMissionUpdateCallback(MissionUpdateCallback missionUpdateCallback) {
+    public void setMissionUpdateCallback(MissionUpdateCallback missionUpdateCallback) {
         this.missionUpdateCallback = missionUpdateCallback;
     }
 
-    MissionUpdateCallback getMissionUpdateCallback() {
+    public MissionUpdateCallback getMissionUpdateCallback() {
         return missionUpdateCallback;
     }
 

@@ -16,6 +16,11 @@
         <item name="android:colorBackground">@color/primary_dark</item>
         <item name="actionBarStyle">@style/CustomWidget.StatusActionBar</item>
         <item name="buttonStyle">@style/CustomWidget.Button.Standard</item>
+
+        <!-- Pop-up Menu -->
+        <item name="popupMenuStyle">@style/CustomWidget.PopupMenu</item>
+        <item name="textAppearanceLargePopupMenu">@style/CustomWidget.PopupMenuTextLarge</item>
+        <item name="textAppearanceSmallPopupMenu">@style/CustomWidget.PopupMenuTextSmall</item>
     </style>
 
     <!-- Widgets -->
@@ -23,6 +28,20 @@
 
     <style name="CustomWidget.StatusActionBar" parent="Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <item name="android:displayOptions">useLogo|showHome</item>
+    </style>
+
+    <style name="CustomWidget.PopupMenu" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@android:color/white</item>
+    </style>
+
+    <style name="CustomWidget.PopupMenuTextLarge" parent="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large">
+        <item name="android:textColor">@color/primary_dark</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
+    </style>
+
+    <style name="CustomWidget.PopupMenuTextSmall" parent="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small">
+        <item name="android:textColor">@color/primary_dark</item>
+        <item name="android:textSize">@dimen/text_size_small</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
