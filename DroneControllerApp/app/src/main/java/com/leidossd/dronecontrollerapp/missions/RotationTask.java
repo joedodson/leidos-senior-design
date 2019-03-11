@@ -23,6 +23,15 @@ public class RotationTask extends Task {
         return 0;
     }
 
+    @Override
+    void write(Parcel out){
+
+    }
+
+    static public RotationTask create(Parcel in){
+        return null;
+    }
+
     void start(){
 
     }

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -122,7 +123,11 @@ public class MissionRunner {
                 registerReceivers(mission);
             }
 
-            missionIntent.putExtra(MISSION_BUNDLE_EXTRA_NAME, mission);
+            Bundle b = new Bundle();
+            b.putParcelable(MISSION_BUNDLE_EXTRA_NAME, mission);
+            b.setClassLoader(SpecificMission.class.getClassLoader());
+            missionIntent.putExtra("bundle",b);
+//            missionIntent.putExtra(MISSION_BUNDLE_EXTRA_NAME, mission);
 
             // Foreground services HAVE to display notification to user while running
             Intent notificationIntent = new Intent(applicationContext, MissionStatusActivity.class);

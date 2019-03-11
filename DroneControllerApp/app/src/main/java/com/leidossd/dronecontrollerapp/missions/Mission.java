@@ -8,6 +8,7 @@ abstract public class Mission extends Task implements Task.StatusUpdateListener 
     private Task currentTask;
     private int currentTaskId = 0;
     Iterable<Task> taskIterable;
+    public static final Creator CREATOR = MissionCreator.CREATOR;
 
     Mission(String title) {
         super(title);
@@ -42,7 +43,7 @@ abstract public class Mission extends Task implements Task.StatusUpdateListener 
             return;
         }
 
-        currentTask.clearListener();
+//        currentTask.clearListener();
 
         currentTaskId += 1;
         currentTask = taskIterable.iterator().next();

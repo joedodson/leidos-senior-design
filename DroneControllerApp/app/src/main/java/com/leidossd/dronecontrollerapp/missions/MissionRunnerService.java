@@ -3,6 +3,7 @@ package com.leidossd.dronecontrollerapp.missions;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 
@@ -36,7 +37,8 @@ public class MissionRunnerService extends IntentService implements Task.StatusUp
 
     // What actually gets called when service.startForeground() is called
     protected void onHandleIntent(Intent missionIntent) {
-        mission = missionIntent.getParcelableExtra(MISSION_BUNDLE_EXTRA_NAME);
+        Bundle b = missionIntent.getBundleExtra("bundle");
+        mission = b.getParcelable(MISSION_BUNDLE_EXTRA_NAME);
 //        mission.setMissionUpdateCallback(new Mission.MissionUpdateCallback() {
 //            @Override
 //            public void onMissionStart(String missionStartResult) {
@@ -54,6 +56,7 @@ public class MissionRunnerService extends IntentService implements Task.StatusUp
 //            }
 //        });
 
+        mission.setListener(this);
         mission.start();
     }
 

@@ -1,5 +1,6 @@
 package com.leidossd.dronecontrollerapp.missions;
 
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcel;
 
@@ -11,20 +12,21 @@ public class WaitTask extends Task {
         this.milliseconds = milliseconds;
     }
 
-    public static final Creator<WaitTask> CREATOR = new Creator<WaitTask>(){
-        @Override
-        public WaitTask createFromParcel(Parcel source) {
-            return new WaitTask(source);
-        }
-
-        @Override
-        public WaitTask[] newArray(int size) {
-            return new WaitTask[size];
-        }
-    };
+//    public static final Creator<WaitTask> CREATOR = new Creator<WaitTask>(){
+//        @Override
+//        public WaitTask createFromParcel(Parcel source) {
+//            return new WaitTask(source);
+//        }
+//
+//        @Override
+//        public WaitTask[] newArray(int size) {
+//            return new WaitTask[size];
+//        }
+//    };
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
+        out.writeString("WAIT_TASK");
         out.writeLong(milliseconds);
     }
 
@@ -35,6 +37,16 @@ public class WaitTask extends Task {
 
     private WaitTask(Parcel in){
         this(in.readLong());
+    }
+
+    static public WaitTask create(Parcel in){
+        return new WaitTask(in.readLong());
+    }
+
+    @Override
+    void write(Parcel out){
+        out.writeString("WAIT_TASK");
+        out.writeLong(milliseconds);
     }
 
     void start(){

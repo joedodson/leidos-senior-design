@@ -34,6 +34,15 @@ public class FlightTask extends Task {
     }
 
     @Override
+    void write(Parcel out){
+
+    }
+
+    public static FlightTask create(Parcel in){
+        return null;
+    }
+
+    @Override
     void stop(){
         FlightControllerWrapper.getInstance().haltFlight();
     }
