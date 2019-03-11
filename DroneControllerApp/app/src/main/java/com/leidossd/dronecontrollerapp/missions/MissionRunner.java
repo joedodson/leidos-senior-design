@@ -68,7 +68,7 @@ public class MissionRunner {
 
         if (!serviceBindingInProgress.get()) {
             serviceBindingInProgress.set(true);
-            bindService(context.getApplicationContext());
+            bindService(applicationContext.getApplicationContext());
         }
     }
 

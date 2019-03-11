@@ -23,7 +23,7 @@ abstract public class Task implements Parcelable {
         this.currentState = TaskState.NOT_READY;
     }
 
-    String getTitle() {
+    public String getTitle() {
         return title;
     }
 

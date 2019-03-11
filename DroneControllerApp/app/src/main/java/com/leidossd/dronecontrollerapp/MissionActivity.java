@@ -21,6 +21,7 @@ import com.leidossd.dronecontrollerapp.missions.Mission;
 import com.leidossd.dronecontrollerapp.missions.MissionAdapter;
 import com.leidossd.dronecontrollerapp.missions.MissionRunner;
 import com.leidossd.dronecontrollerapp.missions.MissionRunnerService;
+import com.leidossd.dronecontrollerapp.missions.Task;
 import com.leidossd.utils.MissionAction;
 
 import org.json.JSONException;
@@ -32,7 +33,7 @@ import java.io.FileWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 
-public class MissionActivity extends AppCompatActivity implements MissionAdapter.MissionAdapterListener {
+public class MissionActivity extends AppCompatActivity implements MissionAdapter.MissionAdapterListener, Task.StatusUpdateListener{
     //Constants for inner classes
     private static final int CREATE_MISSION = 1001;
     private static final int CONFIRM_MISSION = 1002;
@@ -78,14 +79,14 @@ public class MissionActivity extends AppCompatActivity implements MissionAdapter
         listView.addItemDecoration(new DividerItemDecoration(this));
 
         adapter = new MissionAdapter(this);
-        missionRunner = new MissionRunner(this);
+        missionRunner = new MissionRunner(this,this);
         listView.setAdapter(adapter);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        updateStatus();
+        updateStatus(Task.TaskState.NOT_READY);
     }
 
     public void onClicked(View view) {
@@ -118,20 +119,20 @@ public class MissionActivity extends AppCompatActivity implements MissionAdapter
         popupMenu.show();
     }
 
-    public void updateStatus(){
+    public void updateStatus(Task.TaskState state){
         MissionRunnerService missionRunnerService = MissionRunner.missionRunnerService;
         if(missionRunnerService != null) {
             Mission mission = missionRunnerService.getCurrentMission();
             if (mission != null) {
-                if (mission.getStatus().equals("RUNNING")) {
-                    missionText.setText(String.format("%s - %s", mission.getTitle(), mission.getStatus()));
+                if (state.toString().equals("RUNNING")) {
+                    missionText.setText(String.format("%s - %s", mission.getTitle(), state.toString()));
                     noMissionText.setVisibility(View.INVISIBLE);
                     missionText.setVisibility(View.VISIBLE);
                     droneImage.setVisibility(View.VISIBLE);
                     nextArrow.setVisibility(View.VISIBLE);
                     missionBar.setClickable(true);
-                } else if (mission.getStatus().equals("COMPLETED") ||
-                        mission.getStatus().equals("FAILED")) {
+                } else if (state.toString().equals("COMPLETED") ||
+                        state.toString().equals("FAILED")) {
                     noMissionText.setVisibility(View.VISIBLE);
                     missionText.setVisibility(View.INVISIBLE);
                     droneImage.setVisibility(View.INVISIBLE);
@@ -143,26 +144,18 @@ public class MissionActivity extends AppCompatActivity implements MissionAdapter
     }
 
     @Override
+    public void statusUpdate(Task.TaskState status, String message){
+        updateStatus(status);
+
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == AppCompatActivity.RESULT_OK) {
             Mission mission = data.getParcelableExtra("Mission");
             boolean saveMission = data.getBooleanExtra("Save Mission", false);
             if(saveMission) adapter.addMission(mission);
             if (mission != null){
-                mission.setMissionUpdateCallback(new Mission.MissionUpdateCallback() {
-                    @Override
-                    public void onMissionStart(String missionStartResult) {
-                        updateStatus();
-                    }
-
-                    @Override
-                    public void onMissionFinish(String missionFinishResult) {
-                        updateStatus();
-                    }
-
-                    @Override
-                    public void onMissionError(String missionErrorMessage) { }
-                });
                 missionRunner.startMission(this, mission);
             }
         }
