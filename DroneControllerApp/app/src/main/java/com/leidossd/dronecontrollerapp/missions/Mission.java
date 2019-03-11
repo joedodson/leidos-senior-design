@@ -18,22 +18,22 @@ abstract public class Mission extends Task implements Task.StatusUpdateListener 
         this.taskIterable = taskIterable;
     }
 
-    enum MissionType {
-        SPECIFIC_MISSION,
-    }
-
-    public static final Creator<Mission> CREATOR = new Creator<Mission>(){
-        @Override
-        public Mission createFromParcel(Parcel source) {
-            switch(MissionType.valueOf(source.readString()))
-            return null;
-        }
-
-        @Override
-        public Mission[] newArray(int size) {
-            return new Mission[0];
-        }
-    }
+//    enum MissionType {
+//        SPECIFIC_MISSION,
+//    }
+//
+//    public static final Creator<Mission> CREATOR = new Creator<Mission>(){
+//        @Override
+//        public Mission createFromParcel(Parcel source) {
+//            switch(MissionType.valueOf(source.readString()))
+//            return null;
+//        }
+//
+//        @Override
+//        public Mission[] newArray(int size) {
+//            return new Mission[0];
+//        }
+//    }
 
     private void nextTask(){
         if(!taskIterable.iterator().hasNext()) {

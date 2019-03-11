@@ -25,7 +25,6 @@ public class WaitTask extends Task {
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeString(title);
         out.writeLong(milliseconds);
     }
 
@@ -35,8 +34,7 @@ public class WaitTask extends Task {
     }
 
     private WaitTask(Parcel in){
-        super(in.readString());
-        this.milliseconds = in.readLong();
+        this(in.readLong());
     }
 
     void start(){
