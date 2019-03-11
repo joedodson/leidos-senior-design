@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 public class SpecificMission extends Mission {
     public SpecificMission(String title){
+
         super(title);
         ArrayList<Task> tasks = new ArrayList<>();
         tasks.add(new ToastTask("Starting..."));

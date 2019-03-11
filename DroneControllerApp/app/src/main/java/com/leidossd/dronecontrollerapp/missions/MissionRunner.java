@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.Build;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -29,7 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * service. Provides simple API to use everywhere else in the app.
  */
 public class MissionRunner {
-    private static MissionRunnerService missionRunnerService = null;
+    public static MissionRunnerService missionRunnerService = null;
 
     /** Static atomics are the best way around Singleton pattern for now. Multiple mission runners
      * can be instantiated, but static atomics help prevent them from running more than one mission at
@@ -66,7 +68,7 @@ public class MissionRunner {
 
         if (!serviceBindingInProgress.get()) {
             serviceBindingInProgress.set(true);
-            bindService(applicationContext);
+            bindService(context.getApplicationContext());
         }
     }
 
@@ -140,7 +142,12 @@ public class MissionRunner {
                             .setTicker("New Mission");
 
             missionStartTime = System.currentTimeMillis();
-            missionRunnerService.startForegroundService(missionIntent);
+            //Added in version check for testing purposes.  Can be removed once version is finalized.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                missionRunnerService.startForegroundService(missionIntent);
+            } else {
+                missionRunnerService.startService(missionIntent);
+            }
             missionRunnerService.startForeground(notificationId, notificationBuilder.build());
 
             // Repeatedly updates the notification with mission run time
@@ -196,6 +203,7 @@ public class MissionRunner {
                                         missionRunnerService.getCurrentMission().getTitle(),
                                         missionRunnerService.getCurrentMission().getStatus()))
                                 .build());
+
 //                mission.getMissionUpdateCallback().onMissionError(intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
                 listener.statusUpdate(Task.TaskState.FAILED, intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
             }

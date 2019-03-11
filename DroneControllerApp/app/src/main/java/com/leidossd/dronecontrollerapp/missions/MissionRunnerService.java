@@ -38,6 +38,7 @@ public class MissionRunnerService extends IntentService implements Task.StatusUp
     // What actually gets called when service.startForeground() is called
     protected void onHandleIntent(Intent missionIntent) {
         mission = missionIntent.getParcelableExtra(MISSION_BUNDLE_EXTRA_NAME);
+
         mission.setListener(this);
         mission.start();
     }
