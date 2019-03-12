@@ -6,6 +6,7 @@ import android.os.Parcelable;
 public class MissionCreator {
     public enum MissionType {
         SPECIFIC_MISSION,
+        WAYPOINT_MISSION,
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){
@@ -16,6 +17,8 @@ public class MissionCreator {
             switch(MissionType.valueOf(type)){
                 case SPECIFIC_MISSION:
                     return SpecificMission.create(source);
+                case WAYPOINT_MISSION:
+                    return WaypointMission.create(source);
                 default:
                     throw new AssertionError();
             }

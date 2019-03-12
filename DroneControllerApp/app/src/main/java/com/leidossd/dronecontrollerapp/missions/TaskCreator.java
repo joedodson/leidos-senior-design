@@ -8,7 +8,9 @@ public class TaskCreator {
         WAIT_TASK,
         TOAST_TASK,
         FLIGHT_TASK,
-        ROTATION_TASK
+        ROTATION_TASK,
+        TAKEOFF_TASK,
+        LANDING_TASK
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){
@@ -24,10 +26,14 @@ public class TaskCreator {
                     return WaitTask.create(source);
                 case TOAST_TASK:
                     return ToastTask.create(source);
-//                case FLIGHT_TASK:
-//                    return FlightTask.CREATOR.createFromParcel(source);
-//                case ROTATION_TASK:
-//                    return RotationTask.CREATOR.createFromParcel(source);
+                case FLIGHT_TASK:
+                    return FlightTask.create(source);
+                case ROTATION_TASK:
+                    return RotationTask.create(source);
+                case TAKEOFF_TASK:
+                    return TakeOffTask.create(source);
+                case LANDING_TASK:
+                    return LandingTask.create(source);
                 default:
                     throw new AssertionError();
             }

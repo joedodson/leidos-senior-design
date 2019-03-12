@@ -17,6 +17,7 @@ public class FlightControllerWrapper {
     private FlightController flightController;
     // hacky, gotta replace this with the interface
     private DeadReckoningFlightControl coordinateFlightControl;
+    private boolean isAirborne = false;
 
     public static FlightControllerWrapper getInstance(){
         if(instance == null)
@@ -39,22 +40,22 @@ public class FlightControllerWrapper {
         coordinateFlightControl.halt();
     }
 
-    public void gotoRelativeXYZ(Coordinate destination){
+    public void gotoRelativeXYZ(Coordinate destination, @Nullable CommonCallbacks.CompletionCallback callback){
         coordinateFlightControl.setFlightMode(CoordinateFlightControl.FlightMode.RELATIVE);
-        coordinateFlightControl.goTo(destination);
+        coordinateFlightControl.goTo(destination, callback);
     }
 
-    public void gotoAbsoluteXYZ(Coordinate destination){
+    public void gotoAbsoluteXYZ(Coordinate destination, @Nullable CommonCallbacks.CompletionCallback callback){
         coordinateFlightControl.setFlightMode(CoordinateFlightControl.FlightMode.ABSOLUTE);
-        coordinateFlightControl.goTo(destination);
+        coordinateFlightControl.goTo(destination, callback);
     }
 
-    public void gotoXYZ(Coordinate destination){
-        coordinateFlightControl.goTo(destination);
+    public void gotoXYZ(Coordinate destination, @Nullable CommonCallbacks.CompletionCallback callback){
+        coordinateFlightControl.goTo(destination, callback);
     }
 
-    public void rotateTo(float angle){
-        coordinateFlightControl.rotateTo(angle);
+    public void rotateTo(float angle, @Nullable CommonCallbacks.CompletionCallback callback){
+        coordinateFlightControl.rotateTo(angle, callback);
     }
 
     public void setFlightMode(CoordinateFlightControl.FlightMode flightMode){
@@ -65,6 +66,9 @@ public class FlightControllerWrapper {
         return coordinateFlightControl.getPosition();
     }
 
+    public boolean isAirborne(){
+        return isAirborne;
+    }
     // Here lie forwarded functions, add them as you need them
 
     /* To use these functions, DJI makes the callbacks like this:

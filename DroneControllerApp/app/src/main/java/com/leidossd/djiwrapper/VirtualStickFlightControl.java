@@ -1,5 +1,7 @@
 package com.leidossd.djiwrapper;
 
+import android.support.annotation.Nullable;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -28,6 +30,7 @@ public class VirtualStickFlightControl  {
     private float yaw;
     private float throttle;
 
+    DeadReckoningFlightControl posListener;
     private boolean inFlight;
 
     private Timer inputTimer = null;
@@ -43,6 +46,10 @@ public class VirtualStickFlightControl  {
         inputTimer = new Timer();
         virtualSticksUpdateTask = new VirtualSticksUpdateTask();
         inputTimer.schedule(virtualSticksUpdateTask,0, 200);
+    }
+
+    public void setPosListener(DeadReckoningFlightControl drfc){
+        this.posListener = drfc;
     }
 
     public static VirtualStickFlightControl getInstance() {
@@ -71,11 +78,11 @@ public class VirtualStickFlightControl  {
         return inFlight;
     }
 
-    public void move(Coordinate movement){
-       move(movement, FlightCoordinateSystem.BODY);
+    public void move(Coordinate movement, @Nullable CommonCallbacks.CompletionCallback callback){
+       move(movement, FlightCoordinateSystem.BODY, callback);
     }
 
-    public void move(Coordinate movement, FlightCoordinateSystem flightCoordinateSystem){
+    public void move(Coordinate movement, FlightCoordinateSystem flightCoordinateSystem, @Nullable CommonCallbacks.CompletionCallback callback){
         flightController.setRollPitchCoordinateSystem(flightCoordinateSystem);
 
         float duration = (float) movement.magnitude()/speed;
@@ -84,13 +91,13 @@ public class VirtualStickFlightControl  {
         float r = (float) movement.getX()/duration;
         float t = (float) movement.getZ()/duration;
 
-        startTask(r,p,0, t, (long) (duration*1000));
+        startTask(r,p,0, t, (long) (duration*1000), callback);
     }
 
-    public void rotate(float theta){
+    public void rotate(float theta, @Nullable CommonCallbacks.CompletionCallback callback){
         float duration = (float) theta/angularVelocity;
 
-        startTask(0,0, angularVelocity,0, (long) (duration*1000));
+        startTask(0,0, angularVelocity,0, (long) (duration*1000), callback);
     }
 
     public void halt(){
@@ -99,7 +106,7 @@ public class VirtualStickFlightControl  {
         flightController.setVirtualStickModeEnabled(false, null);
     }
 
-    private void startTask(float roll, float pitch, float yaw, float throttle, long duration){
+    private void startTask(float roll, float pitch, float yaw, float throttle, long duration, @Nullable CommonCallbacks.CompletionCallback callback){
         // make sure we aren't doing yaw with anything else simultaneously
         // may need to throw some kind of exception, for now just do nothing.
         if(yaw != 0 && (pitch != 0 || roll != 0 || throttle != 0))
@@ -121,13 +128,21 @@ public class VirtualStickFlightControl  {
 
         // schedule a halt after the time has passed
         endTimer = new Timer();
-        endTimer.schedule(new VirtualSticksClearTask(), duration);
+        endTimer.schedule(new VirtualSticksClearTask(callback), duration);
     }
 
+
     class VirtualSticksClearTask extends TimerTask {
+        CommonCallbacks.CompletionCallback callback;
+
+        VirtualSticksClearTask(@Nullable CommonCallbacks.CompletionCallback callback){
+            this.callback = callback;
+        }
         @Override
         public void run(){
             halt();
+            if(callback != null)
+                callback.onResult(null);
         }
     }
 
@@ -148,6 +163,7 @@ public class VirtualStickFlightControl  {
                         }
                     }
             );
+//                posListener.incrementPosition(new Coordinate(roll,pitch,throttle));
         }
         }
     }
