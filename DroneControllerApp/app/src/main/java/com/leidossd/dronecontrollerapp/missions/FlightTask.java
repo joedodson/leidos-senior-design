@@ -6,6 +6,8 @@ import com.leidossd.djiwrapper.Coordinate;
 import com.leidossd.djiwrapper.CoordinateFlightControl;
 import com.leidossd.djiwrapper.FlightControllerWrapper;
 
+import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
+
 public class FlightTask extends Task {
     private Coordinate destination;
 
@@ -29,12 +31,14 @@ public class FlightTask extends Task {
     void start(){
         FlightControllerWrapper.getInstance()
                 .setFlightMode(CoordinateFlightControl.FlightMode.ABSOLUTE);
-        // when i implement callbacks in the flightcontroller, I'll need to inject the status update
-        FlightControllerWrapper.getInstance().gotoXYZ(this.destination, (error) -> {
+
+        FlightControllerWrapper.getInstance().gotoXYZ(destination, (error) -> {
             if(error != null)
                 listener.statusUpdate(TaskState.FAILED, "ERROR IN gotoXYZ! " + error);
-            currentState = TaskState.COMPLETED;
-            listener.statusUpdate(currentState, title + " Completed");
+            else {
+                currentState = TaskState.COMPLETED;
+                listener.statusUpdate(currentState, title + " Completed");
+            }
         });
     }
 

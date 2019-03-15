@@ -33,8 +33,10 @@ public class TakeOffTask extends Task {
                         else
                             listener.statusUpdate(TaskState.FAILED, error.toString());
                     }
-                    currentState = TaskState.COMPLETED;
-                    listener.statusUpdate(currentState, title + " completed");
+                    else {
+                        currentState = TaskState.COMPLETED;
+                        listener.statusUpdate(currentState, title + " completed");
+                    };
                 });
     }
 

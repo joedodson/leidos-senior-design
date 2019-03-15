@@ -10,10 +10,13 @@ public class WaypointMission extends Mission {
     public WaypointMission(Coordinate destination){
         super("Waypoint Mission to " + destination);
         ArrayList<Task> tasks = new ArrayList<>();
-        tasks.add(new TakeOffTask());
+//        tasks.add(new TakeOffTask());
 //        tasks.add(new RotationTask(180));
-        tasks.add(new WaitTask(2000));
-        tasks.add(new LandingTask());
+        tasks.add(new WaitTask(5000));
+//        tasks.add(new FlightTask(new Coordinate(0,1,0)));
+        tasks.add(new MockFlightTask());
+        tasks.add(new WaitTask(5000));
+//        tasks.add(new LandingTask());
         taskIterable = tasks;
     }
 

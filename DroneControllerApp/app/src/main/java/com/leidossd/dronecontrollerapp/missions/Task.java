@@ -43,7 +43,15 @@ abstract public class Task implements Parcelable {
         void statusUpdate(TaskState newStatus, String message);
     }
 
+    public class StatusUpdate {
+        public TaskState state;
+        public String message;
 
+        StatusUpdate(TaskState state, String message){
+            this.state = state;
+            this.message = message;
+        }
+    }
 
     public enum TaskState {
         NOT_READY,

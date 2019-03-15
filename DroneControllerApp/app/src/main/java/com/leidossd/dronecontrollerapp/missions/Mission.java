@@ -2,6 +2,8 @@ package com.leidossd.dronecontrollerapp.missions;
 
 import java.util.ArrayList;
 
+import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
+
 
 abstract public class Mission extends Task implements Task.StatusUpdateListener {
     private Task currentTask;
@@ -53,9 +55,12 @@ abstract public class Mission extends Task implements Task.StatusUpdateListener 
         switch(state){
             case COMPLETED:
 //                listener.statusUpdate(TaskState.RUNNING, message + " " + Integer.toString(currentTaskId));
-                nextTask();
+//                showToast("Task finished: " + message);
+                new Thread(this::nextTask).start();
+//                nextTask();
                 break;
             case FAILED:
+//                showToast("Task failed: " + message);
                 listener.statusUpdate(state, message);
                 break;
             default:

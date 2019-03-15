@@ -128,7 +128,16 @@ public class VirtualStickFlightControl  {
 
         // schedule a halt after the time has passed
         endTimer = new Timer();
-        endTimer.schedule(new VirtualSticksClearTask(callback), duration);
+//        endTimer.schedule(new VirtualSticksClearTask(callback), duration);
+        endTimer.schedule(new TimerTask(){
+            @Override
+            public void run(){
+                halt();
+                if(callback != null)
+                    callback.onResult(null);
+            }
+        }, duration);
+
     }
 
 

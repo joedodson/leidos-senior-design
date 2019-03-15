@@ -28,8 +28,10 @@ public class LandingTask extends Task {
                 .startLanding((error) -> {
                     if(error != null)
                         listener.statusUpdate(TaskState.FAILED, "ERROR IN Landing!");
-                    currentState = TaskState.COMPLETED;
-                    listener.statusUpdate(currentState, title + " completed");
+                    else {
+                        currentState = TaskState.COMPLETED;
+                        listener.statusUpdate(currentState, title + " completed");
+                    }
                 });
     }
 
