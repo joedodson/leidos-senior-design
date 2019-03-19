@@ -1,6 +1,5 @@
 package com.leidossd.djiwrapper;
 
-import android.os.Handler;
 import android.support.annotation.Nullable;
 
 import java.util.Timer;
@@ -128,14 +127,16 @@ public class VirtualStickFlightControl  {
         this.inFlight = true;
 
         // schedule a halt after the time has passed
-//        endTimer = new Timer();
+        endTimer = new Timer();
 //        endTimer.schedule(new VirtualSticksClearTask(callback), duration);
-
-        new Handler().postDelayed(()->{
-            halt();
-            if(callback != null)
-                callback.onResult(null);
-        },duration);
+        endTimer.schedule(new TimerTask(){
+            @Override
+            public void run(){
+                halt();
+                if(callback != null)
+                    callback.onResult(null);
+            }
+        }, duration);
 
     }
 
