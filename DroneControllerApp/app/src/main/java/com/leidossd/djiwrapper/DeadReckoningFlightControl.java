@@ -63,10 +63,7 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
     public void relativeGoTo(Coordinate destination, @Nullable CommonCallbacks.CompletionCallback callback){
         // Don't need to rotate.
         // Move the drone to the destination, which is easy since it's in the relative coordinates
-        if(!rotationLock)
-            rotateTo(destination.angleFacing(), (error) -> move(destination, callback));
-        else
-            move(destination, callback);
+        move(destination, callback);
 
         //What is hard is figuring out where the drone ended up in the absolute coordinates
 
@@ -74,22 +71,16 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
         Coordinate perpendicular = direction.perpendicularUnit();
 
         // We make the movement in the drones relative coordinate system
-        // don't need to inject movement anymore
-//        position = position.add(perpendicular.scale(destination.getX())
-//                     .add(direction.scale(direction.getY())));
+        position = position.add(perpendicular.scale(destination.getX())
+                     .add(direction.scale(direction.getY())));
     }
 
     public void absoluteGoTo(Coordinate destination, @Nullable CommonCallbacks.CompletionCallback callback){
         // If rotations not locked, then rotate so that you're facing the right way, then do a
         // normal relative goTo.
         Coordinate movement = destination.add(position.scale(-1));
-        if(!rotationLock)
-            rotateTo(movement.angleFacing(), (error) -> move(movement.inBasis(direction.perpendicularUnit(), direction), callback));
-        else
-            move(movement.inBasis(direction.perpendicularUnit(), direction), callback);
-
-        // don't need to inject movement anymore
-//        position = destination;
+        move(movement.inBasis(direction.perpendicularUnit(), direction), callback);
+        position = destination;
     }
 
     public boolean isInFlight(){
