@@ -31,76 +31,32 @@ public class VirtualStickFlightControl  {
     private float yaw;
     private float throttle;
 
-    private long updatePeriod;
-
-    VirtualSticksIncrementListener listener;
-
+    DeadReckoningFlightControl posListener;
     private boolean inFlight;
-    private boolean enabled;
 
-    private Timer inputTimer;
+    private Timer inputTimer = null;
+    private Timer endTimer;
 
     VirtualSticksUpdateTask virtualSticksUpdateTask;
 
     private VirtualStickFlightControl(){
         pitch = roll = yaw = throttle = 0;
-        updatePeriod = 200;
         inFlight = false;
         flightController = ((Aircraft) DJISDKManager.getInstance().
                                        getProduct()).getFlightController();
         inputTimer = new Timer();
         virtualSticksUpdateTask = new VirtualSticksUpdateTask();
-        inputTimer.schedule(virtualSticksUpdateTask,0, updatePeriod);
+        inputTimer.schedule(virtualSticksUpdateTask,0, 200);
+    }
+
+    public void setPosListener(DeadReckoningFlightControl drfc){
+        this.posListener = drfc;
     }
 
     public static VirtualStickFlightControl getInstance() {
         if(instance == null)
             instance = new VirtualStickFlightControl();
         return instance;
-    }
-
-
-    public void setListener(VirtualSticksIncrementListener listener){
-        this.listener = listener;
-    }
-
-    public void enable(){
-        roll = pitch = yaw = throttle = 0;
-        flightController.setVirtualStickModeEnabled(true,null);
-        enabled = true;
-    }
-
-    public void disable(){
-        roll = pitch = yaw = throttle = 0;
-        flightController.setVirtualStickModeEnabled(false, null);
-        enabled = false;
-    }
-
-    public boolean isEnabled(){
-        return enabled;
-    }
-
-    public void setRollPitchCoordinateSystem(FlightCoordinateSystem fcs){
-        flightController.setRollPitchCoordinateSystem(fcs);
-    }
-
-    public float getSpeed(){
-        return speed;
-    }
-
-    public float getAngularVelocity(){
-        return angularVelocity;
-    }
-
-    public void setDirection(Coordinate direction){
-        Coordinate unitDirection = direction.unit();
-        this.roll = unitDirection.getX()*speed;
-        this.pitch = unitDirection.getY()*speed;
-        this.throttle = unitDirection.getZ()*speed;
-    }
-
-    public void setYaw(float yaw){
-        this.yaw = yaw;
     }
 
     public float getPitch(){
@@ -123,10 +79,79 @@ public class VirtualStickFlightControl  {
         return inFlight;
     }
 
+    public void move(Coordinate movement, @Nullable CommonCallbacks.CompletionCallback callback){
+       move(movement, FlightCoordinateSystem.BODY, callback);
+    }
+
+    public void move(Coordinate movement, FlightCoordinateSystem flightCoordinateSystem, @Nullable CommonCallbacks.CompletionCallback callback){
+        flightController.setRollPitchCoordinateSystem(flightCoordinateSystem);
+
+        float duration = (float) movement.magnitude()/speed;
+
+        float p = (float) movement.getY()/duration;
+        float r = (float) movement.getX()/duration;
+        float t = (float) movement.getZ()/duration;
+
+        startTask(r,p,0, t, (long) (duration*1000), callback);
+    }
+
+    public void rotate(float theta, @Nullable CommonCallbacks.CompletionCallback callback){
+        float duration = (float) theta/angularVelocity;
+
+        startTask(0,0, angularVelocity,0, (long) (duration*1000), callback);
+    }
+
     public void halt(){
         pitch = roll = yaw = throttle = 0;
         inFlight = false;
         flightController.setVirtualStickModeEnabled(false, null);
+    }
+
+    private void startTask(float roll, float pitch, float yaw, float throttle, long duration, @Nullable CommonCallbacks.CompletionCallback callback){
+        // make sure we aren't doing yaw with anything else simultaneously
+        // may need to throw some kind of exception, for now just do nothing.
+        if(yaw != 0 && (pitch != 0 || roll != 0 || throttle != 0))
+            return;
+
+        // TODO: make sure that no other task is already running, more rigorously
+        if(isInFlight())
+            return;
+
+        // enable flight before starting. may break out into separate functions to enable/disable
+        flightController.setVirtualStickModeEnabled(true, null);
+        // changing these values changes the flight in real time
+        this.pitch = pitch;
+        this.roll = roll;
+        this.throttle = throttle;
+        this.yaw = yaw;
+
+        this.inFlight = true;
+
+        // schedule a halt after the time has passed
+//        endTimer = new Timer();
+//        endTimer.schedule(new VirtualSticksClearTask(callback), duration);
+
+        new Handler().postDelayed(()->{
+            halt();
+            if(callback != null)
+                callback.onResult(null);
+        },duration);
+
+    }
+
+
+    class VirtualSticksClearTask extends TimerTask {
+        CommonCallbacks.CompletionCallback callback;
+
+        VirtualSticksClearTask(@Nullable CommonCallbacks.CompletionCallback callback){
+            this.callback = callback;
+        }
+        @Override
+        public void run(){
+            halt();
+            if(callback != null)
+                callback.onResult(null);
+        }
     }
 
     class VirtualSticksUpdateTask extends TimerTask {
@@ -138,15 +163,16 @@ public class VirtualStickFlightControl  {
                 flightController.setYawControlMode(YawControlMode.ANGULAR_VELOCITY);
 
                 flightController.sendVirtualStickFlightControlData(
-                    new FlightControlData(roll, pitch, yaw, throttle), (error) -> {});
-                listener.increment(
-                        new Coordinate(roll,pitch,throttle).scale((float) (updatePeriod/1000.0)),
-                        yaw*(updatePeriod/(float)1000.0));
-            }
+                    new FlightControlData(
+                            roll, pitch, yaw, throttle
+                    ), new CommonCallbacks.CompletionCallback() {
+                        @Override
+                        public void onResult(DJIError djiError) {
+                        }
+                    }
+            );
+//                posListener.incrementPosition(new Coordinate(roll,pitch,throttle));
         }
-    }
-
-    interface VirtualSticksIncrementListener {
-        void increment(Coordinate positionDelta, float rotationDelta);
+        }
     }
 }

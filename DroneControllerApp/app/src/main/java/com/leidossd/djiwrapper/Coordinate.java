@@ -45,10 +45,6 @@ public class Coordinate implements Parcelable {
         return (float) Math.sqrt(x*x + y*y + z*z);
     }
 
-    public float xyMagnitude() {
-        return (float) Math.sqrt(x*x + y*y);
-    }
-
     // a unit vector perpendicular to the current vector in the x,y plane
     public Coordinate perpendicularUnit(){
         if(x == 0 && y == 0)
@@ -169,7 +165,7 @@ public class Coordinate implements Parcelable {
 
     @Override
     public String toString(){
-        return String.format("(%.2f,%.2f,%.2f)", x,y,z);
+        return String.format("(%.3f,%.3f,%.3f)", x,y,z);
     }
 
     @Override

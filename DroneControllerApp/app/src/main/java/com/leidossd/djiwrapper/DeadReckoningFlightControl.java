@@ -1,19 +1,16 @@
 package com.leidossd.djiwrapper;
 
 
-import android.os.Handler;
 import android.support.annotation.Nullable;
 
-import dji.common.flightcontroller.virtualstick.FlightCoordinateSystem;
 import dji.common.util.CommonCallbacks;
 
-public class DeadReckoningFlightControl implements CoordinateFlightControl, VirtualStickFlightControl.VirtualSticksIncrementListener {
+public class DeadReckoningFlightControl implements CoordinateFlightControl {
     private FlightMode flightMode = null;
     private boolean rotationLock;
     private Coordinate position;
     private Coordinate direction;
-    private Coordinate destination;
-    private VirtualStickFlightControl virtualSticks = VirtualStickFlightControl.getInstance();
+    private VirtualStickFlightControl lowLevelFlightControl = VirtualStickFlightControl.getInstance();
 
     public DeadReckoningFlightControl(){
         rotationLock = true;
@@ -34,7 +31,6 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
     }
 
     public void goTo(Coordinate destination, @Nullable CommonCallbacks.CompletionCallback callback){
-        this.destination = destination;
         if(flightMode == FlightMode.RELATIVE)
             relativeGoTo(destination, callback);
         else if(flightMode == FlightMode.ABSOLUTE)
@@ -49,11 +45,11 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
 
         // Distinguish between absolute/relative
         if(flightMode == FlightMode.ABSOLUTE){
-            rotate(direction.angleBetween(theta), callback);
+            lowLevelFlightControl.rotate(direction.angleBetween(theta), callback);
             this.direction = this.direction.rotateByAngle(this.direction.angleBetween(theta));
 
         } else if(flightMode == FlightMode.RELATIVE){
-            rotate(theta, callback);
+            lowLevelFlightControl.rotate(theta, callback);
             this.direction  = this.direction.rotateByAngle(theta);
         }
         else
@@ -63,7 +59,7 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
     public void relativeGoTo(Coordinate destination, @Nullable CommonCallbacks.CompletionCallback callback){
         // Don't need to rotate.
         // Move the drone to the destination, which is easy since it's in the relative coordinates
-        move(destination, callback);
+        lowLevelFlightControl.move(destination, callback);
 
         //What is hard is figuring out where the drone ended up in the absolute coordinates
 
@@ -79,77 +75,19 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
         // If rotations not locked, then rotate so that you're facing the right way, then do a
         // normal relative goTo.
         Coordinate movement = destination.add(position.scale(-1));
-        move(movement.inBasis(direction.perpendicularUnit(), direction), callback);
+        lowLevelFlightControl.move(movement.inBasis(direction.perpendicularUnit(), direction), callback);
         position = destination;
     }
 
+//    public void incrementPosition(Coordinate increment){
+//        position = position.add(increment.inBasis(direction, direction.perpendicularUnit()));
+//    }
+
     public boolean isInFlight(){
-        return virtualSticks.isInFlight();
+        return lowLevelFlightControl.isInFlight();
     }
 
     public void halt(){
-        virtualSticks.halt();
-    }
-
-    public void move(Coordinate movement, @Nullable CommonCallbacks.CompletionCallback callback){
-       move(movement, FlightCoordinateSystem.BODY, callback);
-    }
-
-    public void move(Coordinate movement, FlightCoordinateSystem flightCoordinateSystem, @Nullable CommonCallbacks.CompletionCallback callback){
-        virtualSticks.setRollPitchCoordinateSystem(flightCoordinateSystem);
-        startFlight(movement, 0, callback);
-    }
-
-    public void rotate(float theta, @Nullable CommonCallbacks.CompletionCallback callback){
-        startFlight(new Coordinate(0,0,0), theta, callback);
-    }
-
-    private void startFlight(Coordinate movement, float yaw, @Nullable CommonCallbacks.CompletionCallback callback){
-        if(isInFlight())
-            return;
-
-        // enable flight before starting. may break out into separate functions to enable/disable
-        virtualSticks.enable();
-        // changing these values changes the flight in real time
-        long duration;
-        if(movement.magnitude() == 0)
-            duration = (long)(1000*yaw/virtualSticks.getAngularVelocity());
-        else
-            duration = (long)(movement.magnitude()/virtualSticks.getSpeed());
-        if(yaw != 0)
-            virtualSticks.setYaw(virtualSticks.getAngularVelocity()*duration);
-        virtualSticks.setDirection(movement);
-
-        new Handler().postDelayed(()->{
-            halt();
-            if(callback != null)
-                callback.onResult(null);
-        },duration);
-    }
-
-    @Override
-    public void increment(Coordinate positionDelta, float rotationDelta){
-        // What follows is complicated math stuff
-
-        // given a particular velocity, and angular velocity, the motion of the object can be
-        // described by the object rotating about a point at a certain angular velocity and radius
-
-        // an isosceles triangle can be made from the current position, the center of the circle,
-        // and the new position. Two sides will be the radius, and the third will be what we need to
-        // scale our vector by, after rotating it by the rotationDelta. the angle between the radii
-        // will be the rotation delta.
-
-        // the new direction is easy, and simplifying the expression for the length of the third leg
-        // of the aformentioned triangle gives us the following.
-
-        if(rotationDelta != 0) {
-            direction = direction.rotateByAngle(rotationDelta);
-            position = position.add(direction.rotateByAngle(rotationDelta)
-                    .scale(positionDelta.magnitude() * (float) Math.sin(rotationDelta * Math.PI / 360)))
-                    // of course, all of the math above was in the xy plane, the z value should be fine
-                    .add(new Coordinate(0, 0, positionDelta.getZ()));
-        }
-        else
-            position = position.add(positionDelta);
+        lowLevelFlightControl.halt();
     }
 }
