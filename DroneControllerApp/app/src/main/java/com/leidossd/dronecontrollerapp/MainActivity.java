@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GestureDetectorCompat;
@@ -25,6 +26,7 @@ import com.leidossd.dronecontrollerapp.missions.MissionRunner;
 import com.leidossd.dronecontrollerapp.simulator.SimulatorActivity;
 import com.leidossd.utils.MenuAction;
 
+import dji.common.battery.BatteryState;
 import dji.sdk.sdkmanager.DJISDKManager;
 
 import static com.leidossd.dronecontrollerapp.MainApplication.getDroneInstance;
@@ -49,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements
     MenuFragment menuFragment;
     LiveVideoFragment liveVideoFragment;
     AlertDialog droneNotConnectedDialog;
+    Handler handler;
+
 
     private static MissionRunner missionRunner;
 
@@ -57,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements
         setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        handler = new Handler();
 
         // MainApplication sends local broadcast when connection status changes
         // receiver to wait for 'MainApplication' to notify connection status change
@@ -120,9 +126,6 @@ public class MainActivity extends AppCompatActivity implements
                     droneNotConnectedDialog.show();
                 else
                     startActivity(new Intent(this, CompassCalibrationActivity.class));
-                break;
-            case R.id.action_bar_gps:
-                showToast("GPS");
                 break;
             case R.id.action_bar_battery:
                 showToast("Battery");
@@ -196,6 +199,30 @@ public class MainActivity extends AppCompatActivity implements
 
         if(droneStatus.equals(DRONE_CONNECTED.toString())) {
             status = status += " " + getDroneInstance().getModel().getDisplayName();
+
+            handler.removeCallbacksAndMessages(null);
+
+            Runnable updateBatteryRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    MainApplication.getDroneInstance().getBattery().setStateCallback(batteryState -> {
+
+                        int batteryPercent = batteryState.getChargeRemainingInPercent();
+                        MenuView.ItemView batteryText = findViewById(R.id.action_bar_battery);
+
+                        if (batteryPercent > 0) {
+                            //showToast(String.format("Updating battery: %s %s", String.valueOf(batteryPercent), "%"));
+                            runOnUiThread(() -> batteryText.setTitle(String.format("Battery: %s %s", String.valueOf(batteryPercent), "%")));
+                        } else {
+                            runOnUiThread(() -> batteryText.setTitle("Battery: 100%"));
+                        }
+                    });
+                    handler.postDelayed(this, 10000);
+                }
+            };
+
+            handler.post(updateBatteryRunnable);
+
             startLiveVideo();
         } else if(droneStatus.equals(DRONE_DISCONNECTED.toString())) {
             stopLiveVideo();
