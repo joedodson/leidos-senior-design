@@ -40,7 +40,7 @@ abstract public class Mission extends Task implements Task.StatusUpdateListener 
 
         currentState = TaskState.RUNNING;
         listener.statusUpdate(currentState, String.format("Mission \"%s\" started", title));
-        nextTask();
+        new Thread(this::nextTask).start();
     }
 
     void stop(){

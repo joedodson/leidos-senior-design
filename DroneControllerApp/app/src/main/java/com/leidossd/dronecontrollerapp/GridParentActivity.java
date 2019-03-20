@@ -59,7 +59,7 @@ public class GridParentActivity extends AppCompatActivity implements GridFragmen
 
     public void sendInput(Coordinate coordinate) {
         showToast("GridParent received: " + coordinate.toString());
-        FlightControllerWrapper.getInstance().gotoXYZ(coordinate, null);
+        FlightControllerWrapper.getInstance().gotoAbsoluteXYZ(coordinate, null);
     }
 
     public void takeOff(View view) {

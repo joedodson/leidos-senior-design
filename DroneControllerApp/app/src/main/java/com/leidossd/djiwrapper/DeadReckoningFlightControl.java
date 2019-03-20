@@ -19,6 +19,7 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
         rotationLock = true;
         position = new Coordinate(0,0,0);
         direction = new Coordinate(0,1,0);
+        virtualSticks.setListener(this);
     }
 
     public FlightMode getFlightMode(){
@@ -113,22 +114,19 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
         startFlight(new Coordinate(0,0,0), theta, callback);
     }
 
-    private void startFlight(Coordinate movement, float yaw, @Nullable CommonCallbacks.CompletionCallback callback){
-        if(isInFlight())
-            return;
-
+    private void startFlight(Coordinate movement, float theta, @Nullable CommonCallbacks.CompletionCallback callback){
         // enable flight before starting. may break out into separate functions to enable/disable
         virtualSticks.enable();
         // changing these values changes the flight in real time
         long duration;
-        if(movement.magnitude() == 0)
-            duration = (long)(1000*yaw/virtualSticks.getAngularVelocity());
-        else
-            duration = (long)(movement.magnitude()/virtualSticks.getSpeed());
-        if(yaw != 0)
-            virtualSticks.setYaw(virtualSticks.getAngularVelocity()*duration);
-        virtualSticks.setDirection(movement);
-
+        if(theta == 0) {
+            duration =(long) (1000*movement.magnitude()/virtualSticks.getSpeed());
+            virtualSticks.setDirection(movement);
+        }
+        else {
+            duration = (long) (theta/virtualSticks.getAngularVelocity());
+            virtualSticks.setYaw(theta);
+        }
         new Handler().postDelayed(()->{
             halt();
             if(callback != null)
@@ -158,7 +156,10 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
                     // of course, all of the math above was in the xy plane, the z value should be fine
                     .add(new Coordinate(0, 0, positionDelta.getZ()));
         }
-        else
-            position = position.add(positionDelta);
+        else {
+            position = position.add(direction.scale(positionDelta.getY()))
+                    .add(direction.perpendicularUnit().scale(positionDelta.getX()));
+        }
+
     }
 }

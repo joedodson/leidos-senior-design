@@ -6,13 +6,11 @@ import android.support.annotation.Nullable;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import dji.common.error.DJIError;
 import dji.common.flightcontroller.virtualstick.FlightCoordinateSystem;
 import dji.common.flightcontroller.virtualstick.RollPitchControlMode;
 import dji.common.flightcontroller.virtualstick.VerticalControlMode;
 import dji.common.flightcontroller.virtualstick.FlightControlData;
 import dji.common.flightcontroller.virtualstick.YawControlMode;
-import dji.common.util.CommonCallbacks;
 import dji.sdk.flightcontroller.FlightController;
 import dji.sdk.products.Aircraft;
 import dji.sdk.sdkmanager.DJISDKManager;
@@ -51,6 +49,7 @@ public class VirtualStickFlightControl  {
         inputTimer = new Timer();
         virtualSticksUpdateTask = new VirtualSticksUpdateTask();
         inputTimer.schedule(virtualSticksUpdateTask,0, updatePeriod);
+        flightController.setVirtualStickModeEnabled(true, null);
     }
 
     public static VirtualStickFlightControl getInstance() {
@@ -139,9 +138,10 @@ public class VirtualStickFlightControl  {
 
                 flightController.sendVirtualStickFlightControlData(
                     new FlightControlData(roll, pitch, yaw, throttle), (error) -> {});
-                listener.increment(
-                        new Coordinate(roll,pitch,throttle).scale((float) (updatePeriod/1000.0)),
-                        yaw*(updatePeriod/(float)1000.0));
+//                if(listener != null)
+//                    listener.increment(
+//                        new Coordinate(roll,pitch,throttle).scale((float) (updatePeriod/1000.0)),
+//                        yaw*(updatePeriod/(float)1000.0));
             }
         }
     }
