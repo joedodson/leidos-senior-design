@@ -3,6 +3,9 @@ package com.leidossd.dronecontrollerapp.missions;
 import android.os.Handler;
 import android.os.Parcel;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class WaitTask extends Task {
     private long milliseconds;
 
@@ -34,11 +37,18 @@ public class WaitTask extends Task {
     }
 
     void start(){
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-            currentState = TaskState.COMPLETED;
-            listener.statusUpdate(TaskState.COMPLETED, "Wait finished");
-        }, milliseconds);
+//        Handler handler = new Handler();
+//        handler.postDelayed(() -> {
+//            currentState = TaskState.COMPLETED;
+//            listener.statusUpdate(TaskState.COMPLETED, "Wait finished");
+//        }, milliseconds);
+
+        new Timer().schedule(new TimerTask(){
+            @Override
+            public void run() {
+                currentState = TaskState.COMPLETED;
+                listener.statusUpdate(TaskState.COMPLETED, "Wait finished");
+            }}, milliseconds);
     }
 
     void stop(){

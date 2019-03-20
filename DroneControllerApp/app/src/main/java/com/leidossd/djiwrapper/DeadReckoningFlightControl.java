@@ -124,8 +124,10 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
 
     private void startFlight(Coordinate movement, float theta, @Nullable CommonCallbacks.CompletionCallback callback){
         // enable flight before starting. may break out into separate functions to enable/disable
-        if(movement.magnitude() < .1)
+        if(movement.magnitude() < .1) {
+            callback.onResult(null);
             return;
+        }
         virtualSticks.enable();
         // changing these values changes the flight in real time
         long duration;
@@ -138,18 +140,20 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
             virtualSticks.setYaw(theta);
         }
 
-//        new Timer().schedule(new TimerTask(){
-//            @Override
-//            public void run(){
-//                halt();
-//            }
-//        }, duration);
+        new Timer().schedule(new TimerTask(){
+            @Override
+            public void run(){
+                halt();
+                if(callback != null)
+                    callback.onResult(null);
+            }
+        }, duration);
 
-        new Handler().postDelayed(()->{
-            halt();
-            if(callback != null)
-                callback.onResult(null);
-        },duration);
+//        new Handler().postDelayed(()->{
+//            halt();
+//            if(callback != null)
+//                callback.onResult(null);
+//        },duration);
     }
 
     @Override

@@ -13,7 +13,13 @@ public class WaypointMission extends Mission {
         tasks.add(new TakeOffTask());
 //        tasks.add(new RotationTask(180));
         tasks.add(new WaitTask(1000));
+        tasks.add(new ToastTask("HELLO"));
+        tasks.add(new WaitTask(1000));
+        tasks.add(new ToastTask("GOODBYE"));
+        tasks.add(new WaitTask(1000));
         tasks.add(new FlightTask(new Coordinate(0,1,0)));
+        tasks.add(new WaitTask(1000));
+        tasks.add(new FlightTask(new Coordinate(0,-1,0)));
 //        tasks.add(new MockFlightTask());
         tasks.add(new WaitTask(1000));
         tasks.add(new LandingTask());
