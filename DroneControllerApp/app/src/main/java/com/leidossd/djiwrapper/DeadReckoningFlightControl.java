@@ -4,6 +4,9 @@ package com.leidossd.djiwrapper;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import dji.common.flightcontroller.virtualstick.FlightCoordinateSystem;
 import dji.common.util.CommonCallbacks;
 
@@ -35,6 +38,11 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
     }
 
     public void goTo(Coordinate destination, @Nullable CommonCallbacks.CompletionCallback callback){
+//        if(destination.add(position).magnitude() < .01) {
+//            if(callback != null)
+//                callback.onResult(null);
+//            return;
+//        }
         this.destination = destination;
         if(flightMode == FlightMode.RELATIVE)
             relativeGoTo(destination, callback);
@@ -72,7 +80,7 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
         //What is hard is figuring out where the drone ended up in the absolute coordinates
 
         // Using a unit vector perpendicular to the direction vector
-        Coordinate perpendicular = direction.perpendicularUnit();
+//        Coordinate perpendicular = direction.perpendicularUnit();
 
         // We make the movement in the drones relative coordinate system
         // don't need to inject movement anymore
@@ -84,13 +92,13 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
         // If rotations not locked, then rotate so that you're facing the right way, then do a
         // normal relative goTo.
         Coordinate movement = destination.add(position.scale(-1));
-        if(!rotationLock)
-            rotateTo(movement.angleFacing(), (error) -> move(movement.inBasis(direction.perpendicularUnit(), direction), callback));
-        else
+//        if(!rotationLock)
+//            rotateTo(movement.angleFacing(), (error) -> move(movement.inBasis(direction.perpendicularUnit(), direction), callback));
+//        else
             move(movement.inBasis(direction.perpendicularUnit(), direction), callback);
 
         // don't need to inject movement anymore
-//        position = destination;
+        position = destination;
     }
 
     public boolean isInFlight(){
@@ -116,6 +124,8 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
 
     private void startFlight(Coordinate movement, float theta, @Nullable CommonCallbacks.CompletionCallback callback){
         // enable flight before starting. may break out into separate functions to enable/disable
+        if(movement.magnitude() < .1)
+            return;
         virtualSticks.enable();
         // changing these values changes the flight in real time
         long duration;
@@ -127,6 +137,14 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
             duration = (long) (theta/virtualSticks.getAngularVelocity());
             virtualSticks.setYaw(theta);
         }
+
+//        new Timer().schedule(new TimerTask(){
+//            @Override
+//            public void run(){
+//                halt();
+//            }
+//        }, duration);
+
         new Handler().postDelayed(()->{
             halt();
             if(callback != null)
