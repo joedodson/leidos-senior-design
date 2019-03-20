@@ -51,4 +51,6 @@ dependencies {
     // DJI dependencies
     api 'com.dji:dji-sdk:4.8.1'
     compileOnly 'com.dji:dji-sdk-provided:4.8.1'
+    //Other dependencies
+    implementation 'com.google.code.gson:gson:2.8.5'
 }

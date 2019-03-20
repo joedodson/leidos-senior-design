@@ -6,7 +6,7 @@ import android.os.Parcelable;
 public class MissionCreator {
     public enum MissionType {
         SPECIFIC_MISSION,
-        WAYPOINT_MISSION,
+        WAYPOINT_MISSION
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){

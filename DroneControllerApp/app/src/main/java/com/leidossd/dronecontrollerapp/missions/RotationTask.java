@@ -6,6 +6,7 @@ import com.leidossd.djiwrapper.FlightControllerWrapper;
 
 public class RotationTask extends Task {
     private float angle;
+    Creator<RotationTask> CREATOR;
 
     RotationTask(float angle){
         super("Rotate to %f" + Float.toString(angle));
@@ -14,8 +15,7 @@ public class RotationTask extends Task {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString("ROTATION_TASK");
-        dest.writeFloat(angle);
+
     }
 
     @Override
@@ -29,16 +29,10 @@ public class RotationTask extends Task {
     }
 
     static public RotationTask create(Parcel in){
-        return new RotationTask(in.readFloat());
+        return null;
     }
 
     void start(){
-        FlightControllerWrapper.getInstance().rotateTo(angle, (error)->{
-            if(error != null)
-                listener.statusUpdate(TaskState.FAILED, "ROTATION FAILED!");
-            currentState = TaskState.COMPLETED;
-            listener.statusUpdate(currentState, "ROTATION SUCCESS");
-        });
 
     }
 
