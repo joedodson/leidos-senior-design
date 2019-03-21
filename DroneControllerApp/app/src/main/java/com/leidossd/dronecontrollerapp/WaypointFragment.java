@@ -13,7 +13,10 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.leidossd.djiwrapper.Coordinate;
+import com.leidossd.djiwrapper.FlightControllerWrapper;
 import com.leidossd.dronecontrollerapp.missions.SpecificMission;
+import com.leidossd.dronecontrollerapp.missions.WaypointMission;
 import com.leidossd.utils.Direction;
 
 public class WaypointFragment extends Fragment {
@@ -37,6 +40,8 @@ public class WaypointFragment extends Fragment {
     private TextView noPressed;
     private boolean pressedOnce = false;
 
+    private Coordinate coordinate;
+
     public WaypointFragment() {}
 
     @Override
@@ -53,33 +58,41 @@ public class WaypointFragment extends Fragment {
                 switch (id) {
                     case R.id.button_nw:
                         gridButton.setImageResource(R.drawable.ic_arrow_nw_l);
+                        coordinate = new Coordinate(-1,1,0);
                         direction = Direction.NW;
                         break;
                     case R.id.button_n:
+                        coordinate = new Coordinate(0,1,0);
                         gridButton.setImageResource(R.drawable.ic_arrow_up_l);
                         direction = Direction.N;
                         break;
                     case R.id.button_ne:
+                        coordinate = new Coordinate(1,1,0);
                         gridButton.setImageResource(R.drawable.ic_arrow_ne_l);
                         direction = Direction.NE;
                         break;
                     case R.id.button_w:
+                        coordinate = new Coordinate(-1,0,0);
                         gridButton.setImageResource(R.drawable.ic_arrow_left_l);
                         direction = Direction.W;
                         break;
                     case R.id.button_e:
+                        coordinate = new Coordinate(1,0,0);
                         gridButton.setImageResource(R.drawable.ic_arrow_right_l);
                         direction = Direction.E;
                         break;
                     case R.id.button_sw:
+                        coordinate = new Coordinate(-1,-1,0);
                         gridButton.setImageResource(R.drawable.ic_arrow_sw_l);
                         direction = Direction.SW;
                         break;
                     case R.id.button_s:
+                        coordinate = new Coordinate(0,-1,0);
                         gridButton.setImageResource(R.drawable.ic_arrow_down_l);
                         direction = Direction.S;
                         break;
                     case R.id.button_se:
+                        coordinate = new Coordinate(1,-1,0);
                         gridButton.setImageResource(R.drawable.ic_arrow_se_l);
                         direction = Direction.SE;
                         break;
@@ -104,13 +117,10 @@ public class WaypointFragment extends Fragment {
 
         createButtonListener = new View.OnClickListener() {
             public void onClick(View view) {
-                SpecificMission mission;
-                String mName = missionName.getText().toString();
-                if(mName.equals(""))
-                    mission = new SpecificMission("Waypoint Mission");
-                else
-                    mission = new SpecificMission(mName);
-                waypointFragmentListener.createMission(mission, saveCheckbox.isChecked());
+                if(coordinate != null) {
+                    coordinate = Coordinate.sum(FlightControllerWrapper.getInstance().getPosition(), coordinate);
+                    waypointFragmentListener.createMission(new WaypointMission(coordinate), saveCheckbox.isChecked());
+                }
             }
         };
     }

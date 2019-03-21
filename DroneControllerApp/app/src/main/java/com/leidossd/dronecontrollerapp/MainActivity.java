@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements
 //                startActivity(new Intent(this, CompassActivity.class));
                 break;
             case OPEN_GRID_VIEW:
-//                startActivity(new Intent(this, GridParentActivity.class));
+                startActivity(new Intent(this, GridParentActivity.class));
                 break;
             default:
                 showActionBar();
