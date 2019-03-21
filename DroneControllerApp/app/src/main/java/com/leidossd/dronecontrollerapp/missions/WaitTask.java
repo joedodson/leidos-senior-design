@@ -1,6 +1,5 @@
 package com.leidossd.dronecontrollerapp.missions;
 
-import android.os.Handler;
 import android.os.Parcel;
 
 import java.util.Timer;

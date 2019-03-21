@@ -37,8 +37,7 @@ public class VirtualStickFlightControl  {
     private boolean enabled;
 
     private Timer inputTimer;
-
-    VirtualSticksUpdateTask virtualSticksUpdateTask;
+    private TimerTask inputTask;
 
     private VirtualStickFlightControl(){
         pitch = roll = yaw = throttle = 0;
@@ -46,10 +45,13 @@ public class VirtualStickFlightControl  {
         inFlight = false;
         flightController = ((Aircraft) DJISDKManager.getInstance().
                                        getProduct()).getFlightController();
-        inputTimer = new Timer();
-        virtualSticksUpdateTask = new VirtualSticksUpdateTask();
-        inputTimer.schedule(virtualSticksUpdateTask,0, updatePeriod);
-        flightController.setVirtualStickModeEnabled(true, null);
+
+        flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
+        flightController.setVerticalControlMode(VerticalControlMode.VELOCITY);
+        flightController.setYawControlMode(YawControlMode.ANGULAR_VELOCITY);
+        inputTimer = null;
+        inputTask = null;
+        enabled = false;
     }
 
     public static VirtualStickFlightControl getInstance() {
@@ -64,14 +66,26 @@ public class VirtualStickFlightControl  {
     }
 
     public void enable(){
+        if(enabled)
+            return;
         roll = pitch = yaw = throttle = 0;
-        flightController.setVirtualStickModeEnabled(true,null);
+        inputTimer = new Timer();
+        inputTask = new VirtualSticksUpdateTask();
+        flightController.setVirtualStickModeEnabled(true,(error) -> {
+            inputTimer.schedule(inputTask, 0, updatePeriod);
+        });
         enabled = true;
     }
 
     public void disable(){
+        if(!enabled)
+            return;
         roll = pitch = yaw = throttle = 0;
         flightController.setVirtualStickModeEnabled(false, null);
+        inputTimer.cancel();
+        inputTimer.purge();
+        inputTimer = null;
+        inputTask = null;
         enabled = false;
     }
 
@@ -124,24 +138,24 @@ public class VirtualStickFlightControl  {
 
     public void halt(){
         pitch = roll = yaw = throttle = 0;
-        inFlight = false;
-        flightController.setVirtualStickModeEnabled(false, null);
+//        inFlight = false;
+//        flightController.setVirtualStickModeEnabled(false, null);
     }
 
     class VirtualSticksUpdateTask extends TimerTask {
         @Override
         public void run(){
             if (flightController != null) {
-                flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
-                flightController.setVerticalControlMode(VerticalControlMode.VELOCITY);
-                flightController.setYawControlMode(YawControlMode.ANGULAR_VELOCITY);
+//                flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
+//                flightController.setVerticalControlMode(VerticalControlMode.VELOCITY);
+//                flightController.setYawControlMode(YawControlMode.ANGULAR_VELOCITY);
 
-                flightController.sendVirtualStickFlightControlData(
-                    new FlightControlData(roll, pitch, yaw, throttle), (error) -> {});
-//                if(listener != null)
-//                    listener.increment(
-//                        new Coordinate(roll,pitch,throttle).scale((float) (updatePeriod/1000.0)),
-//                        yaw*(updatePeriod/(float)1000.0));
+//                flightController.sendVirtualStickFlightControlData(
+//                    new FlightControlData(roll, pitch, yaw, throttle), (error) -> {});
+                if(listener != null)
+                    listener.increment(
+                        new Coordinate(roll,pitch,throttle).scale((updatePeriod/(float)1000.0)),
+                        yaw*(updatePeriod/(float)1000.0));
             }
         }
     }

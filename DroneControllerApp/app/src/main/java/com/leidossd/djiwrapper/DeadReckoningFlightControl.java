@@ -16,13 +16,23 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
     private Coordinate position;
     private Coordinate direction;
     private Coordinate destination;
-    private VirtualStickFlightControl virtualSticks = VirtualStickFlightControl.getInstance();
+    private Timer endTimer;
+    private TimerTask endTask;
+    private DeadReckoningFlightControl.PositionListener positionListener = null;
+    private VirtualStickFlightControl virtualSticks;
 
     public DeadReckoningFlightControl(){
         rotationLock = true;
         position = new Coordinate(0,0,0);
         direction = new Coordinate(0,1,0);
+        endTimer = new Timer();
+        endTask = null;
+        virtualSticks = VirtualStickFlightControl.getInstance();
         virtualSticks.setListener(this);
+    }
+
+    public void setPositionListener(DeadReckoningFlightControl.PositionListener listener){
+        this.positionListener = listener;
     }
 
     public FlightMode getFlightMode(){
@@ -53,8 +63,11 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
     }
 
     public void rotateTo(float theta, @Nullable CommonCallbacks.CompletionCallback callback){
-        if(rotationLock)
+        if(rotationLock){
+            if(callback != null)
+                callback.onResult(null);
             return;
+        }
 
         // Distinguish between absolute/relative
         if(flightMode == FlightMode.ABSOLUTE){
@@ -98,7 +111,7 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
             move(movement.inBasis(direction.perpendicularUnit(), direction), callback);
 
         // don't need to inject movement anymore
-        position = destination;
+//        position = destination;
     }
 
     public boolean isInFlight(){
@@ -107,6 +120,13 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
 
     public void halt(){
         virtualSticks.halt();
+        virtualSticks.disable();
+        if(endTimer != null) {
+            endTimer.cancel();
+            endTimer.purge();
+            endTimer = null;
+            endTask = null;
+        }
     }
 
     public void move(Coordinate movement, @Nullable CommonCallbacks.CompletionCallback callback){
@@ -115,6 +135,11 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
 
     public void move(Coordinate movement, FlightCoordinateSystem flightCoordinateSystem, @Nullable CommonCallbacks.CompletionCallback callback){
         virtualSticks.setRollPitchCoordinateSystem(flightCoordinateSystem);
+        if(movement.magnitude() < .1) {
+            if(callback != null)
+                callback.onResult(null);
+            return;
+        }
         startFlight(movement, 0, callback);
     }
 
@@ -123,13 +148,12 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
     }
 
     private void startFlight(Coordinate movement, float theta, @Nullable CommonCallbacks.CompletionCallback callback){
-        // enable flight before starting. may break out into separate functions to enable/disable
-        if(movement.magnitude() < .1) {
-            callback.onResult(null);
-            return;
-        }
+        // if there's already a flight going, we want that to stop
+        halt();
+
+        // prep sticks for inputs
         virtualSticks.enable();
-        // changing these values changes the flight in real time
+
         long duration;
         if(theta == 0) {
             duration =(long) (1000*movement.magnitude()/virtualSticks.getSpeed());
@@ -140,20 +164,21 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
             virtualSticks.setYaw(theta);
         }
 
-        new Timer().schedule(new TimerTask(){
+        // schedule task to halt flight.
+        endTimer = new Timer();
+        endTask = new TimerTask(){
             @Override
             public void run(){
-                halt();
-                if(callback != null)
-                    callback.onResult(null);
-            }
-        }, duration);
+            halt();
+            if(callback != null)
+                callback.onResult(null);
+        }};
 
-//        new Handler().postDelayed(()->{
-//            halt();
-//            if(callback != null)
-//                callback.onResult(null);
-//        },duration);
+        endTimer.schedule(endTask, duration);
+    }
+
+    interface PositionListener {
+        public void updatePosition(Coordinate position);
     }
 
     @Override
@@ -183,5 +208,7 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
                     .add(direction.perpendicularUnit().scale(positionDelta.getX()));
         }
 
+        if(positionListener != null)
+            positionListener.updatePosition(position);
     }
 }

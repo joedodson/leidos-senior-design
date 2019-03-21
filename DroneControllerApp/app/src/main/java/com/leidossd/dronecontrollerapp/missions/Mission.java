@@ -27,6 +27,8 @@ abstract public class Mission extends Task implements Task.StatusUpdateListener 
             return;
         }
 
+        if(currentTaskId != 0)
+            currentTask.setListener(null);
         currentTask = taskIterable.get(currentTaskId);
         currentTaskId += 1;
 
@@ -56,6 +58,7 @@ abstract public class Mission extends Task implements Task.StatusUpdateListener 
             case COMPLETED:
 //                listener.statusUpdate(TaskState.RUNNING, message + " " + Integer.toString(currentTaskId));
 //                showToast("Task finished: " + message);
+                listener.statusUpdate(TaskState.RUNNING, message);
                 new Thread(this::nextTask).start();
 //                nextTask();
                 break;

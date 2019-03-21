@@ -83,4 +83,10 @@
             app:layout_constraintVertical_bias="0.47" />
 
     </android.support.constraint.ConstraintLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_grid_parent_position"
+        android:text="(00.0,00.0,00.0)"/>
 </android.support.constraint.ConstraintLayout>

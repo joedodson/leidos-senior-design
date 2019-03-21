@@ -11,12 +11,13 @@ import dji.sdk.flightcontroller.FlightController;
 import dji.sdk.sdkmanager.DJISDKManager;
 import dji.sdk.products.Aircraft;
 
-public class FlightControllerWrapper {
+public class FlightControllerWrapper implements DeadReckoningFlightControl.PositionListener {
     private static FlightControllerWrapper instance = null;
 
     private FlightController flightController;
     // hacky, gotta replace this with the interface
     private DeadReckoningFlightControl coordinateFlightControl;
+    private PositionListener positionListener = null;
     private boolean isAirborne = false;
 
     public static FlightControllerWrapper getInstance(){
@@ -29,7 +30,12 @@ public class FlightControllerWrapper {
     private FlightControllerWrapper(){
         flightController = ((Aircraft) DJISDKManager.getInstance().
                                        getProduct()).getFlightController();
-        this.coordinateFlightControl = new DeadReckoningFlightControl();
+        coordinateFlightControl = new DeadReckoningFlightControl();
+        coordinateFlightControl.setPositionListener(this);
+    }
+
+    public void setPositionListener(PositionListener listener){
+        this.positionListener = listener;
     }
 
     public boolean isInFlight(){
@@ -69,6 +75,18 @@ public class FlightControllerWrapper {
     public boolean isAirborne(){
         return isAirborne;
     }
+
+    public interface PositionListener {
+        public void updatePosition(Coordinate position);
+    }
+
+    @Override
+    public void updatePosition(Coordinate position){
+        if(positionListener != null)
+            positionListener.updatePosition(position);
+    }
+
+
     // Here lie forwarded functions, add them as you need them
 
     /* To use these functions, DJI makes the callbacks like this:
