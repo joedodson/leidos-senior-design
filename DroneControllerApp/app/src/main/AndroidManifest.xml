@@ -27,7 +27,6 @@
         android:name="android.hardware.usb.accessory"
         android:required="true" />
 
-    <!-- PermissionsHelper and features -->
     <application
         android:name=".BootstrapApplication"
         android:allowBackup="true"
@@ -38,9 +37,11 @@
         android:supportsRtl="true"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:name=".MenuActivity"
+            android:label="@string/title_activity_menu"></activity>
+        <activity
             android:name=".MissionActivity"
-            android:label="@string/title_activity_mission" />
-        <!-- DJI SDK -->
+            android:label="@string/title_activity_mission" /> <!-- DJI SDK -->
         <uses-library android:name="com.android.future.usb.accessory" />
 
         <meta-data
@@ -97,7 +98,6 @@
             android:screenOrientation="sensorLandscape" />
         <activity android:name=".ConfirmMissionActivity" />
         <activity android:name=".CreateMissionActivity" />
-            android:screenOrientation="sensorLandscape"/>
         <activity
             android:name=".compass.CompassCalibrationActivity"
             android:parentActivityName=".MainActivity"
@@ -111,7 +111,7 @@
         <activity
             android:name=".MissionStatusActivity"
             android:screenOrientation="sensorLandscape"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".droneconnection.ConnectWalkthroughActivity"
             android:screenOrientation="portrait"
@@ -129,4 +129,5 @@
 
         <service android:name=".missions.MissionRunnerService" />
     </application>
+
 </manifest>

@@ -25,6 +25,7 @@
 
     <dimen name="menu_constraintGuideline_begin">200dp</dimen>
     <dimen name="menu_width">250dp</dimen>
+    <dimen name="actionbar_height">45dp</dimen>
 
     <dimen name="drawable_camera_inner_circle_size">60dp</dimen>
     <dimen name="drawable_camera_outer_circle_size">60dp</dimen>
