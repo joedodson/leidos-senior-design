@@ -38,7 +38,7 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".MenuActivity"
-            android:label="@string/title_activity_menu"></activity>
+            android:label="@string/title_activity_menu" />
         <activity
             android:name=".MissionActivity"
             android:label="@string/title_activity_mission" /> <!-- DJI SDK -->
@@ -77,6 +77,7 @@
         <activity
             android:name=".MainActivity"
             android:screenOrientation="sensorLandscape"
+            android:parentActivityName=".droneconnection.ConnectWalkthroughActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".FlightTestActivity"

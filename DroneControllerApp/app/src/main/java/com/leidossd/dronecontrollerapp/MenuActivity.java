@@ -149,6 +149,9 @@ public class MenuActivity extends AppCompatActivity implements
     // handles actions clicked in side menu
     public void onMenuSelect(MenuAction action) {
         switch (action) {
+            case OPEN_HOME:
+                startActivity(new Intent(this, MainActivity.class));
+                break;
             case OPEN_MISSIONS:
                 startActivity(new Intent(this, MissionActivity.class));
                 break;
@@ -158,16 +161,21 @@ public class MenuActivity extends AppCompatActivity implements
                 break;
             case OPEN_SIMULATOR:
 //                startActivity(new Intent(this, SimulatorActivity.class));
-                break;
+//                break;
             case OPEN_SETTINGS:
 //                showToast("Settings");
-                break;
+//                break;
             case OPEN_COMPASS:
-                startActivity(new Intent(this, CompassActivity.class));
+                if(MainApplication.getDroneInstance() == null || !MainApplication.getDroneInstance().isConnected())
+                    //droneNotConnectedDialog.show();
+                    MainApplication.showToast("showing drone not connected dialog");
+                else {
+                    startActivity(new Intent(this, CompassCalibrationActivity.class));
+                }
                 break;
             case OPEN_GRID_VIEW:
 //                startActivity(new Intent(this, GridParentActivity.class));
-                break;
+//                break;
             default:
                 showActionBar();
         }

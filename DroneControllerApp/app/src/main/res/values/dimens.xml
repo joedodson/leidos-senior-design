@@ -23,9 +23,10 @@
     <dimen name="margin_medium">15sp</dimen>
     <dimen name="margin_large">25sp</dimen>
 
-    <dimen name="menu_constraintGuideline_begin">200dp</dimen>
     <dimen name="menu_width">250dp</dimen>
     <dimen name="actionbar_height">45dp</dimen>
+    <dimen name="divider_line_width">2dp</dimen>
+
 
     <dimen name="drawable_camera_inner_circle_size">60dp</dimen>
     <dimen name="drawable_camera_outer_circle_size">60dp</dimen>

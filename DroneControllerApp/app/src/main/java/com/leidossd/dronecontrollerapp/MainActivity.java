@@ -30,6 +30,8 @@ public class MainActivity extends MenuActivity {
 
         super.onCreate(savedInstanceState);
 
+        liveVideoFragment = new LiveVideoFragment();
+
         // MainApplication sends local broadcast when connection status changes
         // receiver to wait for 'MainApplication' to notify connection status change
         BroadcastReceiver connectionChangeReceiver = new BroadcastReceiver() {
@@ -40,8 +42,6 @@ public class MainActivity extends MenuActivity {
             }
         };
         LocalBroadcastManager.getInstance(this).registerReceiver(connectionChangeReceiver, new IntentFilter(CONNECTION_CHANGE.getActionString()));
-
-        liveVideoFragment = new LiveVideoFragment();
 
         droneNotConnectedDialog = new AlertDialog.Builder(this)
                 .setTitle("No Aircraft Connected")
@@ -62,6 +62,8 @@ public class MainActivity extends MenuActivity {
 
     private void startLiveVideo() {
         if(!liveVideoFragment.isAdded()) {
+            stopLiveVideo();
+            liveVideoFragment = new LiveVideoFragment();
             fragmentManager.beginTransaction()
                     .add(R.id.live_video_fragment_container, liveVideoFragment)
                     .commitAllowingStateLoss();

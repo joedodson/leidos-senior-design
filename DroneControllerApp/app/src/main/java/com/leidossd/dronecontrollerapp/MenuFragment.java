@@ -14,6 +14,7 @@ import static com.leidossd.utils.MenuAction.CLOSE_MENU;
 import static com.leidossd.utils.MenuAction.OPEN_COMPASS;
 import static com.leidossd.utils.MenuAction.OPEN_DEVELOPER;
 import static com.leidossd.utils.MenuAction.OPEN_GRID_VIEW;
+import static com.leidossd.utils.MenuAction.OPEN_HOME;
 import static com.leidossd.utils.MenuAction.OPEN_MISSIONS;
 import static com.leidossd.utils.MenuAction.OPEN_SETTINGS;
 import static com.leidossd.utils.MenuAction.OPEN_SIMULATOR;
@@ -37,6 +38,9 @@ public class MenuFragment extends Fragment {
                     MenuAction action = null;
 
                     switch(view.getId()) {
+                        case R.id.main_menu_home:
+                            action = OPEN_HOME;
+                            break;
                         case R.id.main_menu_mission:
                             action = OPEN_MISSIONS;
                             break;
@@ -72,6 +76,7 @@ public class MenuFragment extends Fragment {
 
         // All menu item IDs need to be listed here
         int[] viewIds = {
+                R.id.main_menu_home,
                 R.id.main_menu_close,
                 R.id.main_menu_mission,
                 R.id.main_menu_developer,
