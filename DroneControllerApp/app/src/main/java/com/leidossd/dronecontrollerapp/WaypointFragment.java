@@ -13,10 +13,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.leidossd.dronecontrollerapp.missions.SpecificMission;
 import com.leidossd.utils.Direction;
 
-public class WaypointFragment extends Fragment {
+public class WaypointFragment extends Fragment implements OnMapReadyCallback{
 
     private Direction direction;
     private String directionMessage;
@@ -33,6 +38,11 @@ public class WaypointFragment extends Fragment {
     private Button createButton;
     private EditText missionName;
     private CheckBox saveCheckbox;
+    private GoogleMap googleMap;
+    private MapView mapView;
+    private FusedLocationProviderClient fusedLocationClient;
+
+
 
     private TextView noPressed;
     private boolean pressedOnce = false;
@@ -42,65 +52,6 @@ public class WaypointFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        gridSelectListener = new View.OnClickListener() {
-            public void onClick(View view) {
-                int id = view.getId();
-                ImageButton gridButton = (ImageButton) view;
-                if (direction != null) {
-                    changeView();
-                }
-                switch (id) {
-                    case R.id.button_nw:
-                        gridButton.setImageResource(R.drawable.ic_arrow_nw_l);
-                        direction = Direction.NW;
-                        break;
-                    case R.id.button_n:
-                        gridButton.setImageResource(R.drawable.ic_arrow_up_l);
-                        direction = Direction.N;
-                        break;
-                    case R.id.button_ne:
-                        gridButton.setImageResource(R.drawable.ic_arrow_ne_l);
-                        direction = Direction.NE;
-                        break;
-                    case R.id.button_w:
-                        gridButton.setImageResource(R.drawable.ic_arrow_left_l);
-                        direction = Direction.W;
-                        break;
-                    case R.id.button_e:
-                        gridButton.setImageResource(R.drawable.ic_arrow_right_l);
-                        direction = Direction.E;
-                        break;
-                    case R.id.button_sw:
-                        gridButton.setImageResource(R.drawable.ic_arrow_sw_l);
-                        direction = Direction.SW;
-                        break;
-                    case R.id.button_s:
-                        gridButton.setImageResource(R.drawable.ic_arrow_down_l);
-                        direction = Direction.S;
-                        break;
-                    case R.id.button_se:
-                        gridButton.setImageResource(R.drawable.ic_arrow_se_l);
-                        direction = Direction.SE;
-                        break;
-                    default:
-                        return;
-                }
-                currentButton = gridButton;
-                textDir.setText(String.format("Direction to go: %s", direction.getDir()));
-                if (!pressedOnce) {
-                    title.setVisibility(View.VISIBLE);
-                    description.setVisibility(View.VISIBLE);
-                    textDir.setVisibility(View.VISIBLE);
-                    droneImage.setVisibility(View.VISIBLE);
-                    createButton.setVisibility(View.VISIBLE);
-                    missionName.setVisibility(View.VISIBLE);
-                    saveCheckbox.setVisibility(View.VISIBLE);
-                    noPressed.setVisibility(View.INVISIBLE);
-                    pressedOnce = true;
-                }
-            }
-        };
 
         createButtonListener = new View.OnClickListener() {
             public void onClick(View view) {
@@ -121,14 +72,6 @@ public class WaypointFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_waypoint, container, false);
 
-        int[] buttons = {R.id.button_nw, R.id.button_n, R.id.button_ne,
-                R.id.button_w, R.id.button_e,
-                R.id.button_sw, R.id.button_s, R.id.button_se};
-
-        for (int i : buttons){
-            view.findViewById(i).setOnClickListener(gridSelectListener);
-        }
-
         title = view.findViewById(R.id.mission_type);
         description = view.findViewById(R.id.mission_description);
         textDir = view.findViewById(R.id.mission_direction);
@@ -148,7 +91,18 @@ public class WaypointFragment extends Fragment {
         saveCheckbox.setVisibility(View.INVISIBLE);
         noPressed.setVisibility(View.VISIBLE);
 
+        mapView = view.findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient
+
         return view;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
     }
 
     @Override
@@ -160,6 +114,23 @@ public class WaypointFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement MissionCreateListener");
         }
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
     }
 
     @Override

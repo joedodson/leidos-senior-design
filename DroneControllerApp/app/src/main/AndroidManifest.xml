@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.leidossd.dronecontrollerapp">
+
     <!-- PermissionsHelper and features -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -26,7 +27,6 @@
     <uses-feature
         android:name="android.hardware.usb.accessory"
         android:required="true" />
-
     <!-- PermissionsHelper and features -->
     <application
         android:name=".BootstrapApplication"
@@ -97,7 +97,7 @@
             android:screenOrientation="sensorLandscape" />
         <activity android:name=".ConfirmMissionActivity" />
         <activity android:name=".CreateMissionActivity" />
-            android:screenOrientation="sensorLandscape"/>
+        android:screenOrientation="sensorLandscape"/>
         <activity
             android:name=".compass.CompassCalibrationActivity"
             android:parentActivityName=".MainActivity"
@@ -111,7 +111,7 @@
         <activity
             android:name=".MissionStatusActivity"
             android:screenOrientation="sensorLandscape"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".droneconnection.ConnectWalkthroughActivity"
             android:screenOrientation="portrait"
@@ -128,5 +128,21 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <service android:name=".missions.MissionRunnerService" />
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".MapsActivity"
+            android:label="@string/title_activity_maps"></activity>
     </application>
+
 </manifest>
