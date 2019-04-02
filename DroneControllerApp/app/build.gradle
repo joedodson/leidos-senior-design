@@ -53,4 +53,5 @@ dependencies {
     compileOnly 'com.dji:dji-sdk-provided:4.8.1'
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.google.android.gms:play-services-analytics:16.0.8'
 }

@@ -1,8 +1,14 @@
 package com.leidossd.dronecontrollerapp;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +21,20 @@ import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.leidossd.dronecontrollerapp.missions.SpecificMission;
 import com.leidossd.utils.Direction;
 
-public class WaypointFragment extends Fragment implements OnMapReadyCallback{
+public class WaypointFragment extends Fragment implements OnMapReadyCallback {
+    private static final float DEFAULT_ZOOM = 18.0f;
+    private static final String TAG = "WaypointFragment";
 
     private Direction direction;
     private String directionMessage;
@@ -42,10 +55,12 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback{
     private MapView mapView;
     private FusedLocationProviderClient fusedLocationClient;
 
-
+    private boolean mLocationPermissionGranted;
 
     private TextView noPressed;
     private boolean pressedOnce = false;
+    private Location location;
+    int locationPerimission;
 
     public WaypointFragment() {}
 
@@ -95,7 +110,8 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback{
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        locationPerimission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
 
         return view;
     }
@@ -103,6 +119,83 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
+
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng point) {
+                googleMap.clear();
+                googleMap.addMarker(new MarkerOptions().position(point));
+
+                if (!pressedOnce) {
+                    title.setVisibility(View.VISIBLE);
+                    description.setVisibility(View.VISIBLE);
+                    textDir.setVisibility(View.VISIBLE);
+                    droneImage.setVisibility(View.VISIBLE);
+                    createButton.setVisibility(View.VISIBLE);
+                    missionName.setVisibility(View.VISIBLE);
+                    saveCheckbox.setVisibility(View.VISIBLE);
+                    noPressed.setVisibility(View.INVISIBLE);
+                    pressedOnce = true;
+                }
+            }
+        });
+
+        updateMap();
+        getLocation();
+    }
+
+    private void getLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        try {
+            if (locationPerimission == PackageManager.PERMISSION_GRANTED) {
+                Task locationResult = fusedLocationClient.getLastLocation();
+                locationResult.addOnCompleteListener(getActivity(), new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if (task.isSuccessful()) {
+                            // Set the map's camera position to the current location of the device.
+                            location = (Location)task.getResult();
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                    new LatLng(location.getLatitude(),
+                                            location.getLongitude()), DEFAULT_ZOOM));
+                        } else {
+                            Log.d(TAG, "Current location is null. Using defaults.");
+                            Log.e(TAG, "Exception: %s", task.getException());
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0,0), DEFAULT_ZOOM));
+                            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+                        }
+                    }
+                });
+            }
+        } catch(SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    private void updateMap() {
+        if (googleMap == null) {
+            return;
+        }
+        try {
+            if (locationPerimission == PackageManager.PERMISSION_GRANTED) {
+                googleMap.setMyLocationEnabled(true);
+                googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+            } else {
+                googleMap.setMyLocationEnabled(false);
+                googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+                location = null;
+                getLocationPermission();
+            }
+        } catch (SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    private void getLocationPermission() {
+
     }
 
     @Override
