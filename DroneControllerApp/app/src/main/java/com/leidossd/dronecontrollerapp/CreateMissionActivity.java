@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.leidossd.dronecontrollerapp.missions.Mission;
 import com.leidossd.utils.MissionAction;
 
-public class CreateMissionActivity extends AppCompatActivity implements MissionCreateListener {
+public class CreateMissionActivity extends AppCompatActivity implements MissionCreateListener{
 
     private Fragment baseFragment;
     private FragmentManager fragmentManager;

@@ -3,6 +3,7 @@ package com.leidossd.dronecontrollerapp;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -37,7 +38,6 @@ import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
 public class WaypointFragment extends Fragment implements OnMapReadyCallback {
     private static final float DEFAULT_ZOOM = 21.0f;
-    private static final String TAG = "WaypointFragment";
 
     private Direction direction;
     private String directionMessage;
@@ -49,11 +49,11 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
 
     private TextView title;
     private TextView description;
-    private TextView textDir;
     private ImageView droneImage;
     private Button createButton;
     private EditText missionName;
     private CheckBox saveCheckbox;
+    private TextView positionText;
     private GoogleMap googleMap;
     private MapView mapView;
     private FusedLocationProviderClient fusedLocationClient;
@@ -63,7 +63,8 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
     private TextView noPressed;
     private boolean pressedOnce = false;
     private Location location;
-    int locationPerimission;
+    private Coordinate destination = null;
+    private int locationPerimission;
 
     public WaypointFragment() {}
 
@@ -92,21 +93,21 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
 
         title = view.findViewById(R.id.mission_type);
         description = view.findViewById(R.id.mission_description);
-        textDir = view.findViewById(R.id.mission_direction);
         droneImage = view.findViewById(R.id.drone_image);
         createButton = view.findViewById(R.id.button_create);
         noPressed = view.findViewById(R.id.text_nopressed);
         missionName = view.findViewById(R.id.mission_name);
         saveCheckbox = view.findViewById(R.id.mission_save);
+        positionText = view.findViewById(R.id.text_position);
         createButton.setOnClickListener(createButtonListener);
 
         title.setVisibility(View.INVISIBLE);
         description.setVisibility(View.INVISIBLE);
-        textDir.setVisibility(View.INVISIBLE);
         droneImage.setVisibility(View.INVISIBLE);
         createButton.setVisibility(View.INVISIBLE);
         missionName.setVisibility(View.INVISIBLE);
         saveCheckbox.setVisibility(View.INVISIBLE);
+        positionText.setVisibility(View.INVISIBLE);
         noPressed.setVisibility(View.VISIBLE);
 
         mapView = view.findViewById(R.id.mapView);
@@ -120,10 +121,17 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        this.googleMap = googleMap;
+    public void onMapReady(GoogleMap gMap) {
+        this.googleMap = gMap;
 
+        googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+
+        googleMap.getUiSettings().setRotateGesturesEnabled(false);
+        googleMap.getUiSettings().setZoomControlsEnabled(false);
+        googleMap.getUiSettings().setZoomGesturesEnabled(false);
         googleMap.getUiSettings().setScrollGesturesEnabled(false);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
@@ -134,19 +142,21 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
                 pLocation.setLatitude(point.latitude);
                 pLocation.setLongitude(point.longitude);
 
-                Coordinate d = getDistance(location, pLocation);
+                destination = getDistance(location, pLocation);
 
                 if (!pressedOnce) {
                     title.setVisibility(View.VISIBLE);
                     description.setVisibility(View.VISIBLE);
-                    textDir.setVisibility(View.VISIBLE);
                     droneImage.setVisibility(View.VISIBLE);
                     createButton.setVisibility(View.VISIBLE);
                     missionName.setVisibility(View.VISIBLE);
                     saveCheckbox.setVisibility(View.VISIBLE);
+                    positionText.setVisibility(View.VISIBLE);
                     noPressed.setVisibility(View.INVISIBLE);
                     pressedOnce = true;
                 }
+
+                positionText.setText(String.format("X: %f, Y: %f, Z: %f", destination.getX(), destination.getY(), destination.getZ()));
             }
         });
 
@@ -155,17 +165,12 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private Coordinate getDistance(Location l1, Location l2){
-        final int RADIUS = 6378137;
-        double la1 = Math.toRadians(l1.getLatitude());
-        double la2 = Math.toRadians(l2.getLatitude());
-        double lo1 = Math.toRadians(l1.getLongitude());
-        double lo2 = Math.toRadians(l2.getLongitude());
-        double x = RADIUS*Math.cos(la2)*Math.cos(lo2) - RADIUS*Math.cos(la1)*Math.cos(lo1);
-        double y = RADIUS*Math.cos(la2)*Math.sin(lo2) - RADIUS*Math.cos(la1)*Math.sin(lo1);
-        double z = RADIUS*Math.sin(la2) - RADIUS*Math.sin(la1);
-        double ret = Math.sqrt(Math.pow(x, 2)+Math.pow(y, 2)+Math.pow(z, 2));
-        showToast("Distance: " + ret + "\nX: " + x + "\nY: " + y);
-        return new Coordinate((float)x, (float)y, 0);
+        Point p = googleMap.getProjection().toScreenLocation(new LatLng(l1.getLatitude(), l1.getLongitude()));
+        Point q = googleMap.getProjection().toScreenLocation(new LatLng(l2.getLatitude(), l2.getLongitude()));
+        float x = (float)(q.x-p.x)/p.x;
+        float y = (float)-(q.y-p.y)/p.y;
+
+        return new Coordinate(x, y,0);
     }
 
     private void getLocation() {
@@ -188,10 +193,7 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
                             showToast("Lat: " + location.getLatitude() +
                                 "Long:" + location.getLongitude());
                         } else {
-                            Log.d(TAG, "Current location is null. Using defaults.");
-                            Log.e(TAG, "Exception: %s", task.getException());
                             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0,0), DEFAULT_ZOOM));
-                            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
                         }
                     }
                 });
@@ -208,20 +210,13 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
         try {
             if (locationPerimission == PackageManager.PERMISSION_GRANTED) {
                 googleMap.setMyLocationEnabled(true);
-                googleMap.getUiSettings().setMyLocationButtonEnabled(true);
             } else {
                 googleMap.setMyLocationEnabled(false);
-                googleMap.getUiSettings().setMyLocationButtonEnabled(false);
                 location = null;
-                getLocationPermission();
             }
         } catch (SecurityException e)  {
             Log.e("Exception: %s", e.getMessage());
         }
-    }
-
-    private void getLocationPermission() {
-
     }
 
     @Override
@@ -234,6 +229,7 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
                     + " must implement MissionCreateListener");
         }
     }
+
     @Override
     public void onResume(){
         super.onResume();
