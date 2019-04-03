@@ -10,10 +10,13 @@ public class SpecificMission extends Mission {
         ArrayList<Task> tasks = new ArrayList<>();
         tasks.add(new ToastTask("Starting..."));
         tasks.add(new WaitTask(5000));
+        tasks.add(new SetGimbalAngleTask(-45));
         tasks.add(new ToastTask("1..."));
         tasks.add(new WaitTask(5000));
+        tasks.add(new SetGimbalAngleTask(-90));
         tasks.add(new ToastTask("2..."));
         tasks.add(new WaitTask(5000));
+        tasks.add(new SetGimbalAngleTask(0));
         tasks.add(new ToastTask("3..."));
         tasks.add(new WaitTask(5000));
         tasks.add(new ToastTask("Ending..."));

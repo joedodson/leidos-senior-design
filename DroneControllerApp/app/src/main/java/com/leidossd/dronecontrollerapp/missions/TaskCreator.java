@@ -11,7 +11,8 @@ public class TaskCreator {
         ROTATION_TASK,
         TAKEOFF_TASK,
         LANDING_TASK,
-        MOCK_FLIGHT_TASK
+        MOCK_FLIGHT_TASK,
+        SET_GIMBAL_ANGLE_TASK,
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){
@@ -37,6 +38,8 @@ public class TaskCreator {
                     return LandingTask.create(source);
                 case MOCK_FLIGHT_TASK:
                     return MockFlightTask.create(source);
+                case SET_GIMBAL_ANGLE_TASK:
+                    return SetGimbalAngleTask.create(source);
                 default:
                     throw new AssertionError();
             }
