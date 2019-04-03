@@ -15,13 +15,14 @@ import java.util.ArrayList;
 
 public class MenuAdapter extends Adapter {
     private ArrayList<Pair<String, String>> menuOption;
+    private MenuListener menuListener;
 
-    public MenuAdapter(Context context, ArrayList<>) {
+    public MenuAdapter(Context context, ArrayList<Pair<String, String>> menuOptions) {
         if (context instanceof MenuListener) {
-            this.missionAdapterListener = (MenuListener) context;
+            this.menuListener = (MenuListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement MissionAdapterListener");
+                    + " must implement MenuListener");
         }
     }
 
@@ -32,7 +33,6 @@ public class MenuAdapter extends Adapter {
         ViewHolder vh = new MenuHolder(v);
         v.setOnClickListener((View view) -> {
             int pos = vh.getAdapterPosition();
-            sendMission(pos);
         });
     }
 
