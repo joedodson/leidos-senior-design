@@ -73,8 +73,8 @@ public class VirtualStickFlightControl  {
         inputTask = new VirtualSticksUpdateTask();
         flightController.setVirtualStickModeEnabled(true,(error) -> {
             inputTimer.schedule(inputTask, 0, updatePeriod);
+            enabled = true;
         });
-        enabled = true;
     }
 
     public void disable(){
@@ -150,8 +150,8 @@ public class VirtualStickFlightControl  {
 //                flightController.setVerticalControlMode(VerticalControlMode.VELOCITY);
 //                flightController.setYawControlMode(YawControlMode.ANGULAR_VELOCITY);
 
-//                flightController.sendVirtualStickFlightControlData(
-//                    new FlightControlData(roll, pitch, yaw, throttle), (error) -> {});
+                flightController.sendVirtualStickFlightControlData(
+                    new FlightControlData(roll, pitch, yaw, throttle), (error) -> {});
                 if(listener != null)
                     listener.increment(
                         new Coordinate(roll,pitch,throttle).scale((updatePeriod/(float)1000.0)),
