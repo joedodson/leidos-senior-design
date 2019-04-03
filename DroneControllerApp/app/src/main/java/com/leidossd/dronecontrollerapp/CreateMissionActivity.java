@@ -32,6 +32,9 @@ public class CreateMissionActivity extends AppCompatActivity implements MissionC
                 case WAYPOINT_MISSION:
                     baseFragment = new WaypointFragment();
                     break;
+                case SURVEILLANCE_MISSION:
+                    baseFragment = new SurveillanceFragment();
+                    break;
                 case CUSTOM_MISSION:
                     break;
             }

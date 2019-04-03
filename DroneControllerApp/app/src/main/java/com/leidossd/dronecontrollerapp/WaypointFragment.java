@@ -29,11 +29,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.leidossd.djiwrapper.Coordinate;
 import com.leidossd.dronecontrollerapp.missions.SpecificMission;
 import com.leidossd.utils.Direction;
 
+import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
+
 public class WaypointFragment extends Fragment implements OnMapReadyCallback {
-    private static final float DEFAULT_ZOOM = 18.0f;
+    private static final float DEFAULT_ZOOM = 21.0f;
     private static final String TAG = "WaypointFragment";
 
     private Direction direction;
@@ -120,11 +123,18 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
 
+        googleMap.getUiSettings().setScrollGesturesEnabled(false);
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng point) {
                 googleMap.clear();
                 googleMap.addMarker(new MarkerOptions().position(point));
+
+                Location pLocation = new Location("");
+                pLocation.setLatitude(point.latitude);
+                pLocation.setLongitude(point.longitude);
+
+                Coordinate d = getDistance(location, pLocation);
 
                 if (!pressedOnce) {
                     title.setVisibility(View.VISIBLE);
@@ -144,6 +154,20 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
         getLocation();
     }
 
+    private Coordinate getDistance(Location l1, Location l2){
+        final int RADIUS = 6378137;
+        double la1 = Math.toRadians(l1.getLatitude());
+        double la2 = Math.toRadians(l2.getLatitude());
+        double lo1 = Math.toRadians(l1.getLongitude());
+        double lo2 = Math.toRadians(l2.getLongitude());
+        double x = RADIUS*Math.cos(la2)*Math.cos(lo2) - RADIUS*Math.cos(la1)*Math.cos(lo1);
+        double y = RADIUS*Math.cos(la2)*Math.sin(lo2) - RADIUS*Math.cos(la1)*Math.sin(lo1);
+        double z = RADIUS*Math.sin(la2) - RADIUS*Math.sin(la1);
+        double ret = Math.sqrt(Math.pow(x, 2)+Math.pow(y, 2)+Math.pow(z, 2));
+        showToast("Distance: " + ret + "\nX: " + x + "\nY: " + y);
+        return new Coordinate((float)x, (float)y, 0);
+    }
+
     private void getLocation() {
         /*
          * Get the best and most recent location of the device, which may be null in rare
@@ -161,6 +185,8 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
                             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(location.getLatitude(),
                                             location.getLongitude()), DEFAULT_ZOOM));
+                            showToast("Lat: " + location.getLatitude() +
+                                "Long:" + location.getLongitude());
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());

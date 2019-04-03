@@ -70,6 +70,7 @@
 
     <string name="mission_default">Default Mission</string>
     <string name="mission_waypoint">Waypoint Mission</string>
+    <string name="mission_surveillancet">Surveillance Mission</string>
     <string name="mission_custom">Custom Mission</string>
 
     <!-- TODO: Remove or change this placeholder text -->
