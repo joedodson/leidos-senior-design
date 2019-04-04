@@ -36,8 +36,8 @@ public class RotationTask extends Task {
         FlightControllerWrapper.getInstance().rotateTo(angle, (error)->{
             if(error != null)
                 listener.statusUpdate(TaskState.FAILED, "ROTATION FAILED!");
-            currentState = TaskState.COMPLETED;
-            listener.statusUpdate(currentState, "ROTATION SUCCESS");
+            else
+                listener.statusUpdate(TaskState.COMPLETED, "ROTATION SUCCESS");
         });
 
     }

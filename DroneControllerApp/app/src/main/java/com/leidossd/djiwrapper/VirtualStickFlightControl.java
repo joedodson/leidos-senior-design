@@ -11,6 +11,7 @@ import dji.common.flightcontroller.virtualstick.RollPitchControlMode;
 import dji.common.flightcontroller.virtualstick.VerticalControlMode;
 import dji.common.flightcontroller.virtualstick.FlightControlData;
 import dji.common.flightcontroller.virtualstick.YawControlMode;
+import dji.common.util.CommonCallbacks;
 import dji.sdk.flightcontroller.FlightController;
 import dji.sdk.products.Aircraft;
 import dji.sdk.sdkmanager.DJISDKManager;
@@ -32,6 +33,8 @@ public class VirtualStickFlightControl  {
     private long updatePeriod;
 
     VirtualSticksIncrementListener listener;
+
+    CommonCallbacks.CompletionCallback callbackFail;
 
     private boolean inFlight;
     private boolean enabled;
@@ -63,6 +66,10 @@ public class VirtualStickFlightControl  {
 
     public void setListener(VirtualSticksIncrementListener listener){
         this.listener = listener;
+    }
+
+    public void setCallbackFail(@Nullable CommonCallbacks.CompletionCallback callback){
+        callbackFail = callback;
     }
 
     public void enable(){
@@ -151,7 +158,13 @@ public class VirtualStickFlightControl  {
 //                flightController.setYawControlMode(YawControlMode.ANGULAR_VELOCITY);
 
                 flightController.sendVirtualStickFlightControlData(
-                    new FlightControlData(roll, pitch, yaw, throttle), (error) -> {});
+                    new FlightControlData(roll, pitch, yaw, throttle), (error) -> {
+                            if(error != null) {
+                                if(callbackFail != null)
+                                    callbackFail.onResult(error);
+                                halt();
+                            }
+                        });
                 if(listener != null)
                     listener.increment(
                         new Coordinate(roll,pitch,throttle).scale((updatePeriod/(float)1000.0)),

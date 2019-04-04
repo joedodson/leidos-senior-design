@@ -12,16 +12,6 @@ import com.leidossd.dronecontrollerapp.missions.MissionRunner;
 import com.leidossd.dronecontrollerapp.missions.Task;
 import com.leidossd.dronecontrollerapp.missions.WaypointMission;
 
-import java.util.Map;
-
-import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
-
-import dji.common.gimbal.CapabilityKey;
-import dji.common.gimbal.Rotation;
-import dji.common.util.DJIParamCapability;
-import dji.common.util.DJIParamMinMaxCapability;
-import dji.sdk.gimbal.Gimbal;
-import dji.sdk.sdkmanager.DJISDKManager;
 
 public class MissionServiceExampleActivity extends AppCompatActivity implements Task.StatusUpdateListener {
 
@@ -37,7 +27,7 @@ public class MissionServiceExampleActivity extends AppCompatActivity implements 
         missionStatusTextView = findViewById(R.id.tv_activity_mission_service_example_status);
 
 //        mission = new SpecificMission("SpecificMission");
-        mission = new SpecificMission("Gimbal rotation test");
+        mission = new WaypointMission(new Coordinate(0,1,0));
         missionRunner = new MissionRunner(this, this);
     }
 

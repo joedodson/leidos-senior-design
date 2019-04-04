@@ -72,11 +72,11 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
         // Distinguish between absolute/relative
         if(flightMode == FlightMode.ABSOLUTE){
             rotate(direction.angleBetween(theta), callback);
-            this.direction = this.direction.rotateByAngle(this.direction.angleBetween(theta));
+//            this.direction = this.direction.rotateByAngle(this.direction.angleBetween(theta));
 
         } else if(flightMode == FlightMode.RELATIVE){
             rotate(theta, callback);
-            this.direction  = this.direction.rotateByAngle(theta);
+//            this.direction  = this.direction.rotateByAngle(theta);
         }
         else
             throw new IllegalStateException("FlightMode not set!");
@@ -119,6 +119,7 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
     }
 
     public void halt(){
+        virtualSticks.setCallbackFail(null);
         virtualSticks.halt();
         virtualSticks.disable();
         if(endTimer != null) {
@@ -153,6 +154,7 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
 
         // prep sticks for inputs
         virtualSticks.enable();
+        virtualSticks.setCallbackFail(callback);
 
         long duration;
         if(theta == 0) {
