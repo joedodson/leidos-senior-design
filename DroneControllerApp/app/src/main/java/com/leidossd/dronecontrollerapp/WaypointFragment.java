@@ -3,7 +3,10 @@ package com.leidossd.dronecontrollerapp;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,16 +31,23 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Tile;
+import com.google.android.gms.maps.model.TileOverlay;
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.android.gms.maps.model.TileProvider;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.leidossd.djiwrapper.Coordinate;
 import com.leidossd.dronecontrollerapp.missions.SpecificMission;
 import com.leidossd.utils.Direction;
 
+import java.io.ByteArrayOutputStream;
+
 import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
 public class WaypointFragment extends Fragment implements OnMapReadyCallback {
     private static final float DEFAULT_ZOOM = 21.0f;
+    private static final int TILE_SIZE = 256;
 
     private Direction direction;
     private String directionMessage;
@@ -126,11 +136,26 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
 
         googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
 
-        googleMap.getUiSettings().setRotateGesturesEnabled(false);
-        googleMap.getUiSettings().setZoomControlsEnabled(false);
-        googleMap.getUiSettings().setZoomGesturesEnabled(false);
-        googleMap.getUiSettings().setScrollGesturesEnabled(false);
-        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+//        googleMap.getUiSettings().setRotateGesturesEnabled(false);
+//        googleMap.getUiSettings().setZoomControlsEnabled(false);
+//        googleMap.getUiSettings().setZoomGesturesEnabled(false);
+//        googleMap.getUiSettings().setScrollGesturesEnabled(false);
+//        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+
+        TileProvider tileProvider = new TileProvider() {
+            @Override
+            public Tile getTile(int i, int i1, int i2) {
+                Drawable d = ContextCompat.getDrawable(getContext(), R.drawable.grid_overlay);
+                Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
+                byte[] bitmapData = stream.toByteArray();
+                return new Tile(TILE_SIZE, TILE_SIZE, bitmapData);
+            }
+        };
+
+        googleMap.addTileOverlay(new TileOverlayOptions()
+                .tileProvider(tileProvider));
 
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
