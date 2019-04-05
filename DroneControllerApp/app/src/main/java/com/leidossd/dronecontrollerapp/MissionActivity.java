@@ -24,16 +24,7 @@ import com.leidossd.dronecontrollerapp.missions.MissionRunnerService;
 import com.leidossd.dronecontrollerapp.missions.Task;
 import com.leidossd.utils.MissionAction;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-
-public class MissionActivity extends AppCompatActivity implements MissionAdapter.MissionAdapterListener, Task.StatusUpdateListener{
+public class MissionActivity extends MenuActivity implements MissionAdapter.MissionAdapterListener, Task.StatusUpdateListener{
     //Constants for inner classes
     private static final int CREATE_MISSION = 1001;
     private static final int CONFIRM_MISSION = 1002;
