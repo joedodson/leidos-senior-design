@@ -12,7 +12,7 @@ import com.leidossd.dronecontrollerapp.missions.MissionRunner;
 import com.leidossd.dronecontrollerapp.missions.Task;
 import com.leidossd.dronecontrollerapp.missions.WaypointMission;
 
-public class MissionServiceExampleActivity extends AppCompatActivity implements Task.StatusUpdateListener {
+public class MissionServiceExampleActivity extends MenuActivity implements Task.StatusUpdateListener {
 
     MissionRunner missionRunner;
     TextView missionStatusTextView;
@@ -20,8 +20,10 @@ public class MissionServiceExampleActivity extends AppCompatActivity implements 
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mission_service_example);
+
 
         missionStatusTextView = findViewById(R.id.tv_activity_mission_service_example_status);
 
