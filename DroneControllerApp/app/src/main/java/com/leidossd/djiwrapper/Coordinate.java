@@ -143,6 +143,10 @@ public class Coordinate implements Parcelable {
         return new Coordinate(newX,newY,this.z);
     }
 
+    public static Coordinate sum(Coordinate c1, Coordinate c2) {
+        return new Coordinate(c1.x + c2.x, c1.y+c2.y, c1.z+c2.z);
+    }
+
     @Override
     public boolean equals(Object other) {
         // If the object is compared with itself then return true

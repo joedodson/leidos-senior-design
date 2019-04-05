@@ -6,57 +6,42 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.FragmentManager;
+
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.menu.MenuView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.GestureDetector;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.TextView;
 
 import com.leidossd.dronecontrollerapp.missions.MissionRunner;
-import com.leidossd.dronecontrollerapp.simulator.SimulatorActivity;
-import com.leidossd.utils.MenuAction;
 
+import dji.common.battery.BatteryState;
 import dji.sdk.sdkmanager.DJISDKManager;
 
 import static com.leidossd.dronecontrollerapp.MainApplication.getDroneInstance;
 import static com.leidossd.utils.DroneConnectionStatus.DRONE_CONNECTED;
-import static com.leidossd.utils.DroneConnectionStatus.DRONE_CONNECTION_ERROR;
-import static com.leidossd.utils.DroneConnectionStatus.DRONE_DISCONNECTED;
 import static com.leidossd.utils.IntentAction.CONNECTION_CHANGE;
-import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
-import com.leidossd.dronecontrollerapp.compass.CompassCalibrationActivity;
-
-public class MainActivity extends AppCompatActivity implements
-        MenuFragment.fragmentInteractionListener {
+public class MainActivity extends MenuActivity {
 
     private static final String TAG = MainActivity.class.getName();
     MainApplication app = (MainApplication) getApplication();
 
-    Toolbar actionBar;
-    private GestureDetectorCompat gestureDetector;
-
-    FragmentManager fragmentManager;
-    MenuFragment menuFragment;
     LiveVideoFragment liveVideoFragment;
     AlertDialog droneNotConnectedDialog;
+    Handler handler;
+
 
     private static MissionRunner missionRunner;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_NoActionBar);
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        handler = new Handler();
+        super.onCreate(savedInstanceState);
+
+        liveVideoFragment = new LiveVideoFragment();
 
         // MainApplication sends local broadcast when connection status changes
         // receiver to wait for 'MainApplication' to notify connection status change
@@ -64,14 +49,10 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onReceive(Context context, Intent connectionChangeIntent) {
                 String droneStatus = connectionChangeIntent.getStringExtra(CONNECTION_CHANGE.getResultKey());
-                updateDroneStatus(droneStatus);
+                toggleLiveVideo(droneStatus);
             }
         };
         LocalBroadcastManager.getInstance(this).registerReceiver(connectionChangeReceiver, new IntentFilter(CONNECTION_CHANGE.getActionString()));
-
-        fragmentManager = getSupportFragmentManager();
-        menuFragment = new MenuFragment();
-        liveVideoFragment = new LiveVideoFragment();
 
         droneNotConnectedDialog = new AlertDialog.Builder(this)
                 .setTitle("No Aircraft Connected")
@@ -121,9 +102,6 @@ public class MainActivity extends AppCompatActivity implements
                 else
                     startActivity(new Intent(this, CompassCalibrationActivity.class));
                 break;
-            case R.id.action_bar_gps:
-                showToast("GPS");
-                break;
             case R.id.action_bar_battery:
                 showToast("Battery");
                 break;
@@ -157,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements
 //                startActivity(new Intent(this, CompassActivity.class));
                 break;
             case OPEN_GRID_VIEW:
-//                startActivity(new Intent(this, GridParentActivity.class));
+                startActivity(new Intent(this, GridParentActivity.class));
                 break;
             default:
                 showActionBar();
@@ -190,62 +168,43 @@ public class MainActivity extends AppCompatActivity implements
 
 
     // remove callback to prevent failed message, set correct status, and log result
-    private void updateDroneStatus(String droneStatus) {
-        MenuView.ItemView statusView = findViewById(R.id.action_bar_status);
-        String status = droneStatus;
-
+    private void toggleLiveVideo(String droneStatus) {
         if(droneStatus.equals(DRONE_CONNECTED.toString())) {
             status = status += " " + getDroneInstance().getModel().getDisplayName();
+
+            handler.removeCallbacksAndMessages(null);
+
+            Runnable updateBatteryRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    MainApplication.getDroneInstance().getBattery().setStateCallback(batteryState -> {
+
+                        int batteryPercent = batteryState.getChargeRemainingInPercent();
+                        MenuView.ItemView batteryText = findViewById(R.id.action_bar_battery);
+
+                        if (batteryPercent > 0) {
+                            //showToast(String.format("Updating battery: %s %s", String.valueOf(batteryPercent), "%"));
+                            runOnUiThread(() -> batteryText.setTitle(String.format("Battery: %s %s", String.valueOf(batteryPercent), "%")));
+                        } else {
+                            runOnUiThread(() -> batteryText.setTitle("Battery: 100%"));
+                        }
+                    });
+                    handler.postDelayed(this, 10000);
+                }
+            };
+
+            handler.post(updateBatteryRunnable);
+
             startLiveVideo();
-        } else if(droneStatus.equals(DRONE_DISCONNECTED.toString())) {
-            stopLiveVideo();
         } else {
-            status = DRONE_CONNECTION_ERROR.toString();
             stopLiveVideo();
         }
-
-        statusView.setTitle(status);
-
-        Log.d(TAG, String.format("Updated drone status with: %s", droneStatus));
-    }
-
-    private void configureActionBar() {
-        actionBar.setLogo(R.drawable.ic_leidos);
-        actionBar.setTitle(R.string.app_name);
-        setSupportActionBar(actionBar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    }
-
-    private void showMenu() {
-        fragmentManager.beginTransaction()
-                .setCustomAnimations(R.animator.show_menu, R.animator.hide_menu)
-                .show(menuFragment)
-                .commit();
-    }
-
-    private void hideMenu() {
-        fragmentManager.beginTransaction()
-                .setCustomAnimations(R.animator.show_menu, R.animator.hide_menu)
-                .hide(menuFragment)
-                .commit();
-    }
-
-    private void hideActionBar() {
-        actionBar.animate()
-                .translationY(-200)
-                .setDuration(getResources().getInteger(R.integer.animation_duration_ms_short))
-                .start();
-    }
-
-    private void showActionBar() {
-        actionBar.animate()
-                .translationY(0)
-                .setDuration(getResources().getInteger(R.integer.animation_duration_ms_short))
-                .start();
     }
 
     private void startLiveVideo() {
         if(!liveVideoFragment.isAdded()) {
+            stopLiveVideo();
+            liveVideoFragment = new LiveVideoFragment();
             fragmentManager.beginTransaction()
                     .add(R.id.live_video_fragment_container, liveVideoFragment)
                     .commitAllowingStateLoss();

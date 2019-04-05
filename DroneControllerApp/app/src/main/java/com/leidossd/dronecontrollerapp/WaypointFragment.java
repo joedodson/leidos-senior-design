@@ -38,7 +38,9 @@ import com.google.android.gms.maps.model.TileProvider;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.leidossd.djiwrapper.Coordinate;
+import com.leidossd.djiwrapper.FlightControllerWrapper;
 import com.leidossd.dronecontrollerapp.missions.SpecificMission;
+import com.leidossd.dronecontrollerapp.missions.WaypointMission;
 import com.leidossd.utils.Direction;
 
 import java.io.ByteArrayOutputStream;
@@ -76,21 +78,87 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
     private Coordinate destination = null;
     private int locationPerimission;
 
+    private Coordinate coordinate;
+
     public WaypointFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+      
+        gridSelectListener = new View.OnClickListener() {
+            public void onClick(View view) {
+                int id = view.getId();
+                ImageButton gridButton = (ImageButton) view;
+                if (direction != null) {
+                    changeView();
+                }
+                switch (id) {
+                    case R.id.button_nw:
+                        gridButton.setImageResource(R.drawable.ic_arrow_nw_l);
+                        coordinate = new Coordinate(-1,1,0);
+                        direction = Direction.NW;
+                        break;
+                    case R.id.button_n:
+                        coordinate = new Coordinate(0,1,0);
+                        gridButton.setImageResource(R.drawable.ic_arrow_up_l);
+                        direction = Direction.N;
+                        break;
+                    case R.id.button_ne:
+                        coordinate = new Coordinate(1,1,0);
+                        gridButton.setImageResource(R.drawable.ic_arrow_ne_l);
+                        direction = Direction.NE;
+                        break;
+                    case R.id.button_w:
+                        coordinate = new Coordinate(-1,0,0);
+                        gridButton.setImageResource(R.drawable.ic_arrow_left_l);
+                        direction = Direction.W;
+                        break;
+                    case R.id.button_e:
+                        coordinate = new Coordinate(1,0,0);
+                        gridButton.setImageResource(R.drawable.ic_arrow_right_l);
+                        direction = Direction.E;
+                        break;
+                    case R.id.button_sw:
+                        coordinate = new Coordinate(-1,-1,0);
+                        gridButton.setImageResource(R.drawable.ic_arrow_sw_l);
+                        direction = Direction.SW;
+                        break;
+                    case R.id.button_s:
+                        coordinate = new Coordinate(0,-1,0);
+                        gridButton.setImageResource(R.drawable.ic_arrow_down_l);
+                        direction = Direction.S;
+                        break;
+                    case R.id.button_se:
+                        coordinate = new Coordinate(1,-1,0);
+                        gridButton.setImageResource(R.drawable.ic_arrow_se_l);
+                        direction = Direction.SE;
+                        break;
+                    default:
+                        return;
+                }
+                currentButton = gridButton;
+                textDir.setText(String.format("Direction to go: %s", direction.getDir()));
+                if (!pressedOnce) {
+                    title.setVisibility(View.VISIBLE);
+                    description.setVisibility(View.VISIBLE);
+                    textDir.setVisibility(View.VISIBLE);
+                    droneImage.setVisibility(View.VISIBLE);
+                    createButton.setVisibility(View.VISIBLE);
+                    missionName.setVisibility(View.VISIBLE);
+                    saveCheckbox.setVisibility(View.VISIBLE);
+                    noPressed.setVisibility(View.INVISIBLE);
+                    pressedOnce = true;
+                }
+            }
+        };
 
         createButtonListener = new View.OnClickListener() {
             public void onClick(View view) {
-                SpecificMission mission;
-                String mName = missionName.getText().toString();
-                if(mName.equals(""))
-                    mission = new SpecificMission("Waypoint Mission");
-                else
-                    mission = new SpecificMission(mName);
-                waypointFragmentListener.createMission(mission, saveCheckbox.isChecked());
+                if(coordinate != null) {
+                    coordinate = Coordinate.sum(FlightControllerWrapper.getInstance().getPosition(), coordinate);
+                    waypointFragmentListener.createMission(new WaypointMission(coordinate), saveCheckbox.isChecked());
+                }
             }
         };
     }

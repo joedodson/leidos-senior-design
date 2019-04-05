@@ -36,6 +36,7 @@
     <string name="activity_sdkregistrationerror_button">Retry Registration</string>
 
     <!-- Menus -->
+    <string name="menu_main_item_home_title">Home</string>
     <string name="menu_main_item_missions_title">Missions</string>
     <string name="menu_main_item_settings_title">Settings</string>
     <string name="menu_main_item_simulator_title">Simulator</string>
@@ -80,4 +81,5 @@
     <string name="title_activity_create_mission">CreateMissionActivity</string>
     <string name="title_activity_confirm_mission">ConfirmMissionActivity</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_menu">MenuActivity</string>
 </resources>
