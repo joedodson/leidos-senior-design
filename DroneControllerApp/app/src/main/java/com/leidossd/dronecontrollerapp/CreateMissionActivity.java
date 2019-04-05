@@ -1,7 +1,6 @@
 package com.leidossd.dronecontrollerapp;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.v4.app.Fragment;
@@ -11,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.leidossd.dronecontrollerapp.missions.Mission;
 import com.leidossd.utils.MissionAction;
 
-public class CreateMissionActivity extends AppCompatActivity implements MissionCreateListener {
+public class CreateMissionActivity extends AppCompatActivity implements MissionCreateListener{
 
     private Fragment baseFragment;
     private FragmentManager fragmentManager;
@@ -32,6 +31,9 @@ public class CreateMissionActivity extends AppCompatActivity implements MissionC
             switch(action){
                 case WAYPOINT_MISSION:
                     baseFragment = new WaypointFragment();
+                    break;
+                case SURVEILLANCE_MISSION:
+                    baseFragment = new SurveillanceFragment();
                     break;
                 case CUSTOM_MISSION:
                     break;

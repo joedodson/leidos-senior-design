@@ -7,6 +7,7 @@ public class MissionCreator {
     public enum MissionType {
         SPECIFIC_MISSION,
         WAYPOINT_MISSION,
+        SURVEILLANCE_MISSION
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator(){
@@ -19,6 +20,8 @@ public class MissionCreator {
                     return SpecificMission.create(source);
                 case WAYPOINT_MISSION:
                     return WaypointMission.create(source);
+                case SURVEILLANCE_MISSION:
+                    return SurveillanceMission.create(source);
                 default:
                     throw new AssertionError();
             }

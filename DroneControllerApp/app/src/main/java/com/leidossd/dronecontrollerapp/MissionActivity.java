@@ -84,13 +84,15 @@ public class MissionActivity extends MenuActivity implements MissionAdapter.Miss
         PopupMenu popupMenu = new PopupMenu(MissionActivity.this, createMissionButton);
         popupMenu.getMenuInflater().inflate(R.menu.select_mission, popupMenu.getMenu());
 
-        //TODO: Clean-up Toast calls.
         popupMenu.setOnMenuItemClickListener(menuItem -> {
             MissionAction action = null;
 
             switch(menuItem.getItemId()){
                 case (R.id.mtype_waypoint):
                     action = MissionAction.WAYPOINT_MISSION;
+                    break;
+                case (R.id.mtype_surveillance):
+                    action = MissionAction.SURVEILLANCE_MISSION;
                     break;
                 //TODO: Define other mission types.
                 case (R.id.mtype_custom):

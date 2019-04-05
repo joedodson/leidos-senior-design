@@ -1,8 +1,18 @@
 package com.leidossd.dronecontrollerapp;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +23,33 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Tile;
+import com.google.android.gms.maps.model.TileOverlay;
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.android.gms.maps.model.TileProvider;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.leidossd.djiwrapper.Coordinate;
 import com.leidossd.djiwrapper.FlightControllerWrapper;
 import com.leidossd.dronecontrollerapp.missions.SpecificMission;
 import com.leidossd.dronecontrollerapp.missions.WaypointMission;
 import com.leidossd.utils.Direction;
 
-public class WaypointFragment extends Fragment {
+import java.io.ByteArrayOutputStream;
+
+import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
+
+public class WaypointFragment extends Fragment implements OnMapReadyCallback {
+    private static final float DEFAULT_ZOOM = 21.0f;
+    private static final int TILE_SIZE = 256;
 
     private Direction direction;
     private String directionMessage;
@@ -31,14 +61,22 @@ public class WaypointFragment extends Fragment {
 
     private TextView title;
     private TextView description;
-    private TextView textDir;
     private ImageView droneImage;
     private Button createButton;
     private EditText missionName;
     private CheckBox saveCheckbox;
+    private TextView positionText;
+    private GoogleMap googleMap;
+    private MapView mapView;
+    private FusedLocationProviderClient fusedLocationClient;
+
+    private boolean mLocationPermissionGranted;
 
     private TextView noPressed;
     private boolean pressedOnce = false;
+    private Location location;
+    private Coordinate destination = null;
+    private int locationPerimission;
 
     private Coordinate coordinate;
 
@@ -47,7 +85,7 @@ public class WaypointFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+      
         gridSelectListener = new View.OnClickListener() {
             public void onClick(View view) {
                 int id = view.getId();
@@ -131,34 +169,147 @@ public class WaypointFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_waypoint, container, false);
 
-        int[] buttons = {R.id.button_nw, R.id.button_n, R.id.button_ne,
-                R.id.button_w, R.id.button_e,
-                R.id.button_sw, R.id.button_s, R.id.button_se};
-
-        for (int i : buttons){
-            view.findViewById(i).setOnClickListener(gridSelectListener);
-        }
-
         title = view.findViewById(R.id.mission_type);
         description = view.findViewById(R.id.mission_description);
-        textDir = view.findViewById(R.id.mission_direction);
         droneImage = view.findViewById(R.id.drone_image);
         createButton = view.findViewById(R.id.button_create);
         noPressed = view.findViewById(R.id.text_nopressed);
         missionName = view.findViewById(R.id.mission_name);
         saveCheckbox = view.findViewById(R.id.mission_save);
+        positionText = view.findViewById(R.id.text_position);
         createButton.setOnClickListener(createButtonListener);
 
         title.setVisibility(View.INVISIBLE);
         description.setVisibility(View.INVISIBLE);
-        textDir.setVisibility(View.INVISIBLE);
         droneImage.setVisibility(View.INVISIBLE);
         createButton.setVisibility(View.INVISIBLE);
         missionName.setVisibility(View.INVISIBLE);
         saveCheckbox.setVisibility(View.INVISIBLE);
+        positionText.setVisibility(View.INVISIBLE);
         noPressed.setVisibility(View.VISIBLE);
 
+        mapView = view.findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        locationPerimission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
+
         return view;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap gMap) {
+        this.googleMap = gMap;
+
+        googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+
+//        googleMap.getUiSettings().setRotateGesturesEnabled(false);
+//        googleMap.getUiSettings().setZoomControlsEnabled(false);
+//        googleMap.getUiSettings().setZoomGesturesEnabled(false);
+//        googleMap.getUiSettings().setScrollGesturesEnabled(false);
+//        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+
+        TileProvider tileProvider = new TileProvider() {
+            @Override
+            public Tile getTile(int i, int i1, int i2) {
+                Drawable d = ContextCompat.getDrawable(getContext(), R.drawable.grid_overlay);
+                Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
+                byte[] bitmapData = stream.toByteArray();
+                return new Tile(TILE_SIZE, TILE_SIZE, bitmapData);
+            }
+        };
+
+        googleMap.addTileOverlay(new TileOverlayOptions()
+                .tileProvider(tileProvider));
+
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng point) {
+                googleMap.clear();
+                googleMap.addMarker(new MarkerOptions().position(point));
+
+                Location pLocation = new Location("");
+                pLocation.setLatitude(point.latitude);
+                pLocation.setLongitude(point.longitude);
+
+                destination = getDistance(location, pLocation);
+
+                if (!pressedOnce) {
+                    title.setVisibility(View.VISIBLE);
+                    description.setVisibility(View.VISIBLE);
+                    droneImage.setVisibility(View.VISIBLE);
+                    createButton.setVisibility(View.VISIBLE);
+                    missionName.setVisibility(View.VISIBLE);
+                    saveCheckbox.setVisibility(View.VISIBLE);
+                    positionText.setVisibility(View.VISIBLE);
+                    noPressed.setVisibility(View.INVISIBLE);
+                    pressedOnce = true;
+                }
+
+                positionText.setText(String.format("X: %f, Y: %f, Z: %f", destination.getX(), destination.getY(), destination.getZ()));
+            }
+        });
+
+        updateMap();
+        getLocation();
+    }
+
+    private Coordinate getDistance(Location l1, Location l2){
+        Point p = googleMap.getProjection().toScreenLocation(new LatLng(l1.getLatitude(), l1.getLongitude()));
+        Point q = googleMap.getProjection().toScreenLocation(new LatLng(l2.getLatitude(), l2.getLongitude()));
+        float x = (float)(q.x-p.x)/p.x;
+        float y = (float)-(q.y-p.y)/p.y;
+
+        return new Coordinate(x, y,0);
+    }
+
+    private void getLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        try {
+            if (locationPerimission == PackageManager.PERMISSION_GRANTED) {
+                Task locationResult = fusedLocationClient.getLastLocation();
+                locationResult.addOnCompleteListener(getActivity(), new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if (task.isSuccessful()) {
+                            // Set the map's camera position to the current location of the device.
+                            location = (Location)task.getResult();
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                    new LatLng(location.getLatitude(),
+                                            location.getLongitude()), DEFAULT_ZOOM));
+                            showToast("Lat: " + location.getLatitude() +
+                                "Long:" + location.getLongitude());
+                        } else {
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0,0), DEFAULT_ZOOM));
+                        }
+                    }
+                });
+            }
+        } catch(SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    private void updateMap() {
+        if (googleMap == null) {
+            return;
+        }
+        try {
+            if (locationPerimission == PackageManager.PERMISSION_GRANTED) {
+                googleMap.setMyLocationEnabled(true);
+            } else {
+                googleMap.setMyLocationEnabled(false);
+                location = null;
+            }
+        } catch (SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
+        }
     }
 
     @Override
@@ -170,6 +321,24 @@ public class WaypointFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement MissionCreateListener");
         }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
     }
 
     @Override
