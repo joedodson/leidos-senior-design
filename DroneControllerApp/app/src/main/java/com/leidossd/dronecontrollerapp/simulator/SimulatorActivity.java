@@ -33,9 +33,9 @@ import dji.common.util.CommonCallbacks;
 import dji.sdk.flightcontroller.FlightController;
 import dji.sdk.products.Aircraft;
 
+import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 import static com.leidossd.utils.DroneConnectionStatus.DRONE_CONNECTED;
 import static com.leidossd.utils.IntentAction.CONNECTION_CHANGE;
-import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
 
 public class SimulatorActivity extends AppCompatActivity implements View.OnClickListener {

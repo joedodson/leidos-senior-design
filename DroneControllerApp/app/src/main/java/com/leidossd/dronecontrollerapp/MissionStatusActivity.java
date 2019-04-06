@@ -1,10 +1,7 @@
 package com.leidossd.dronecontrollerapp;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.TextView;
-
-import com.leidossd.dronecontrollerapp.missions.Mission;
+import android.support.v7.app.AppCompatActivity;
 
 public class MissionStatusActivity extends AppCompatActivity {
     @Override

@@ -1,7 +1,5 @@
 package com.leidossd.djiwrapper;
 
-import java.lang.System;
-
 public class FlightData {
     Coordinate start;
     Coordinate destination;

@@ -3,7 +3,6 @@ package com.leidossd.dronecontrollerapp.missions;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Binder;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 

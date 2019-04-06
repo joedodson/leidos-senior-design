@@ -1,6 +1,7 @@
 package com.leidossd.dronecontrollerapp.missions;
 
 import android.os.Parcel;
+
 import com.leidossd.djiwrapper.Coordinate;
 
 import java.util.ArrayList;
