@@ -1,15 +1,12 @@
 package com.leidossd.djiwrapper;
-import android.os.Handler;
+
 import android.support.annotation.Nullable;
 
-import dji.common.error.DJIError;
-
 import dji.common.flightcontroller.CompassCalibrationState;
-import dji.common.flightcontroller.CompassState;
 import dji.common.util.CommonCallbacks;
 import dji.sdk.flightcontroller.FlightController;
-import dji.sdk.sdkmanager.DJISDKManager;
 import dji.sdk.products.Aircraft;
+import dji.sdk.sdkmanager.DJISDKManager;
 
 public class FlightControllerWrapper {
     private static FlightControllerWrapper instance = null;

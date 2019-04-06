@@ -3,7 +3,10 @@ package com.leidossd.utils;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
-import static com.leidossd.utils.SwipeGestureListener.Direction.*;
+import static com.leidossd.utils.SwipeGestureListener.Direction.DOWN;
+import static com.leidossd.utils.SwipeGestureListener.Direction.LEFT;
+import static com.leidossd.utils.SwipeGestureListener.Direction.RIGHT;
+import static com.leidossd.utils.SwipeGestureListener.Direction.UP;
 
 public class SwipeGestureListener extends GestureDetector.SimpleOnGestureListener {
     private static final String DEBUG_TAG = "Gestures";

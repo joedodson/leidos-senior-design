@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/accent_normal"
     android:elevation="@dimen/menu_elevation"
     android:clipToPadding="false"
     android:clipChildren="false">
@@ -13,8 +11,8 @@
         android:id="@+id/menu_header_container"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/menu_header_height"
-        android:background="@color/accent_dark"
         android:elevation="@dimen/menu_header_elevation"
+        android:background="@color/accent_dark"
         app:layout_constraintBottom_toTopOf="@+id/menu_items_scrollview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

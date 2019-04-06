@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Build;
 
-import com.leidossd.dronecontrollerapp.missions.MissionRunner;
 import com.secneo.sdk.Helper;
 
 /**

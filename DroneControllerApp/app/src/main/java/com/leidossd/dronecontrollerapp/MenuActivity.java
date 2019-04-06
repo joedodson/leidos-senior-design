@@ -16,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.leidossd.dronecontrollerapp.compass.CompassCalibrationActivity;
 import com.leidossd.utils.MenuAction;
@@ -37,11 +36,13 @@ public class MenuActivity extends AppCompatActivity implements
 
     FragmentManager fragmentManager;
     MenuFragment menuFragment;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        handler = new Handler();
         fragmentManager = getSupportFragmentManager();
         menuFragment = new MenuFragment();
 
@@ -107,9 +108,8 @@ public class MenuActivity extends AppCompatActivity implements
         Handler handler = new Handler();
 
         handler.postDelayed(() -> {
-            TextView status = findViewById(R.id.action_bar_status);
-            if(MainApplication.getDroneInstance() != null && status != null) {
-                status.setText(DRONE_CONNECTED.toString());
+            if(MainApplication.getDroneInstance() != null) {
+                updateDroneStatus(DRONE_CONNECTED.toString());
             }
         }, 500);
         return true;
@@ -129,9 +129,6 @@ public class MenuActivity extends AppCompatActivity implements
                     MainApplication.showToast("showing drone not connected dialog");
                 else
                     startActivity(new Intent(this, CompassCalibrationActivity.class));
-                break;
-            case R.id.action_bar_gps:
-                showToast("GPS");
                 break;
             case R.id.action_bar_battery:
                 showToast("Battery");
@@ -227,12 +224,36 @@ public class MenuActivity extends AppCompatActivity implements
     // remove callback to prevent failed message, set correct status, and log result
     private void updateDroneStatus(String droneStatus) {
         MenuView.ItemView statusView = findViewById(R.id.action_bar_status);
-        String status = droneStatus.toString();
+        String status = droneStatus;
 
         if(droneStatus.equals(DRONE_CONNECTED.toString())) {
-            status = status += " " + getDroneInstance().getModel().getDisplayName();
+            status += " to " + getDroneInstance().getModel().getDisplayName();
+
+            handler.removeCallbacksAndMessages(null);
+
+            Runnable updateBatteryRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    MainApplication.getDroneInstance().getBattery().setStateCallback(batteryState -> {
+
+                        int batteryPercent = batteryState.getChargeRemainingInPercent();
+                        MenuView.ItemView batteryText = findViewById(R.id.action_bar_battery);
+
+                        if (batteryPercent > 0) {
+                            runOnUiThread(() -> batteryText.setTitle(String.valueOf(batteryPercent) + "%"));
+                        } else {
+                            runOnUiThread(() -> batteryText.setTitle("ERR"));
+                        }
+                    });
+                    handler.postDelayed(this, 10000);
+                }
+            };
+
+            handler.post(updateBatteryRunnable);
         }
 
-        statusView.setTitle(status);
+        if(statusView != null) {
+            statusView.setTitle(status);
+        }
     }
 }
