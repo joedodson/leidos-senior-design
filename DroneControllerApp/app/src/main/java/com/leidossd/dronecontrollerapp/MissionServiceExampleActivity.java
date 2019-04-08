@@ -1,16 +1,14 @@
 package com.leidossd.dronecontrollerapp;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import com.leidossd.dronecontrollerapp.missions.Mission;
-import com.leidossd.dronecontrollerapp.missions.SpecificMission;
 import com.leidossd.dronecontrollerapp.missions.MissionRunner;
 import com.leidossd.dronecontrollerapp.missions.Task;
 
-public class MissionServiceExampleActivity extends AppCompatActivity implements Task.StatusUpdateListener {
+public class MissionServiceExampleActivity extends MenuActivity implements Task.StatusUpdateListener {
 
     MissionRunner missionRunner;
     TextView missionStatusTextView;
@@ -18,28 +16,14 @@ public class MissionServiceExampleActivity extends AppCompatActivity implements 
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mission_service_example);
 
+
         missionStatusTextView = findViewById(R.id.tv_activity_mission_service_example_status);
 
-        mission = new SpecificMission("SpecificMission");//, new Mission.MissionUpdateCallback() {
-//            @Override
-//            public void onMissionStart(String missionStartResult) {
-//                setMissionStatus(missionStartResult);
-//            }
-//
-//            @Override
-//            public void onMissionFinish(String missionFinishResult) {
-//                setMissionStatus(missionFinishResult);
-//            }
-//
-//            @Override
-//            public void onMissionError(String missionErrorMessage) {
-//                setMissionStatus(missionErrorMessage);
-//            }
-//        });
-//        missionStatusTextView.setText(mission.getStatus());
+        mission = new WaypointMission(new Coordinate(0,3,0));
         missionRunner = new MissionRunner(this, this);
     }
 

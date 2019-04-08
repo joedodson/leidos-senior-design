@@ -12,7 +12,8 @@ public class WaypointMission extends Mission {
         ArrayList<Task> tasks = new ArrayList<>();
         tasks.add(new TakeOffTask());
 //        tasks.add(new RotationTask(180));
-        tasks.add(new WaitTask(2000));
+        tasks.add(new WaitTask(10000));
+        tasks.add(new FlightTask(destination));
         tasks.add(new LandingTask());
         taskIterable = tasks;
     }

@@ -6,6 +6,11 @@
     </item>
 
     <item
+        android:id="@+id/mtype_surveillance"
+        android:title="@string/mission_surveillancet">
+    </item>
+
+    <item
         android:id="@+id/mtype_custom"
         android:title="@string/mission_custom">
     </item>

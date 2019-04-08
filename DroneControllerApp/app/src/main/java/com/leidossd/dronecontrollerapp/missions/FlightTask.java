@@ -30,7 +30,13 @@ public class FlightTask extends Task {
         FlightControllerWrapper.getInstance()
                 .setFlightMode(CoordinateFlightControl.FlightMode.ABSOLUTE);
         // when i implement callbacks in the flightcontroller, I'll need to inject the status update
-        FlightControllerWrapper.getInstance().gotoXYZ(this.destination, null);
+
+        FlightControllerWrapper.getInstance().gotoAbsoluteXYZ(this.destination, (error) -> {
+            if(error != null)
+                listener.statusUpdate(TaskState.FAILED, "ERROR IN gotoXYZ! " + error);
+            currentState = TaskState.COMPLETED;
+            listener.statusUpdate(currentState, title + " Completed");
+        });
     }
 
     @Override

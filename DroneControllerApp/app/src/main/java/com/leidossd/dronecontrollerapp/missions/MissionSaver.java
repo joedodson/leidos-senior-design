@@ -1,7 +1,6 @@
 package com.leidossd.dronecontrollerapp.missions;
 
 import android.app.Activity;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

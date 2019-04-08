@@ -36,6 +36,7 @@
     <string name="activity_sdkregistrationerror_button">Retry Registration</string>
 
     <!-- Menus -->
+    <string name="menu_main_item_home_title">Home</string>
     <string name="menu_main_item_missions_title">Missions</string>
     <string name="menu_main_item_settings_title">Settings</string>
     <string name="menu_main_item_simulator_title">Simulator</string>
@@ -70,6 +71,7 @@
 
     <string name="mission_default">Default Mission</string>
     <string name="mission_waypoint">Waypoint Mission</string>
+    <string name="mission_surveillancet">Surveillance Mission</string>
     <string name="mission_custom">Custom Mission</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -78,4 +80,6 @@
     <string name="title_activity_mission">MissionActivity</string>
     <string name="title_activity_create_mission">CreateMissionActivity</string>
     <string name="title_activity_confirm_mission">ConfirmMissionActivity</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_menu">MenuActivity</string>
 </resources>

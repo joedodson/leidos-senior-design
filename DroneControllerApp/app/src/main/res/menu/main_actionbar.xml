@@ -14,16 +14,10 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/action_bar_gps"
-        android:icon="@drawable/ic_satellite_white"
-        android:title=""
-        app:showAsAction="always" />
-
-    <item
         android:id="@+id/action_bar_battery"
         android:icon="@drawable/ic_battery_full_white"
         android:title=""
-        app:showAsAction="always" />
+        app:showAsAction="always|withText" />
 
     <item
         android:id="@+id/action_bar_main_menu"

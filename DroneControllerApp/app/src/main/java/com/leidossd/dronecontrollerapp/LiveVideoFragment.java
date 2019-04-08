@@ -34,7 +34,7 @@ import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 public class LiveVideoFragment extends Fragment implements
         SurfaceTextureListener, OnClickListener, CompoundButton.OnCheckedChangeListener {
 
-    private static final String TAG = MainActivity.class.getName();
+    private static final String TAG = LiveVideoFragment.class.getName();
     protected VideoFeeder.VideoDataListener videoDataListener = null;
 
     protected DJICodecManager codecManager = null;

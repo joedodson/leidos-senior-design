@@ -7,15 +7,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.leidossd.djiwrapper.FlightControllerWrapper;
+import com.leidossd.dronecontrollerapp.MenuActivity;
 import com.leidossd.dronecontrollerapp.R;
 
 import dji.common.flightcontroller.CompassCalibrationState;
 
-public class CompassCalibrationActivity extends AppCompatActivity implements CompassStartPageFragment.StartPage, CompassPage1Fragment.Page1, CompassPage2Fragment.Page2 {
+public class CompassCalibrationActivity extends MenuActivity implements CompassStartPageFragment.StartPage, CompassPage1Fragment.Page1, CompassPage2Fragment.Page2 {
     FragmentPagerAdapter fragmentPagerAdapter;
     CustomViewPager viewPager;
     TextView currentPageTextView;
