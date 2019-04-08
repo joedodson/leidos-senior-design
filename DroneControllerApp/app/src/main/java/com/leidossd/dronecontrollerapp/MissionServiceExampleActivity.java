@@ -4,15 +4,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.leidossd.djiwrapper.Coordinate;
 import com.leidossd.dronecontrollerapp.missions.Mission;
 import com.leidossd.dronecontrollerapp.missions.MissionRunner;
+import com.leidossd.dronecontrollerapp.missions.SpecificMission;
 import com.leidossd.dronecontrollerapp.missions.Task;
+import com.leidossd.dronecontrollerapp.missions.WaypointMission;
 
 public class MissionServiceExampleActivity extends MenuActivity implements Task.StatusUpdateListener {
 
     MissionRunner missionRunner;
     TextView missionStatusTextView;
-    SpecificMission mission;
+    WaypointMission mission;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
