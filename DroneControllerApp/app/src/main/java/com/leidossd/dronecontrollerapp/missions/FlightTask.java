@@ -8,6 +8,7 @@ import com.leidossd.djiwrapper.FlightControllerWrapper;
 
 public class FlightTask extends Task {
     private Coordinate destination;
+    Creator<FlightTask> CREATOR;
 
     FlightTask(Coordinate destination){
         super("Fly to " + destination);
@@ -16,8 +17,7 @@ public class FlightTask extends Task {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString("FLIGHT_TASK");
-        dest.writeTypedObject(destination, flags);
+
     }
 
     @Override
@@ -30,6 +30,7 @@ public class FlightTask extends Task {
         FlightControllerWrapper.getInstance()
                 .setFlightMode(CoordinateFlightControl.FlightMode.ABSOLUTE);
         // when i implement callbacks in the flightcontroller, I'll need to inject the status update
+
         FlightControllerWrapper.getInstance().gotoAbsoluteXYZ(this.destination, (error) -> {
             if(error != null)
                 listener.statusUpdate(TaskState.FAILED, "ERROR IN gotoXYZ! " + error);
@@ -40,12 +41,11 @@ public class FlightTask extends Task {
 
     @Override
     void write(Parcel out){
-        out.writeString("FLIGHT_TASK");
-        out.writeString(title);
+
     }
 
     public static FlightTask create(Parcel in){
-        return new FlightTask(in.readTypedObject(Coordinate.CREATOR));
+        return null;
     }
 
     @Override

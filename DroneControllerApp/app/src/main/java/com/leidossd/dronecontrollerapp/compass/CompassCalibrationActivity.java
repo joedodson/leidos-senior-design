@@ -61,7 +61,7 @@ public class CompassCalibrationActivity extends MenuActivity implements CompassS
         calibFailedDialog = new AlertDialog.Builder(this)
                 .setTitle("Calibration Failed!")
                 .setMessage("Try again?")
-                .setPositiveButton("Yes", (dialog, which)-> FlightControllerWrapper.getInstance().compassStopCalibration(null))
+                .setPositiveButton("Yes", null)
                  // A null listener allows the button to dismiss the dialog and take no further action.
                 .setNegativeButton("No", (dialog, which) -> finish())
                 .create();
@@ -204,7 +204,6 @@ public class CompassCalibrationActivity extends MenuActivity implements CompassS
 
     @Override
     public void exitCalibration(){
-        FlightControllerWrapper.getInstance().compassStopCalibration(null);
         finish();
     }
 
