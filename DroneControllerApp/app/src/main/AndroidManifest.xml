@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -93,12 +94,6 @@
             android:name=".FlightTestActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".simulator.SimulatorActivity"
-            android:launchMode="singleTop"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="sensorLandscape"
-            android:theme="@style/AppTheme" />
-        <activity
             android:name=".compass.CompassActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="sensorLandscape"
@@ -130,12 +125,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".droneconnection.wired.WiredConnectActivity"
+            android:name=".droneconnection.wireless.WirelessConnectActivity"
             android:parentActivityName=".droneconnection.ConnectWalkthroughActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".droneconnection.wireless.WirelessConnectActivity"
+            android:name=".droneconnection.barcode.BarcodeCaptureActivity"
             android:parentActivityName=".droneconnection.ConnectWalkthroughActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />

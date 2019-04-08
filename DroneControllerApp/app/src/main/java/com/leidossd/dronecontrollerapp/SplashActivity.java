@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.leidossd.dronecontrollerapp.droneconnection.ConnectWalkthroughActivity;
+import com.leidossd.dronecontrollerapp.droneconnection.barcode.BarcodeCaptureActivity;
 
 import java.util.ArrayList;
 import java.util.List;
