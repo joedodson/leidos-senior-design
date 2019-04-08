@@ -137,7 +137,8 @@ public class MissionRunner {
                             .setContentText(String.valueOf(System.currentTimeMillis()))
                             .setSmallIcon(R.drawable.rsz_rsz_drone_icon)
                             .setContentIntent(pendingIntent)
-                            .setTicker("New Mission");
+                            .setTicker("New Mission")
+                            .setOnlyAlertOnce(true);
 
             missionStartTime = System.currentTimeMillis();
             //Added in version check for testing purposes.  Can be removed once version is finalized.
