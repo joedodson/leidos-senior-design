@@ -8,15 +8,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Build;
-
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.leidossd.dronecontrollerapp.MissionStatusActivity;
+import com.leidossd.dronecontrollerapp.missions.ui.MissionStatusActivity;
 import com.leidossd.dronecontrollerapp.R;
 import com.leidossd.dronecontrollerapp.missions.MissionRunnerService.ServiceStatusUpdate;
 
@@ -139,7 +137,8 @@ public class MissionRunner {
                             .setContentText(String.valueOf(System.currentTimeMillis()))
                             .setSmallIcon(R.drawable.rsz_rsz_drone_icon)
                             .setContentIntent(pendingIntent)
-                            .setTicker("New Mission");
+                            .setTicker("New Mission")
+                            .setOnlyAlertOnce(true);
 
             missionStartTime = System.currentTimeMillis();
             //Added in version check for testing purposes.  Can be removed once version is finalized.

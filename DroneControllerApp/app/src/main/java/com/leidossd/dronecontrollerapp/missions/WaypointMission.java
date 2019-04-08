@@ -1,6 +1,8 @@
 package com.leidossd.dronecontrollerapp.missions;
 
+import android.os.Bundle;
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.leidossd.djiwrapper.Coordinate;
 
@@ -12,8 +14,6 @@ public class WaypointMission extends Mission {
         ArrayList<Task> tasks = new ArrayList<>();
         tasks.add(new TakeOffTask());
         tasks.add(new WaitTask(10000));
-//        tasks.add(new RotationTask(180));
-//        tasks.add(new WaitTask(2000));
         tasks.add(new FlightTask(new Coordinate(0,1,0)));
         tasks.add(new WaitTask(2000));
         tasks.add(new FlightTask(new Coordinate(0,-1,0)));
@@ -29,30 +29,16 @@ public class WaypointMission extends Mission {
         currentState = Task.TaskState.READY;
     }
 
-    @Override
-    public int describeContents(){
-        return 0;
-    }
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public WaypointMission createFromParcel(Parcel in) {
+            String title = in.readString();
+            Bundle taskBundle = in.readBundle(WaypointMission.class.getClassLoader());
+            ArrayList<Task>tasks = taskBundle.getParcelableArrayList("tasks");
+            return new WaypointMission(title, tasks);
+        }
 
-    // Parcelable functionality
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        write(dest);
-    }
-
-
-    public static WaypointMission create(Parcel in){
-        String title = in.readString();
-        ArrayList<Task> tasks = new ArrayList<>();
-        in.readTypedList(tasks, TaskCreator.CREATOR);
-        return new WaypointMission(title, tasks);
-    }
-
-    @Override
-    public void write(Parcel out){
-        out.writeString("WAYPOINT_MISSION");
-        out.writeString(title);
-        out.writeTypedList(taskIterable);
-    }
+        public WaypointMission[] newArray(int size) {
+            return new WaypointMission[size];
+        }
+    };
 }

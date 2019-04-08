@@ -3,11 +3,13 @@ package com.leidossd.dronecontrollerapp;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.leidossd.djiwrapper.CoordinateFlightControl;
+import com.leidossd.djiwrapper.FlightControllerWrapper;
+import com.leidossd.utils.DroneConnectionStatus;
 
 import dji.common.error.DJIError;
 import dji.common.error.DJISDKError;
@@ -17,12 +19,10 @@ import dji.sdk.camera.Camera;
 import dji.sdk.products.Aircraft;
 import dji.sdk.sdkmanager.DJISDKManager;
 
-import com.leidossd.djiwrapper.CoordinateFlightControl;
-import com.leidossd.djiwrapper.FlightControllerWrapper;
-import com.leidossd.utils.DroneConnectionStatus;
-
-import static com.leidossd.utils.IntentAction.*;
-import static com.leidossd.utils.DroneConnectionStatus.*;
+import static com.leidossd.utils.DroneConnectionStatus.DRONE_CONNECTED;
+import static com.leidossd.utils.DroneConnectionStatus.DRONE_DISCONNECTED;
+import static com.leidossd.utils.IntentAction.CONNECTION_CHANGE;
+import static com.leidossd.utils.IntentAction.REGISTRATION_RESULT;
 
 /**
  * This class iw where the actual application logic goes. The Application class is a container
@@ -43,9 +43,6 @@ public class MainApplication extends Application {
     private static Camera cameraInstance;
     private static boolean droneConnected;
 
-    static DJISDKManager djiSdkManager;
-    static DJISDKManager.SDKManagerCallback djiSdkMangerCallback;
-
     public MainApplication() {
     }
 
@@ -65,8 +62,7 @@ public class MainApplication extends Application {
 
         localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
 
-        djiSdkManager = DJISDKManager.getInstance();
-        djiSdkMangerCallback = new DJISDKManager.SDKManagerCallback() {
+        DJISDKManager.SDKManagerCallback DJISDKManagerCallback = new DJISDKManager.SDKManagerCallback() {
             @Override
             public void onRegister(DJIError result) {
                 boolean registrationResult = result == DJISDKError.REGISTRATION_SUCCESS;
@@ -111,9 +107,7 @@ public class MainApplication extends Application {
             }
         };
 
-        if(djiSdkManager != null) {
-            djiSdkManager.registerApp(getApplicationContext(), djiSdkMangerCallback);
-        }
+        DJISDKManager.getInstance().registerApp(getApplicationContext(), DJISDKManagerCallback);
     }
 
     private void broadcastConnectionChange(DroneConnectionStatus droneStatus) {
@@ -121,16 +115,6 @@ public class MainApplication extends Application {
         connectionChangeIntent.putExtra(CONNECTION_CHANGE.getResultKey(), droneStatus.toString());
 
         localBroadcastManager.sendBroadcast(connectionChangeIntent);
-    }
-
-    static void restartSdkRegistration() {
-        if(djiSdkManager == null) {
-            djiSdkManager = DJISDKManager.getInstance();
-        }
-
-        if(djiSdkManager != null) {
-            djiSdkManager.registerApp(baseApplication, djiSdkMangerCallback);
-        }
     }
 
     /**

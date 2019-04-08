@@ -25,9 +25,11 @@ public class GridFragment extends Fragment {
 
     public GridFragment() { }
 
+    float x, y, z;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        x = y = z = 0;
 
         gridSelectListener = new OnClickListener() {
             @Override
@@ -36,36 +38,40 @@ public class GridFragment extends Fragment {
                 int id = view.getId();
                 switch(id) {
                     case R.id.grid_nw:
-                        coordinate = new Coordinate(-MOVEMENT_MULTI,MOVEMENT_MULTI,0);
+                        x -= MOVEMENT_MULTI;
+                        y += MOVEMENT_MULTI;
                         break;
                     case R.id.grid_n:
-                        coordinate = new Coordinate(0,MOVEMENT_MULTI,0);
+                        y += MOVEMENT_MULTI;
                         break;
                     case R.id.grid_ne:
-                        coordinate = new Coordinate(MOVEMENT_MULTI,MOVEMENT_MULTI,0);
+                        x += MOVEMENT_MULTI;
+                        y += MOVEMENT_MULTI;
                         break;
                     case R.id.grid_w:
-                        coordinate = new Coordinate(-MOVEMENT_MULTI,0,0);
+                        x -= MOVEMENT_MULTI;
                         break;
                     case R.id.grid_center:
-                        coordinate = new Coordinate(0,0,0);
+                        x = y = z = 0;
                         break;
                     case R.id.grid_e:
-                        coordinate = new Coordinate(MOVEMENT_MULTI,0,0);
+                        x += MOVEMENT_MULTI;
                         break;
                     case R.id.grid_sw:
-                        coordinate = new Coordinate(-MOVEMENT_MULTI,-MOVEMENT_MULTI,0);
+                        x -= MOVEMENT_MULTI;
+                        y -= MOVEMENT_MULTI;
                         break;
                     case R.id.grid_s:
-                        coordinate = new Coordinate(0,-MOVEMENT_MULTI,0);
+                        y -= MOVEMENT_MULTI;
                         break;
                     case R.id.grid_se:
-                        coordinate = new Coordinate(MOVEMENT_MULTI,-MOVEMENT_MULTI,0);
+                        x += MOVEMENT_MULTI;
+                        y -= MOVEMENT_MULTI;
                         break;
                     default:
                         return;
                 }
-                gridInteractionListener.sendInput(coordinate);
+                gridInteractionListener.sendInput(new Coordinate(x,y,z));
             }
         };
 

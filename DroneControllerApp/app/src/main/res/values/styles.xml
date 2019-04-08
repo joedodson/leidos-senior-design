@@ -73,13 +73,21 @@
         <item name="android:textSize">@dimen/text_size_medium</item>
         <item name="android:textColor">@color/text_light</item>
         <item name="android:background">@drawable/btn_standard</item>
-        <item name="android:layout_marginTop">@dimen/margin_small</item>
-        <item name="android:layout_marginBottom">@dimen/margin_small</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/button_menu_height</item>
         <item name="android:gravity">center</item>
     </style>
 
     <style name="CustomWidget.Button.Icon">
         <item name="android:padding">0sp</item>
         <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/divider_line_width</item>
+        <item name="android:background">@color/accent_light</item>
     </style>
 </resources>

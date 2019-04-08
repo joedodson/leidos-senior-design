@@ -5,20 +5,12 @@ import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+
 import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
 public class ToastTask extends Task {
     String toast;
-
-    public static ToastTask create(Parcel in){
-        return new ToastTask(in.readString());
-    }
-
-    @Override
-    public void write(Parcel out){
-        out.writeString("TOAST_TASK");
-        out.writeString(toast);
-    }
 
     ToastTask(String toast) {
         super(String.format("Showing Toast \"%s\"", toast));
@@ -39,13 +31,19 @@ public class ToastTask extends Task {
 
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        write(dest);
-    }
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public ToastTask createFromParcel(Parcel in) {
+            return new ToastTask(in.readString());
+
+        }
+
+        public ToastTask[] newArray(int size) {
+            return new ToastTask[size];
+        }
+    };
 
     @Override
-    public int describeContents() {
-        return 0;
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(toast);
     }
 }

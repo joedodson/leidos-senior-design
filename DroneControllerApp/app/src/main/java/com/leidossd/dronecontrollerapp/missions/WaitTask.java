@@ -1,6 +1,7 @@
 package com.leidossd.dronecontrollerapp.missions;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -14,25 +15,8 @@ public class WaitTask extends Task {
         currentState = TaskState.READY;
     }
 
-    @Override
-    public void writeToParcel(Parcel out, int flags) {
-        out.writeString("WAIT_TASK");
-        out.writeLong(milliseconds);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
     static public WaitTask create(Parcel in){
         return new WaitTask(in.readLong());
-    }
-
-    @Override
-    void write(Parcel out){
-        out.writeString("WAIT_TASK");
-        out.writeLong(milliseconds);
     }
 
     void start(){
@@ -52,5 +36,21 @@ public class WaitTask extends Task {
 
     void stop(){
 
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public WaitTask createFromParcel(Parcel in) {
+            return new WaitTask(in.readLong());
+
+        }
+
+        public WaitTask[] newArray(int size) {
+            return new WaitTask[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeLong(milliseconds);
     }
 }

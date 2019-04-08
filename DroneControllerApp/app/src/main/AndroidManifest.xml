@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -27,7 +28,6 @@
         android:name="android.hardware.usb.accessory"
         android:required="true" />
 
-    <!-- PermissionsHelper and features -->
     <application
         android:name=".BootstrapApplication"
         android:allowBackup="true"
@@ -37,10 +37,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity
-            android:name=".MissionActivity"
-            android:label="@string/title_activity_mission" />
-        <!-- DJI SDK -->
+
+         <!-- DJI SDK -->
         <uses-library android:name="com.android.future.usb.accessory" />
 
         <meta-data
@@ -59,7 +57,21 @@
                 android:resource="@xml/accessory_filter" />
         </activity>
 
-        <service android:name="dji.sdk.sdkmanager.DJIGlobalService" /> <!-- DJI SDK -->
+        <service android:name="dji.sdk.sdkmanager.DJIGlobalService" />
+        <!-- DJI SDK -->
+
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
         <activity
             android:name=".SplashActivity"
             android:screenOrientation="portrait"
@@ -75,19 +87,14 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".MainActivity"
+            android:parentActivityName=".droneconnection.ConnectWalkthroughActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".FlightTestActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".simulator.SimulatorActivity"
-            android:launchMode="singleTop"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="sensorLandscape"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".CompassActivity"
+            android:name=".compass.CompassActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme" />
@@ -95,30 +102,26 @@
             android:name=".GridParentActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="sensorLandscape" />
-        <activity android:name=".ConfirmMissionActivity" />
-        <activity android:name=".CreateMissionActivity" />
-            android:screenOrientation="sensorLandscape"/>
+        <activity android:name=".missions.ui.ConfirmMissionActivity" />
+        <activity
+            android:name=".missions.ui.MissionCreationActivity"
+            android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".compass.CompassCalibrationActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".MissionServiceExampleActivity"
+            android:name=".missions.ui.MissionServiceExampleActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".MissionStatusActivity"
+            android:name=".missions.ui.MissionStatusActivity"
             android:screenOrientation="sensorLandscape"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".droneconnection.ConnectWalkthroughActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".droneconnection.wired.WiredConnectActivity"
-            android:parentActivityName=".droneconnection.ConnectWalkthroughActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -126,7 +129,21 @@
             android:parentActivityName=".droneconnection.ConnectWalkthroughActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
+        <activity
+            android:name=".droneconnection.barcode.BarcodeCaptureActivity"
+            android:parentActivityName=".droneconnection.ConnectWalkthroughActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MenuActivity"
+            android:label="@string/title_activity_menu" />
+        <activity
+            android:name=".missions.ui.MissionSelectionActivity"
+            android:label="@string/title_activity_mission"
+            android:screenOrientation="sensorLandscape" />
+        <activity
+            android:name=".MapsActivity"
+            android:label="@string/title_activity_maps" />
         <service android:name=".missions.MissionRunnerService" />
     </application>
 </manifest>

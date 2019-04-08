@@ -1,5 +1,9 @@
 package com.leidossd.dronecontrollerapp.missions;
 
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
@@ -9,7 +13,6 @@ abstract public class Mission extends Task implements Task.StatusUpdateListener 
     private Task currentTask;
     private int currentTaskId = 0;
     ArrayList<Task> taskIterable;
-    public static final Creator CREATOR = MissionCreator.CREATOR;
 
     Mission(String title) {
         super(title);
@@ -69,5 +72,13 @@ abstract public class Mission extends Task implements Task.StatusUpdateListener 
             default:
                 break;
         }
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("tasks", taskIterable);
+        dest.writeBundle(bundle);
     }
 }

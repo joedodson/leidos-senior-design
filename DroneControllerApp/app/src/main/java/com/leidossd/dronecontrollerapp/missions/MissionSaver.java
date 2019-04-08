@@ -1,7 +1,9 @@
 package com.leidossd.dronecontrollerapp.missions;
 
 import android.app.Activity;
-import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,7 +32,8 @@ class MissionSaver {
     private int DEFAULT_ID = 1;
     private Activity attachedActivity;
     private boolean addDefault;
-    private ArrayList<MissionFrame> savedMissions;
+    private ArrayList<Mission> savedMissions;
+    private GsonBuilder gBuilder;
 
     MissionSaver(Activity activity){
         this(activity, false);
@@ -40,13 +43,16 @@ class MissionSaver {
         savedMissions = new ArrayList<>();
         attachedActivity = activity;
         this.addDefault = addDefault;
+        gBuilder = new GsonBuilder();
+        gBuilder.registerTypeAdapter(Mission.class, new MissionSaveAdapter());
+        gBuilder.registerTypeAdapter(Task.class, new MissionSaveAdapter());
     }
 
     int size(){
         return savedMissions.size();
     }
 
-    MissionFrame getMissionFrameAt(int pos){
+    Mission getMissionAt(int pos){
         return savedMissions.get(pos);
     }
 
@@ -57,40 +63,33 @@ class MissionSaver {
             if(addDefault){
                 for(int i = 0; i < NUM_DEFAULT; i++) {
                     String des = "Drone flies.";
-                    savedMissions.add(new MissionFrame(String.format(Locale.getDefault(), "Default Mission %d", DEFAULT_ID++), "Default Mission", false, des));
+                    savedMissions.add(new SpecificMission(String.format(Locale.getDefault(), "Default Mission %d", DEFAULT_ID++)));
                 }
             }
             for (File f : files) {
-                try {
-                    JSONObject json = loadFile(f);
-                    String missionTitle = json.getString("Title");
-                    String des = "Drone flies.";
-                    savedMissions.add(new MissionFrame(missionTitle, "Waypoint Mission", false, des));
-                } catch (JSONException je) {
-                    je.printStackTrace();
-                }
+                savedMissions.add(loadFile(f));
             }
         } else {
             throw new RuntimeException("Could not load missions from default directory");
         }
     }
 
-    void saveMission(MissionFrame missionFrame){
-        JSONObject jso = missionToJSON(missionFrame);
+    void saveMission(Mission mission){
         try{
+            Gson gson = gBuilder.create();
             Writer output = null;
-            File file = new File(attachedActivity.getExternalFilesDir(null), String.format("%s.json",missionFrame.getMissionName()));
+            File file = new File(attachedActivity.getExternalFilesDir(null), String.format("%s.json",mission.getTitle()));
             output = new BufferedWriter(new FileWriter(file));
-            output.write(jso.toString());
+            output.write(gson.toJson(mission, Mission.class));
             output.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        savedMissions.add(missionFrame);
+        savedMissions.add(mission);
     }
 
-    private JSONObject loadFile(File file){
-        JSONObject missionFile = null;
+    private Mission loadFile(File file){
+        Mission missionFile = null;
         try {
             InputStream is = new FileInputStream(file.getPath());
             int size = is.available();
@@ -98,22 +97,11 @@ class MissionSaver {
             is.read(buffer);
             is.close();
             String jsonStr = new String(buffer);
-            missionFile = new JSONObject(jsonStr);
+            Gson gson = gBuilder.create();
+            missionFile = gson.fromJson(jsonStr, Mission.class);
         } catch (IOException ie) {
             ie.printStackTrace();
-        } catch (JSONException je) {
-            je.printStackTrace();
         }
         return missionFile;
-    }
-
-    private JSONObject missionToJSON(MissionFrame mission){
-        JSONObject jso = new JSONObject();
-        try {
-            jso.put("Title", mission.getMissionName());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return jso;
     }
 }

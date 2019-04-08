@@ -7,15 +7,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.leidossd.djiwrapper.FlightControllerWrapper;
+import com.leidossd.dronecontrollerapp.MenuActivity;
 import com.leidossd.dronecontrollerapp.R;
 
 import dji.common.flightcontroller.CompassCalibrationState;
 
-public class CompassCalibrationActivity extends AppCompatActivity implements CompassStartPageFragment.StartPage, CompassPage1Fragment.Page1, CompassPage2Fragment.Page2 {
+public class CompassCalibrationActivity extends MenuActivity implements CompassStartPageFragment.StartPage, CompassPage1Fragment.Page1, CompassPage2Fragment.Page2 {
     FragmentPagerAdapter fragmentPagerAdapter;
     CustomViewPager viewPager;
     TextView currentPageTextView;
@@ -61,7 +61,7 @@ public class CompassCalibrationActivity extends AppCompatActivity implements Com
         calibFailedDialog = new AlertDialog.Builder(this)
                 .setTitle("Calibration Failed!")
                 .setMessage("Try again?")
-                .setPositiveButton("Yes", (dialog, which)-> FlightControllerWrapper.getInstance().compassStopCalibration(null))
+                .setPositiveButton("Yes", null)
                  // A null listener allows the button to dismiss the dialog and take no further action.
                 .setNegativeButton("No", (dialog, which) -> finish())
                 .create();
@@ -204,7 +204,6 @@ public class CompassCalibrationActivity extends AppCompatActivity implements Com
 
     @Override
     public void exitCalibration(){
-        FlightControllerWrapper.getInstance().compassStopCalibration(null);
         finish();
     }
 

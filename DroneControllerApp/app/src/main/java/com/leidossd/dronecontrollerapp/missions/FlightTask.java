@@ -1,6 +1,7 @@
 package com.leidossd.dronecontrollerapp.missions;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.leidossd.djiwrapper.Coordinate;
 import com.leidossd.djiwrapper.CoordinateFlightControl;
@@ -14,17 +15,6 @@ public class FlightTask extends Task {
     FlightTask(Coordinate destination){
         super("Fly to " + destination);
         this.destination = destination;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString("FLIGHT_TASK");
-        dest.writeTypedObject(destination, flags);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
     @Override
@@ -43,17 +33,28 @@ public class FlightTask extends Task {
     }
 
     @Override
-    void write(Parcel out){
-        out.writeString("FLIGHT_TASK");
-        out.writeString(title);
-    }
-
-    public static FlightTask create(Parcel in){
-        return new FlightTask(in.readTypedObject(Coordinate.CREATOR));
-    }
-
-    @Override
     void stop(){
         FlightControllerWrapper.getInstance().haltFlight();
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public FlightTask createFromParcel(Parcel in) {
+            float x = in.readFloat();
+            float y = in.readFloat();
+            float z = in.readFloat();
+
+            return new FlightTask(new Coordinate(x,y,z));
+        }
+
+        public FlightTask[] newArray(int size) {
+            return new FlightTask[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeFloat(destination.getX());
+        dest.writeFloat(destination.getY());
+        dest.writeFloat(destination.getZ());
     }
 }

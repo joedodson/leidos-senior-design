@@ -36,6 +36,7 @@
     <string name="activity_sdkregistrationerror_button">Retry Registration</string>
 
     <!-- Menus -->
+    <string name="menu_main_item_home_title">Home</string>
     <string name="menu_main_item_missions_title">Missions</string>
     <string name="menu_main_item_settings_title">Settings</string>
     <string name="menu_main_item_simulator_title">Simulator</string>
@@ -70,6 +71,7 @@
 
     <string name="mission_default">Default Mission</string>
     <string name="mission_waypoint">Waypoint Mission</string>
+    <string name="mission_surveillancet">Surveillance Mission</string>
     <string name="mission_custom">Custom Mission</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -78,4 +80,21 @@
     <string name="title_activity_mission">MissionActivity</string>
     <string name="title_activity_create_mission">CreateMissionActivity</string>
     <string name="title_activity_confirm_mission">ConfirmMissionActivity</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_menu">MenuActivity</string>
+
+    <!-- Barcode capture -->
+    <string name="ok">OK</string>
+    <string name="permission_camera_rationale">Access to the camera is needed for detection</string>
+    <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
+    <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
+    <string name="title_activity_main">Barcode Reader Sample</string>
+    <string name="barcode_header">Click &quot;Read Barcode&quot; to read a barcode</string>
+    <string name="read_barcode">Read Barcode</string>
+    <string name="auto_focus">Auto Focus</string>
+    <string name="use_flash">Use Flash</string>
+    <string name="barcode_success">Barcode read successfully</string>
+    <string name="barcode_failure">No barcode captured</string>
+    <string name="barcode_error">"Error reading barcode: %1$s"</string>
+    <string name="barcode_instruction">"Center barcode in frame and hold camera steady"</string>
 </resources>

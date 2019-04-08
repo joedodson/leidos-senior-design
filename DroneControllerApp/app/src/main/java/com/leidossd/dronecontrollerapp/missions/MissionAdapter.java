@@ -51,9 +51,11 @@ public class MissionAdapter extends RecyclerView.Adapter<MissionAdapter.MissionH
 
     @Override
     public void onBindViewHolder(@NonNull MissionHolder viewHolder, int pos) {
-        viewHolder.mTitle.setText(missionSaver.getMissionFrameAt(pos).getMissionName());
-        viewHolder.mType.setText(missionSaver.getMissionFrameAt(pos).getMissionType());
-        viewHolder.description.setText(missionSaver.getMissionFrameAt(pos).getMissionDescription());
+        String type = "Waypoint Mission";
+        String des = "Drone flies.";
+        viewHolder.mTitle.setText(missionSaver.getMissionAt(pos).getTitle());
+        viewHolder.mType.setText(type);
+        viewHolder.description.setText(des);
     }
 
     @Override
@@ -63,21 +65,18 @@ public class MissionAdapter extends RecyclerView.Adapter<MissionAdapter.MissionH
 
     @Override
     public int getItemViewType(int pos){
-        if (missionSaver.getMissionFrameAt(pos).getIsDefault()) return 0;
+//        if (missionSaver.getMissionAt(pos).getIsDefault()) return 0;
         return 1;
     }
 
 
     public void addMission(Mission mission){
-        String des = "Drone flies.";
-        MissionFrame missionFrame = new MissionFrame(mission.getTitle(), "Mission", false, des);
-        missionSaver.saveMission(missionFrame);
+        missionSaver.saveMission(mission);
         notifyItemInserted(getItemCount()+1);
     }
 
     private void sendMission(int pos){
-        MissionFrame missionFrame = missionSaver.getMissionFrameAt(pos);
-        Mission mission = new SpecificMission(missionFrame.getMissionName());
+        Mission mission = missionSaver.getMissionAt(pos);
         missionAdapterListener.missionClicked(mission);
     }
 
