@@ -1,6 +1,8 @@
 package com.leidossd.dronecontrollerapp.missions;
 
+import android.os.Bundle;
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 
@@ -26,30 +28,17 @@ public class SpecificMission extends Mission {
         currentState = TaskState.READY;
     }
 
-    @Override
-    public int describeContents(){
-        return 0;
-    }
-
     // Parcelable functionality
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public SpecificMission createFromParcel(Parcel in) {
+            String title = in.readString();
+            Bundle taskBundle = in.readBundle(SpecificMission.class.getClassLoader());
+            ArrayList<Task>tasks = taskBundle.getParcelableArrayList("tasks");
+            return new SpecificMission(title, tasks);
+        }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        write(dest);
-    }
-
-
-    public static SpecificMission create(Parcel in){
-        String title = in.readString();
-        ArrayList<Task> tasks = new ArrayList<>();
-        in.readTypedList(tasks, ParcelableTaskCreator.CREATOR);
-        return new SpecificMission(title, tasks);
-    }
-
-    @Override
-    public void write(Parcel out){
-        out.writeString("SPECIFIC_MISSION");
-        out.writeString(title);
-        out.writeTypedList(taskIterable);
-    }
+        public SpecificMission[] newArray(int size) {
+            return new SpecificMission[size];
+        }
+    };
 }

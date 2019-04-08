@@ -1,6 +1,7 @@
 package com.leidossd.dronecontrollerapp.missions;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.leidossd.djiwrapper.FlightControllerWrapper;
 
@@ -8,12 +9,6 @@ import com.leidossd.djiwrapper.FlightControllerWrapper;
 public class TakeOffTask extends Task {
     TakeOffTask(){
         super("Taking Off...");
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString("TAKEOFF_TASK");
-        dest.writeString("HAHA");
     }
 
     @Override
@@ -39,17 +34,17 @@ public class TakeOffTask extends Task {
     }
 
     @Override
-    void write(Parcel out){
-        out.writeString("TAKEOFF_TASK");
-    }
+    void stop(){ }
 
-    public static TakeOffTask create(Parcel in){
-        in.readString();
-        return new TakeOffTask();
-    }
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public TakeOffTask createFromParcel(Parcel in) {
+            return new TakeOffTask();
 
-    @Override
-    void stop(){
-    }
+        }
+
+        public TakeOffTask[] newArray(int size) {
+            return new TakeOffTask[size];
+        }
+    };
 }
 
