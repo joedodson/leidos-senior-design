@@ -99,7 +99,7 @@
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".CompassActivity"
+            android:name=".compass.CompassActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme" />
@@ -107,9 +107,9 @@
             android:name=".GridParentActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="sensorLandscape" />
-        <activity android:name=".ConfirmMissionActivity" />
+        <activity android:name=".missions.ui.ConfirmMissionActivity" />
         <activity
-            android:name=".CreateMissionActivity"
+            android:name=".missions.ui.MissionCreationActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".compass.CompassCalibrationActivity"
@@ -117,12 +117,12 @@
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".MissionServiceExampleActivity"
+            android:name=".missions.ui.MissionServiceExampleActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".MissionStatusActivity"
+            android:name=".missions.ui.MissionStatusActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme" />
         <activity
@@ -143,7 +143,7 @@
             android:name=".MenuActivity"
             android:label="@string/title_activity_menu" />
         <activity
-            android:name=".MissionActivity"
+            android:name=".missions.ui.MissionSelectionActivity"
             android:label="@string/title_activity_mission"
             android:screenOrientation="sensorLandscape" />
         <activity

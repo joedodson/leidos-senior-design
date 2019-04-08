@@ -1,4 +1,4 @@
-package com.leidossd.dronecontrollerapp;
+package com.leidossd.dronecontrollerapp.missions.ui;
 
 import com.leidossd.dronecontrollerapp.missions.Mission;
 

@@ -1,6 +1,7 @@
 package com.leidossd.dronecontrollerapp.missions;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.leidossd.djiwrapper.Coordinate;
 
@@ -39,7 +40,7 @@ public class WaypointMission extends Mission {
     public static WaypointMission create(Parcel in){
         String title = in.readString();
         ArrayList<Task> tasks = new ArrayList<>();
-        in.readTypedList(tasks, TaskCreator.CREATOR);
+        in.readTypedList(tasks, ParcelableTaskCreator.CREATOR);
         return new WaypointMission(title, tasks);
     }
 

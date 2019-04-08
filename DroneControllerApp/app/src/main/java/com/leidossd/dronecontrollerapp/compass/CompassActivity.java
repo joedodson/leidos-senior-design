@@ -1,8 +1,11 @@
-package com.leidossd.dronecontrollerapp;
+package com.leidossd.dronecontrollerapp.compass;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
+import com.leidossd.dronecontrollerapp.MainApplication;
+import com.leidossd.dronecontrollerapp.R;
 
 import dji.common.error.DJIError;
 import dji.common.flightcontroller.CompassCalibrationState;

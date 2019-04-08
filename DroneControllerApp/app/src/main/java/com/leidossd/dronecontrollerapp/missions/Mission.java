@@ -7,7 +7,7 @@ abstract public class Mission extends Task implements Task.StatusUpdateListener 
     private Task currentTask;
     private int currentTaskId = 0;
     ArrayList<Task> taskIterable;
-    public static final Creator CREATOR = MissionCreator.CREATOR;
+    public static final Creator CREATOR = ParcelableMissionCreator.CREATOR;
 
     Mission(String title) {
         super(title);

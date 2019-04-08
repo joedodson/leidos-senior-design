@@ -1,4 +1,4 @@
-package com.leidossd.dronecontrollerapp;
+package com.leidossd.dronecontrollerapp.missions.ui;
 
 import android.Manifest;
 import android.animation.LayoutTransition;
@@ -36,6 +36,7 @@ import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
 import com.google.android.gms.tasks.Task;
 import com.leidossd.djiwrapper.Coordinate;
+import com.leidossd.dronecontrollerapp.R;
 import com.leidossd.dronecontrollerapp.missions.SpecificMission;
 
 import java.io.ByteArrayOutputStream;

@@ -1,4 +1,4 @@
-package com.leidossd.dronecontrollerapp;
+package com.leidossd.dronecontrollerapp.missions.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.leidossd.dronecontrollerapp.R;
 import com.leidossd.dronecontrollerapp.missions.Mission;
 
 public class ConfirmMissionActivity extends AppCompatActivity {

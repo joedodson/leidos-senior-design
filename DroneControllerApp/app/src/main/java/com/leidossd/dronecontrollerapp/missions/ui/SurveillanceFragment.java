@@ -1,4 +1,4 @@
-package com.leidossd.dronecontrollerapp;
+package com.leidossd.dronecontrollerapp.missions.ui;
 
 import android.Manifest;
 import android.content.Context;
@@ -37,13 +37,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.leidossd.djiwrapper.Coordinate;
+import com.leidossd.dronecontrollerapp.R;
 import com.leidossd.dronecontrollerapp.missions.SurveillanceMission;
 
 import java.util.ArrayList;
 
 import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
-public class SurveillanceFragment extends Fragment implements MenuAdapter.MenuListener, OnMapReadyCallback {
+public class SurveillanceFragment extends Fragment implements MissionMenuAdapter.MenuListener, OnMapReadyCallback {
     private static final int WAYPOINT = 1, CAMERA_ANGLE = 2;
     private static final float DEFAULT_ZOOM = 10.0f;
 
@@ -53,7 +54,7 @@ public class SurveillanceFragment extends Fragment implements MenuAdapter.MenuLi
 
     private RecyclerView sectionView;
     private RecyclerView.LayoutManager layoutManager;
-    private MenuAdapter adapter;
+    private MissionMenuAdapter adapter;
     private TextView angleTextInfo;
     private EditText angleText;
     private CheckBox saveCheckbox;
@@ -110,7 +111,7 @@ public class SurveillanceFragment extends Fragment implements MenuAdapter.MenuLi
         menuOptions.add(new Pair<>("Camera Angle", "Set camera angle for surveillance."));
 
         sectionView.addItemDecoration(new DividerItemDecoration(getActivity()));
-        adapter = new MenuAdapter(this, menuOptions);
+        adapter = new MissionMenuAdapter(this, menuOptions);
         sectionView.setAdapter(adapter);
 
         mapView = view.findViewById(R.id.mapView);

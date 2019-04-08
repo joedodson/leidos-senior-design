@@ -18,6 +18,8 @@ import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
 import com.leidossd.dronecontrollerapp.compass.CompassCalibrationActivity;
+import com.leidossd.dronecontrollerapp.missions.ui.MissionSelectionActivity;
+import com.leidossd.dronecontrollerapp.missions.ui.MissionServiceExampleActivity;
 import com.leidossd.utils.MenuAction;
 import com.leidossd.utils.SwipeGestureListener;
 
@@ -150,15 +152,12 @@ public class MenuActivity extends AppCompatActivity implements
                 startActivity(new Intent(this, MainActivity.class));
                 break;
             case OPEN_MISSIONS:
-                startActivity(new Intent(this, MissionActivity.class));
+                startActivity(new Intent(this, MissionSelectionActivity.class));
                 break;
             case OPEN_DEVELOPER:
                 // Start Brians Activity
                 startActivity(new Intent(this, MissionServiceExampleActivity.class));
                 break;
-            case OPEN_SIMULATOR:
-//                startActivity(new Intent(this, SimulatorActivity.class));
-//                break;
             case OPEN_SETTINGS:
 //                showToast("Settings");
 //                break;

@@ -3,7 +3,7 @@ package com.leidossd.dronecontrollerapp.missions;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class TaskCreator {
+public class ParcelableTaskCreator {
     public enum TaskType {
         WAIT_TASK,
         TOAST_TASK,
@@ -19,7 +19,7 @@ public class TaskCreator {
             String type = source.readString();
 
             if(type.matches(".*?MISSION$"))
-                return (Mission) MissionCreator.CREATOR.createFromParcel(source);
+                return (Mission) ParcelableMissionCreator.CREATOR.createFromParcel(source);
 
             switch(TaskType.valueOf(type)){
                 case WAIT_TASK:

@@ -1,4 +1,4 @@
-package com.leidossd.dronecontrollerapp;
+package com.leidossd.dronecontrollerapp.missions.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,14 +17,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.leidossd.dronecontrollerapp.MenuActivity;
+import com.leidossd.dronecontrollerapp.R;
 import com.leidossd.dronecontrollerapp.missions.Mission;
 import com.leidossd.dronecontrollerapp.missions.MissionAdapter;
 import com.leidossd.dronecontrollerapp.missions.MissionRunner;
 import com.leidossd.dronecontrollerapp.missions.MissionRunnerService;
 import com.leidossd.dronecontrollerapp.missions.Task;
-import com.leidossd.utils.MissionAction;
 
-public class MissionActivity extends MenuActivity implements MissionAdapter.MissionAdapterListener, Task.StatusUpdateListener{
+public class MissionSelectionActivity extends MenuActivity implements MissionAdapter.MissionAdapterListener, Task.StatusUpdateListener{
     //Constants for inner classes
     private static final int CREATE_MISSION = 1001;
     private static final int CONFIRM_MISSION = 1002;
@@ -47,7 +48,7 @@ public class MissionActivity extends MenuActivity implements MissionAdapter.Miss
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mission);
+        setContentView(R.layout.activity_mission_selection);
 
         noMissionText = findViewById(R.id.text_no_mission);
         missionText = findViewById(R.id.text_mission);
@@ -81,31 +82,28 @@ public class MissionActivity extends MenuActivity implements MissionAdapter.Miss
     }
 
     public void onClicked(View view) {
-        PopupMenu popupMenu = new PopupMenu(MissionActivity.this, createMissionButton);
+        PopupMenu popupMenu = new PopupMenu(MissionSelectionActivity.this, createMissionButton);
         popupMenu.getMenuInflater().inflate(R.menu.select_mission, popupMenu.getMenu());
 
         popupMenu.setOnMenuItemClickListener(menuItem -> {
-            MissionAction action = null;
-
+            Intent intent = new Intent(this, MissionCreationActivity.class);
             switch(menuItem.getItemId()){
                 case (R.id.mtype_waypoint):
-                    action = MissionAction.WAYPOINT_MISSION;
+                    intent.putExtra("Fragment Class", WaypointFragment.class);
                     break;
                 case (R.id.mtype_surveillance):
-                    action = MissionAction.SURVEILLANCE_MISSION;
+                    intent.putExtra("Fragment Class", SurveillanceFragment.class);
                     break;
                 //TODO: Define other mission types.
                 case (R.id.mtype_custom):
-                    Toast.makeText(MissionActivity.this, "" + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MissionSelectionActivity.this, "" + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
                     break;
                 default:
                     break;
             }
-            if(action != null){
-                Intent intent = new Intent(this, CreateMissionActivity.class);
-                intent.putExtra("Mission Type", action);
-                startActivityForResult(intent, CREATE_MISSION);
-            }
+
+            startActivityForResult(intent, CREATE_MISSION);
+
             return true;
         });
 

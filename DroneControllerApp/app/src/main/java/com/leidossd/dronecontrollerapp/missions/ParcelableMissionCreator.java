@@ -3,7 +3,7 @@ package com.leidossd.dronecontrollerapp.missions;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class MissionCreator {
+public class ParcelableMissionCreator {
     public enum MissionType {
         SPECIFIC_MISSION,
         WAYPOINT_MISSION,

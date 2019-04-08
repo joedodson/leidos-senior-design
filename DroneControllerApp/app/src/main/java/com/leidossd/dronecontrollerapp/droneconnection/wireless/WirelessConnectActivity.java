@@ -60,10 +60,6 @@ public class WirelessConnectActivity extends AppCompatActivity {
         }
     }
 
-    public void testConnection(View view) {
-        MainApplication.showToast("Testing Connection");
-    }
-
     public static class WirelessConnectPagerAdapter extends FragmentPagerAdapter {
         private static int NUM_ITEMS = 2;
 

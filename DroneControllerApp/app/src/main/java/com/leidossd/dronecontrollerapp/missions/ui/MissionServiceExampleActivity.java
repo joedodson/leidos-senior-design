@@ -1,10 +1,12 @@
-package com.leidossd.dronecontrollerapp;
+package com.leidossd.dronecontrollerapp.missions.ui;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import com.leidossd.djiwrapper.Coordinate;
+import com.leidossd.dronecontrollerapp.MenuActivity;
+import com.leidossd.dronecontrollerapp.R;
 import com.leidossd.dronecontrollerapp.missions.Mission;
 import com.leidossd.dronecontrollerapp.missions.MissionRunner;
 import com.leidossd.dronecontrollerapp.missions.SpecificMission;

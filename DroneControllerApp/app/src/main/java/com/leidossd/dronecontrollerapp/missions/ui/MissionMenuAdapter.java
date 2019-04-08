@@ -1,4 +1,4 @@
-package com.leidossd.dronecontrollerapp;
+package com.leidossd.dronecontrollerapp.missions.ui;
 
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -10,13 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.leidossd.dronecontrollerapp.R;
+
 import java.util.ArrayList;
 
-public class MenuAdapter extends Adapter<MenuAdapter.MenuHolder> {
+public class MissionMenuAdapter extends Adapter<MissionMenuAdapter.MenuHolder> {
     private ArrayList<Pair<String, String>> menuOptions;
     private MenuListener menuListener;
 
-    public MenuAdapter(Fragment fragment, ArrayList<Pair<String, String>> menuOptions) {
+    public MissionMenuAdapter(Fragment fragment, ArrayList<Pair<String, String>> menuOptions) {
         if (fragment instanceof MenuListener) {
             this.menuListener = (MenuListener) fragment;
         } else {

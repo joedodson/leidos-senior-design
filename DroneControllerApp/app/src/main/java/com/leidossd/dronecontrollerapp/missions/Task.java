@@ -8,7 +8,7 @@ abstract public class Task implements Parcelable {
     TaskState currentState;
     StatusUpdateListener listener;
 
-    public static final Creator CREATOR = TaskCreator.CREATOR;
+    public static final Creator CREATOR = ParcelableTaskCreator.CREATOR;
 
     // To add a new task type you'll need to add it to the enum, and the switch statement below
     // NOTE: DO NOT ADD MISSION TYPES HERE, THEY BELONG IN THE MISSION ABSTRACT CLASS

@@ -96,14 +96,6 @@
             <View style="@style/Divider"/>
 
             <Button
-                android:id="@+id/main_menu_simulator"
-                style="@style/CustomWidget.Button.Menu"
-                android:drawableStart="@drawable/ic_cog_white"
-                android:text="@string/menu_main_item_simulator_title" />
-
-            <View style="@style/Divider"/>
-
-            <Button
                 android:id="@+id/main_menu_grid"
                 style="@style/CustomWidget.Button.Menu"
                 android:drawableStart="@drawable/ic_cog_white"

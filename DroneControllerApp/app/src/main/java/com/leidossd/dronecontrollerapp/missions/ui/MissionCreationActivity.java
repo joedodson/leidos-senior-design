@@ -1,4 +1,4 @@
-package com.leidossd.dronecontrollerapp;
+package com.leidossd.dronecontrollerapp.missions.ui;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,40 +7,25 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
+import com.leidossd.dronecontrollerapp.R;
 import com.leidossd.dronecontrollerapp.missions.Mission;
-import com.leidossd.utils.MissionAction;
 
-public class CreateMissionActivity extends AppCompatActivity implements MissionCreateListener{
+public class MissionCreationActivity extends AppCompatActivity implements MissionCreateListener{
 
     private Fragment baseFragment;
     private FragmentManager fragmentManager;
-    private MissionAction missionType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(R.style.AppTheme_NoActionBar);
-        setContentView(R.layout.activity_create_mission);
-        MissionAction action = (MissionAction) getIntent().getSerializableExtra("Mission Type");
-        defineFragment(action);
-    }
+        setContentView(R.layout.activity_mission_creation);
 
-    private void defineFragment(MissionAction action){
-        if(action != null){
-            //Load fragment here
-            switch(action){
-                case WAYPOINT_MISSION:
-                    baseFragment = new WaypointFragment();
-                    break;
-                case SURVEILLANCE_MISSION:
-                    baseFragment = new SurveillanceFragment();
-                    break;
-                case CUSTOM_MISSION:
-                    break;
-            }
-            missionType = action;
-        } else {
-            throw new RuntimeException("Must define mission type when creating an activity.");
+        try {
+            Class fragmentClass = (Class) getIntent().getSerializableExtra("Fragment Class");
+            baseFragment = (Fragment) fragmentClass.newInstance();
+        } catch (IllegalAccessException|InstantiationException|ClassCastException e) {
+            throw new RuntimeException("Error while trying to instantiate fragment class from intent");
         }
 
         fragmentManager = getSupportFragmentManager();

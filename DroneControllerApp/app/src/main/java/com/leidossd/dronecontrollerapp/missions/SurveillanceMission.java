@@ -30,7 +30,7 @@ public class SurveillanceMission extends Mission {
     public static SurveillanceMission create(Parcel in){
         String title = in.readString();
         ArrayList<Task> tasks = new ArrayList<>();
-        in.readTypedList(tasks, TaskCreator.CREATOR);
+        in.readTypedList(tasks, ParcelableTaskCreator.CREATOR);
         return new SurveillanceMission(title, tasks);
     }
 

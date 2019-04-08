@@ -14,7 +14,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.leidossd.dronecontrollerapp.MissionStatusActivity;
+import com.leidossd.dronecontrollerapp.missions.ui.MissionStatusActivity;
 import com.leidossd.dronecontrollerapp.R;
 import com.leidossd.dronecontrollerapp.missions.MissionRunnerService.ServiceStatusUpdate;
 

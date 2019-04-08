@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:backgroundTint="@android:color/background_light"
-    tools:context=".MissionActivity">
+    tools:context=".missions.ui.MissionSelectionActivity">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/mission_bar"
