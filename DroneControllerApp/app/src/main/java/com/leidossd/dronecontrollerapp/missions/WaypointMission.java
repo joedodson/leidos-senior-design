@@ -9,22 +9,22 @@ import com.leidossd.djiwrapper.Coordinate;
 import java.util.ArrayList;
 
 public class WaypointMission extends Mission {
-    public WaypointMission(Coordinate destination){
+    public WaypointMission(Coordinate destination) {
         super("Waypoint Mission to " + destination);
         ArrayList<Task> tasks = new ArrayList<>();
         tasks.add(new TakeOffTask());
         tasks.add(new WaitTask(10000));
-        tasks.add(new FlightTask(new Coordinate(0,1,0)));
+        tasks.add(new FlightTask(new Coordinate(0, 1, 0)));
         tasks.add(new WaitTask(2000));
-        tasks.add(new FlightTask(new Coordinate(0,-1,0)));
+        tasks.add(new FlightTask(new Coordinate(0, -1, 0)));
         tasks.add(new WaitTask(2000));
-        tasks.add(new FlightTask(new Coordinate(0,0,0)));
+        tasks.add(new FlightTask(new Coordinate(0, 0, 0)));
         tasks.add(new WaitTask(2000));
         tasks.add(new LandingTask());
         taskIterable = tasks;
     }
 
-    WaypointMission(String title, ArrayList<Task> tasks){
+    WaypointMission(String title, ArrayList<Task> tasks) {
         super(title, tasks);
         currentState = Task.TaskState.READY;
     }
@@ -33,7 +33,7 @@ public class WaypointMission extends Mission {
         public WaypointMission createFromParcel(Parcel in) {
             String title = in.readString();
             Bundle taskBundle = in.readBundle(WaypointMission.class.getClassLoader());
-            ArrayList<Task>tasks = taskBundle.getParcelableArrayList("tasks");
+            ArrayList<Task> tasks = taskBundle.getParcelableArrayList("tasks");
             return new WaypointMission(title, tasks);
         }
 

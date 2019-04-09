@@ -1,12 +1,8 @@
 package com.leidossd.dronecontrollerapp.droneconnection.wireless;
 
 import android.Manifest;
-import android.app.admin.DeviceAdminInfo;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -15,29 +11,22 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.leidossd.dronecontrollerapp.MainApplication;
 import com.leidossd.dronecontrollerapp.R;
-import com.leidossd.dronecontrollerapp.SDKRegistrationErrorActivity;
-import com.leidossd.dronecontrollerapp.SplashActivity;
 import com.leidossd.dronecontrollerapp.droneconnection.ConnectWalkthroughActivity;
 import com.leidossd.dronecontrollerapp.droneconnection.barcode.BarcodeCaptureActivity;
-import com.leidossd.dronecontrollerapp.missions.Mission;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static org.bouncycastle.asn1.x500.style.RFC4519Style.uid;
 
 public class WirelessConnectActivity extends AppCompatActivity {
     FragmentPagerAdapter fragmentPagerAdapter;
     ViewPager viewPager;
     TextView currentPageTextView;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,9 +81,9 @@ public class WirelessConnectActivity extends AppCompatActivity {
         }
     }
 
-    private void requestWifiPermissions(){
+    private void requestWifiPermissions() {
         String permissionsNeeded[] = new String[]{Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.CHANGE_WIFI_STATE};
-        ActivityCompat.requestPermissions(this, permissionsNeeded , 12345);
+        ActivityCompat.requestPermissions(this, permissionsNeeded, 12345);
     }
 
     /**
@@ -117,10 +106,10 @@ public class WirelessConnectActivity extends AppCompatActivity {
 
             Matcher matcher = Pattern.compile("(?<=SSID:|Password:)\\S+").matcher(barcodeData);
 
-            if(matcher.find()){
+            if (matcher.find()) {
                 String ssid = matcher.group();
                 String password = "";
-                if(matcher.find()) {
+                if (matcher.find()) {
                     password = matcher.group();
                 }
                 final String pass = password;
@@ -156,7 +145,7 @@ public class WirelessConnectActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return String.format("Page %s of %s", position+1, NUM_ITEMS);
+            return String.format("Page %s of %s", position + 1, NUM_ITEMS);
         }
     }
 }

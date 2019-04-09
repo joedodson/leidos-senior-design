@@ -511,20 +511,20 @@ public class CameraSource {
         private Size mPreview;
         private Size mPicture;
 
-         SizePair(Camera.Size previewSize,
-                        Camera.Size pictureSize) {
+        SizePair(Camera.Size previewSize,
+                 Camera.Size pictureSize) {
             mPreview = new Size(previewSize.width, previewSize.height);
             if (pictureSize != null) {
                 mPicture = new Size(pictureSize.width, pictureSize.height);
             }
         }
 
-         Size previewSize() {
+        Size previewSize() {
             return mPreview;
         }
 
         @SuppressWarnings("unused")
-         Size pictureSize() {
+        Size pictureSize() {
             return mPicture;
         }
     }

@@ -21,7 +21,7 @@ public class MissionRunnerService extends IntentService implements Task.StatusUp
         super(MissionRunnerService.class.getName());
     }
 
-     class MissionRunnerBinder extends Binder {
+    class MissionRunnerBinder extends Binder {
         MissionRunnerService getService() {
             return MissionRunnerService.this;
         }
@@ -74,8 +74,8 @@ public class MissionRunnerService extends IntentService implements Task.StatusUp
 
 
     @Override
-    public void statusUpdate(Task.TaskState status, String message){
-        switch(status){
+    public void statusUpdate(Task.TaskState status, String message) {
+        switch (status) {
             case RUNNING:
                 sendServiceStatusUpdate(ServiceStatusUpdate.MISSION_START, message);
                 break;

@@ -34,7 +34,7 @@ public class MissionMenuAdapter extends Adapter<MissionMenuAdapter.MenuHolder> {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.menu_rows, viewGroup, false);
         MenuHolder vh = new MenuHolder(v);
         v.setOnClickListener((View view) -> {
-            int p = vh.getAdapterPosition()+1;
+            int p = vh.getAdapterPosition() + 1;
             menuListener.menuClicked(p);
         });
         return vh;
@@ -48,13 +48,13 @@ public class MissionMenuAdapter extends Adapter<MissionMenuAdapter.MenuHolder> {
 
     @Override
     public int getItemCount() {
-        if(menuOptions != null) {
+        if (menuOptions != null) {
             return menuOptions.size();
         }
         return 0;
     }
 
-    public interface MenuListener{
+    public interface MenuListener {
         void menuClicked(int pos);
     }
 
@@ -62,7 +62,7 @@ public class MissionMenuAdapter extends Adapter<MissionMenuAdapter.MenuHolder> {
         TextView title;
         TextView description;
 
-        MenuHolder(@NonNull View itemView){
+        MenuHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);

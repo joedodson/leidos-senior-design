@@ -9,14 +9,14 @@ import com.leidossd.djiwrapper.Coordinate;
 import java.util.ArrayList;
 
 public class SurveillanceMission extends Mission {
-    public SurveillanceMission(String title, Coordinate coord, float cameraAngle){
+    public SurveillanceMission(String title, Coordinate coord, float cameraAngle) {
         super(title);
         ArrayList<Task> tasks = new ArrayList<>();
         //TODO: Fill with necessary tasks.
         taskIterable = tasks;
     }
 
-    private SurveillanceMission(String title, ArrayList<Task> tasks){
+    private SurveillanceMission(String title, ArrayList<Task> tasks) {
         super(title, tasks);
         currentState = Task.TaskState.READY;
     }
@@ -26,7 +26,7 @@ public class SurveillanceMission extends Mission {
         public SurveillanceMission createFromParcel(Parcel in) {
             String title = in.readString();
             Bundle taskBundle = in.readBundle(SurveillanceMission.class.getClassLoader());
-            ArrayList<Task>tasks = taskBundle.getParcelableArrayList("tasks");
+            ArrayList<Task> tasks = taskBundle.getParcelableArrayList("tasks");
             return new SurveillanceMission(title, tasks);
         }
 
