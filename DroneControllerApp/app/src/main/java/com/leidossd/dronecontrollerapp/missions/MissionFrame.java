@@ -12,7 +12,7 @@ class MissionFrame {
     private final boolean isDefault;
     private final String missionDescription;
 
-    MissionFrame(String missionName, String missionType, boolean isDefault, String missionDescription){
+    MissionFrame(String missionName, String missionType, boolean isDefault, String missionDescription) {
         this.missionName = missionName;
         this.missionType = missionType;
         this.isDefault = isDefault;

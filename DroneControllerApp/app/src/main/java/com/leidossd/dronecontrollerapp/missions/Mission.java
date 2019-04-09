@@ -2,11 +2,8 @@ package com.leidossd.dronecontrollerapp.missions;
 
 import android.os.Bundle;
 import android.os.Parcel;
-import android.os.Parcelable;
 
 import java.util.ArrayList;
-
-import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
 
 abstract public class Mission extends Task implements Task.StatusUpdateListener {
@@ -18,19 +15,19 @@ abstract public class Mission extends Task implements Task.StatusUpdateListener 
         super(title);
     }
 
-    Mission(String title, ArrayList<Task> taskIterable){
+    Mission(String title, ArrayList<Task> taskIterable) {
         super(title);
         this.taskIterable = taskIterable;
     }
 
-    private void nextTask(){
-        if(!(currentTaskId < taskIterable.size())) {
+    private void nextTask() {
+        if (!(currentTaskId < taskIterable.size())) {
             currentState = TaskState.COMPLETED;
             listener.statusUpdate(currentState, "Mission finished.");
             return;
         }
 
-        if(currentTaskId != 0)
+        if (currentTaskId != 0)
             currentTask.setListener(null);
         currentTask = taskIterable.get(currentTaskId);
         currentTaskId += 1;
@@ -39,8 +36,8 @@ abstract public class Mission extends Task implements Task.StatusUpdateListener 
         currentTask.start();
     }
 
-    void start(){
-        if(currentState != TaskState.READY)
+    void start() {
+        if (currentState != TaskState.READY)
             return;
 
         currentState = TaskState.RUNNING;
@@ -48,16 +45,16 @@ abstract public class Mission extends Task implements Task.StatusUpdateListener 
         new Thread(this::nextTask).start();
     }
 
-    void stop(){
+    void stop() {
         currentTask.stop();
         currentState = TaskState.COMPLETED;
         listener.statusUpdate(currentState, String.format("Mission \"%s\" stopped", title));
     }
 
     @Override
-    public void statusUpdate(Task.TaskState state, String message){
+    public void statusUpdate(Task.TaskState state, String message) {
         // Tasks shouldn't report ready/notready/running
-        switch(state){
+        switch (state) {
             case COMPLETED:
 //                listener.statusUpdate(TaskState.RUNNING, message + " " + Integer.toString(currentTaskId));
 //                showToast("Task finished: " + message);

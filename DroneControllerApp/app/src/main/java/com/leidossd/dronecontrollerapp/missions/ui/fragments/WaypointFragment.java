@@ -1,4 +1,4 @@
-package com.leidossd.dronecontrollerapp.missions.ui;
+package com.leidossd.dronecontrollerapp.missions.ui.fragments;
 
 import android.Manifest;
 import android.animation.LayoutTransition;
@@ -37,7 +37,8 @@ import com.google.android.gms.maps.model.TileProvider;
 import com.google.android.gms.tasks.Task;
 import com.leidossd.djiwrapper.Coordinate;
 import com.leidossd.dronecontrollerapp.R;
-import com.leidossd.dronecontrollerapp.missions.SpecificMission;
+import com.leidossd.dronecontrollerapp.missions.WaypointMission;
+import com.leidossd.dronecontrollerapp.missions.ui.MissionCreateListener;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Locale;
@@ -67,19 +68,22 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
     private Coordinate destination = null;
     private int locationPermission;
 
-    public WaypointFragment() {}
+    public WaypointFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         createButtonListener = view -> {
-            SpecificMission mission;
+            WaypointMission mission;
             String mName = missionName.getText().toString();
-            if(mName.equals(""))
-                mission = new SpecificMission("Waypoint Mission");
-            else
-                mission = new SpecificMission(mName);
+            if (destination == null) {
+                return;
+            } else if (mName.equals("")) {
+                mission = new WaypointMission(destination);
+            } else
+                mission = new WaypointMission(destination);
             waypointFragmentListener.createMission(mission, saveCheckbox.isChecked());
         };
     }
@@ -138,7 +142,7 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
         this.googleMap = gMap;
 
         googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-        googleMap.setPadding(0,75,0,0);
+        googleMap.setPadding(0, 75, 0, 0);
 
         googleMap.setMinZoomPreference(MIN_ZOOM);
         googleMap.setMaxZoomPreference(MAX_ZOOM);
@@ -149,7 +153,7 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
                 .tileProvider(tileProvider));
 
         googleMap.setOnMapClickListener(point -> {
-            if(currentMarker != null) {
+            if (currentMarker != null) {
                 currentMarker.remove();
             }
             currentMarker = googleMap.addMarker(new MarkerOptions().position(point));
@@ -169,14 +173,14 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
         getActivity().findViewById(R.id.tv_map_loading).setVisibility(View.INVISIBLE);
     }
 
-    private Coordinate getDistance(Location l1, Location l2){
+    private Coordinate getDistance(Location l1, Location l2) {
         float distance = l1.distanceTo(l2) * DISTANCE_SCALE;
         double angleRadians = Math.toRadians(l1.bearingTo(l2));
 
-        float x = (float)(distance * Math.cos(angleRadians));
-        float y = (float)(distance * Math.sin(angleRadians));
+        float x = (float) (distance * Math.cos(angleRadians));
+        float y = (float) (distance * Math.sin(angleRadians));
 
-        return new Coordinate(x, y,0);
+        return new Coordinate(x, y, 0);
     }
 
     private void getLocation() {
@@ -190,19 +194,19 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
                 locationResult.addOnCompleteListener(getActivity(), task -> {
                     if (task.isSuccessful()) {
                         // Set the map's camera position to the current location of the device.
-                        location = (Location)task.getResult();
+                        location = (Location) task.getResult();
 
-                        if(location != null) {
+                        if (location != null) {
                             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(location.getLatitude(),
                                             location.getLongitude()), MAX_ZOOM));
                         }
                     } else {
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0,0), MAX_ZOOM));
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0, 0), MAX_ZOOM));
                     }
                 });
             }
-        } catch(SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
@@ -218,7 +222,7 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
                 googleMap.setMyLocationEnabled(false);
                 location = null;
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
@@ -235,7 +239,7 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         mapView.onResume();
     }
@@ -298,11 +302,11 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
             }
             Canvas canvas = new Canvas(copy);
 
-            int num_tiles = MAX_TILE_SIZE /((int)Math.pow(2, (zoom-MIN_ZOOM)+3));
-            int tile_size = MAX_TILE_SIZE /num_tiles;
-            for(int row = 0; row < num_tiles+1; ++row){
-                canvas.drawLine(0,row*tile_size, MAX_TILE_SIZE, row*tile_size, borderPaint);
-                canvas.drawLine(row*tile_size, 0, row*tile_size, MAX_TILE_SIZE, borderPaint);
+            int num_tiles = MAX_TILE_SIZE / ((int) Math.pow(2, (zoom - MIN_ZOOM) + 3));
+            int tile_size = MAX_TILE_SIZE / num_tiles;
+            for (int row = 0; row < num_tiles + 1; ++row) {
+                canvas.drawLine(0, row * tile_size, MAX_TILE_SIZE, row * tile_size, borderPaint);
+                canvas.drawLine(row * tile_size, 0, row * tile_size, MAX_TILE_SIZE, borderPaint);
             }
             return copy;
         }

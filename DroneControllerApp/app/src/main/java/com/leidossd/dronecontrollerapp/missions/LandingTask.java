@@ -2,31 +2,36 @@ package com.leidossd.dronecontrollerapp.missions;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.leidossd.djiwrapper.FlightControllerWrapper;
 
 public class LandingTask extends Task {
-    LandingTask(){
+    private static final String TAG = LandingTask.class.getSimpleName();
+
+    LandingTask() {
         super("Landing...");
     }
 
     @Override
-    void start(){
-        if(!FlightControllerWrapper.getInstance().isAirborne())
+    void start() {
+        if (!FlightControllerWrapper.getInstance().isAirborne())
             listener.statusUpdate(TaskState.COMPLETED, title + " completed");
         FlightControllerWrapper.getInstance()
                 .startLanding((error) -> {
-                    if(error != null)
+                    if (error != null) {
                         listener.statusUpdate(TaskState.FAILED, "ERROR IN Landing!");
-                    else {
+                        Log.e(TAG, "Could not land: " + error.getDescription());
+                    } else {
                         currentState = TaskState.COMPLETED;
                         listener.statusUpdate(currentState, title + " completed");
+                        Log.d(TAG, "Land completed succesfully");
                     }
                 });
     }
 
     @Override
-    void stop(){
+    void stop() {
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

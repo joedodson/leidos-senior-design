@@ -14,9 +14,9 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.leidossd.dronecontrollerapp.missions.ui.MissionStatusActivity;
 import com.leidossd.dronecontrollerapp.R;
 import com.leidossd.dronecontrollerapp.missions.MissionRunnerService.ServiceStatusUpdate;
+import com.leidossd.dronecontrollerapp.missions.ui.MissionStatusActivity;
 
 import java.util.Locale;
 import java.util.Random;
@@ -31,7 +31,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MissionRunner {
     public static MissionRunnerService missionRunnerService = null;
 
-    /** Static atomics are the best way around Singleton pattern for now. Multiple mission runners
+    /**
+     * Static atomics are the best way around Singleton pattern for now. Multiple mission runners
      * can be instantiated, but static atomics help prevent them from running more than one mission at
      * a time, and prevent race conditions.
      */
@@ -73,6 +74,7 @@ public class MissionRunner {
     /**
      * Binds MissionRunner object to the MissionRunnerService after instantiation. Synchronized to
      * prevent race conditions because binding is asynchronous.
+     *
      * @param applicationContext Context from activity or application
      */
     private static synchronized void bindService(Context applicationContext) {
@@ -103,8 +105,9 @@ public class MissionRunner {
     /**
      * Main driver for running the actual mission. Synchronized to prevent race conditions of multiple
      * MissionRunners trying to start missions.
+     *
      * @param applicationContext Context from activity or application
-     * @param mission The mission to be executed
+     * @param mission            The mission to be executed
      */
     public synchronized void startMission(Context applicationContext, Mission mission) {
         if (!missionRunnerServiceIsBound.get()) {
@@ -119,7 +122,7 @@ public class MissionRunner {
             Intent missionIntent = new Intent(applicationContext, MissionRunnerService.class);
 
 //            if (mission.getMissionUpdateCallback() != null) {
-            if(listener != null){
+            if (listener != null) {
                 registerReceivers(mission);
             }
 
@@ -180,6 +183,7 @@ public class MissionRunner {
      * When a mission is created, it might have callbacks attached to it. These can't be put into a
      * Parcel, so MissionRunner and MissionRunnerService use LocalBroadcasts to communicate these
      * callbacks instead.
+     *
      * @param mission Mission with @NonNull MissionUpdateCallback
      */
     private void registerReceivers(Mission mission) {

@@ -3,61 +3,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".missions.ui.fragments.WaypointFragment"
-    android:animateLayoutChanges="true"
     android:orientation="horizontal"
+    tools:context=".missions.ui.fragments.TestFragment"
+    android:animateLayoutChanges="true"
     android:baselineAligned="false">
 
-    <FrameLayout
-        android:id="@+id/map_container"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="5"
-        android:padding="@dimen/margin_small"
-        android:animateLayoutChanges="true">
-
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/mapView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:animateLayoutChanges="true"
-            android:visibility="invisible" />
-
-        <FrameLayout
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_gravity="top|end"
-            android:animateLayoutChanges="true"
-            android:background="#BEFFFFFF">
-
-            <Button
-                android:id="@+id/btn_map_scale"
-                style="@style/CustomWidget.Button.Standard"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/ic_expand_gray" />
-        </FrameLayout>
+        android:layout_weight="2"
+        android:orientation="vertical"
+        android:background="@color/primary">
 
         <TextView
-            android:id="@+id/tv_map_loading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="Loading Map\nPlease Wait"
+            android:text="Tasks that will be run"
             android:textAlignment="center"
+            android:textAllCaps="true"
             android:textSize="@dimen/text_size_medium" />
 
-    </FrameLayout>
+        <TextView
+            android:id="@+id/tv_task_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/margin_small" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/mission_info_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="4"
-        android:padding="@dimen/margin_small"
+        android:layout_weight="3"
+        android:animateLayoutChanges="true"
         android:orientation="vertical"
-        android:animateLayoutChanges="true">
+        android:padding="@dimen/margin_small">
 
         <TextView
             android:id="@+id/mission_type"
@@ -65,7 +45,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Waypoint Mission"
+            android:text="@string/mission_test_title"
             android:textAlignment="center"
             android:textSize="@dimen/text_size_large" />
 
@@ -74,18 +54,10 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:gravity="center"
             android:ems="10"
+            android:gravity="center"
             android:hint="(Optional) Enter mission name..."
             android:inputType="textPersonName" />
-
-        <ImageView
-            android:id="@+id/drone_image"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3"
-            android:gravity="center"
-            android:src="@drawable/drone_icon_white" />
 
         <TextView
             android:id="@+id/mission_description"
@@ -93,22 +65,13 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Drone flies to specified waypoint and then flies back to its start location"
-            android:textAlignment="center" />
-
-        <TextView
-            android:id="@+id/text_position"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Select a direction for the drone to fly to."
+            android:text="@string/mission_test_description"
             android:textAlignment="center" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1.25"
+            android:layout_weight=".5"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -123,8 +86,8 @@
             <Button
                 android:id="@+id/button_create"
                 style="@style/CustomWidget.Button.Standard"
-                android:layout_height="match_parent"
                 android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="Create" />

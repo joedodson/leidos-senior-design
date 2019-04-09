@@ -5,9 +5,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
-public class SpecificMission extends Mission {
-    public SpecificMission(String title){
+public class TestMission extends Mission {
+    public TestMission(String title) {
 
         super(title);
         ArrayList<Task> tasks = new ArrayList<>();
@@ -26,22 +28,26 @@ public class SpecificMission extends Mission {
         taskIterable = tasks;
     }
 
-    SpecificMission(String title, ArrayList<Task> tasks){
+    TestMission(String title, ArrayList<Task> tasks) {
         super(title, tasks);
         currentState = TaskState.READY;
     }
 
+    public List<String> getTaskNames() {
+        return taskIterable.stream().map(task -> task.getClass().getSimpleName()).collect(Collectors.toList());
+    }
+
     // Parcelable functionality
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public SpecificMission createFromParcel(Parcel in) {
+        public TestMission createFromParcel(Parcel in) {
             String title = in.readString();
-            Bundle taskBundle = in.readBundle(SpecificMission.class.getClassLoader());
-            ArrayList<Task>tasks = taskBundle.getParcelableArrayList("tasks");
-            return new SpecificMission(title, tasks);
+            Bundle taskBundle = in.readBundle(TestMission.class.getClassLoader());
+            ArrayList<Task> tasks = taskBundle.getParcelableArrayList("tasks");
+            return new TestMission(title, tasks);
         }
 
-        public SpecificMission[] newArray(int size) {
-            return new SpecificMission[size];
+        public TestMission[] newArray(int size) {
+            return new TestMission[size];
         }
     };
 }

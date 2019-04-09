@@ -16,10 +16,10 @@ import com.leidossd.dronecontrollerapp.R;
  * Contains the logic for putting items in the saved missions list, by defining
  * view holders, which are the containers for each item in the list, defining the text for each item in
  * the list, and handling the logic when an item on the list is clicked on.
- *
+ * <p>
  * Manages a separate MissionSaver than handles the saving and loading of all missions in the form of a
  * MissionFrame.
- *
+ * <p>
  * Any activity that uses it must implement its corresponding listener, so it can send missions through it.
  */
 public class MissionAdapter extends RecyclerView.Adapter<MissionAdapter.MissionHolder> {
@@ -33,7 +33,7 @@ public class MissionAdapter extends RecyclerView.Adapter<MissionAdapter.MissionH
             throw new RuntimeException(context.toString()
                     + " must implement MissionAdapterListener");
         }
-        this.missionSaver = new MissionSaver((Activity)context, true);
+        this.missionSaver = new MissionSaver((Activity) context, true);
         missionSaver.unloadMissions();
     }
 
@@ -42,10 +42,10 @@ public class MissionAdapter extends RecyclerView.Adapter<MissionAdapter.MissionH
     public MissionHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.saved_mission_rows, viewGroup, false);
         MissionHolder vh = new MissionHolder(v);
-            v.setOnClickListener((View view) -> {
-                int pos = vh.getAdapterPosition();
-                sendMission(pos);
-            });
+        v.setOnClickListener((View view) -> {
+            int pos = vh.getAdapterPosition();
+            sendMission(pos);
+        });
         return vh;
     }
 
@@ -64,23 +64,23 @@ public class MissionAdapter extends RecyclerView.Adapter<MissionAdapter.MissionH
     }
 
     @Override
-    public int getItemViewType(int pos){
+    public int getItemViewType(int pos) {
 //        if (missionSaver.getMissionAt(pos).getIsDefault()) return 0;
         return 1;
     }
 
 
-    public void addMission(Mission mission){
+    public void addMission(Mission mission) {
         missionSaver.saveMission(mission);
-        notifyItemInserted(getItemCount()+1);
+        notifyItemInserted(getItemCount() + 1);
     }
 
-    private void sendMission(int pos){
+    private void sendMission(int pos) {
         Mission mission = missionSaver.getMissionAt(pos);
         missionAdapterListener.missionClicked(mission);
     }
 
-    public interface MissionAdapterListener{
+    public interface MissionAdapterListener {
         void missionClicked(Mission mission);
     }
 
@@ -89,7 +89,7 @@ public class MissionAdapter extends RecyclerView.Adapter<MissionAdapter.MissionH
         TextView mType;
         TextView description;
 
-        MissionHolder(@NonNull View itemView){
+        MissionHolder(@NonNull View itemView) {
             super(itemView);
             mTitle = itemView.findViewById(R.id.title);
             mType = itemView.findViewById(R.id.mtype);

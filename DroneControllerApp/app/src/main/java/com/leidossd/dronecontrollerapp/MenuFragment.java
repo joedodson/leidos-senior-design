@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import com.leidossd.utils.MenuAction;
@@ -17,7 +16,6 @@ import static com.leidossd.utils.MenuAction.OPEN_GRID_VIEW;
 import static com.leidossd.utils.MenuAction.OPEN_HOME;
 import static com.leidossd.utils.MenuAction.OPEN_MISSIONS;
 import static com.leidossd.utils.MenuAction.OPEN_SETTINGS;
-import static com.leidossd.utils.MenuAction.OPEN_SIMULATOR;
 
 public class MenuFragment extends Fragment {
 
@@ -25,17 +23,18 @@ public class MenuFragment extends Fragment {
 
     private View.OnClickListener menuSelectListener;
 
-    public MenuFragment() {}
+    public MenuFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         menuSelectListener = view -> {
-            if(fragmentInteractionListener != null) {
+            if (fragmentInteractionListener != null) {
                 MenuAction action = null;
 
-                switch(view.getId()) {
+                switch (view.getId()) {
                     case R.id.main_menu_home:
                         action = OPEN_HOME;
                         break;

@@ -1,6 +1,9 @@
 package com.leidossd.dronecontrollerapp.missions;
 
 import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.Locale;
 
 import dji.common.gimbal.Rotation;
 import dji.common.gimbal.RotationMode;
@@ -40,38 +43,32 @@ public class SetGimbalAngleTask extends Task {
         currentState = Task.TaskState.READY;
     }
 
-    @Override
-    public void writeToParcel(Parcel out, int flags) {
-        out.writeString("SET_GIMBAL_ANGLE_TASK");
-        out.writeFloat(angle);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    static public SetGimbalAngleTask create(Parcel in){
-        return new SetGimbalAngleTask(in.readFloat());
-    }
-
-    @Override
-    void write(Parcel out){
-        out.writeString("SET_GIMBAL_ANGLE_TASK");
-        out.writeFloat(angle);
-    }
-
-    void start(){
+    void start() {
         // Point camera down at an angle
         DJISDKManager.getInstance().getProduct().getGimbal().rotate(rotation, (error) -> {
-            if(error != null)
+            if (error != null)
                 listener.statusUpdate(TaskState.FAILED, title + ": " + error.getDescription());
             else
-                listener.statusUpdate(TaskState.COMPLETED, String.format("Rotated Gimbal to %.1f", angle));
+                listener.statusUpdate(TaskState.COMPLETED, String.format(Locale.getDefault(), "Rotated Gimbal to %.1f", angle));
         });
     }
 
-    void stop(){
+    void stop() {
+    }
 
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public SetGimbalAngleTask createFromParcel(Parcel in) {
+            return new SetGimbalAngleTask(in.readFloat());
+
+        }
+
+        public SetGimbalAngleTask[] newArray(int size) {
+            return new SetGimbalAngleTask[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeFloat(angle);
     }
 }

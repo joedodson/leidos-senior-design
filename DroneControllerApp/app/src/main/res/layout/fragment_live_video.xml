@@ -41,7 +41,6 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/image_view_camera"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|start"
@@ -52,12 +51,12 @@
                 android:id="@+id/switch_capture_mode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="4sp"
+                android:paddingStart="2sp"
+                android:paddingEnd="2sp"
                 android:layout_gravity="center"
-                android:layout_weight="2"/>
+                android:layout_weight="2" />
 
             <ImageView
-                android:id="@+id/image_view_video"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|end"

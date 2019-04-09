@@ -5,9 +5,6 @@ import android.app.Activity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,11 +32,11 @@ class MissionSaver {
     private ArrayList<Mission> savedMissions;
     private GsonBuilder gBuilder;
 
-    MissionSaver(Activity activity){
+    MissionSaver(Activity activity) {
         this(activity, false);
     }
 
-    MissionSaver(Activity activity, boolean addDefault){
+    MissionSaver(Activity activity, boolean addDefault) {
         savedMissions = new ArrayList<>();
         attachedActivity = activity;
         this.addDefault = addDefault;
@@ -48,37 +45,40 @@ class MissionSaver {
         gBuilder.registerTypeAdapter(Task.class, new MissionSaveAdapter());
     }
 
-    int size(){
+    int size() {
         return savedMissions.size();
     }
 
-    Mission getMissionAt(int pos){
+    Mission getMissionAt(int pos) {
         return savedMissions.get(pos);
     }
 
-    void unloadMissions(){
+    void unloadMissions() {
         File directory = attachedActivity.getExternalFilesDir(null);
-        if(directory != null) {
+        if (directory != null) {
             File[] files = directory.listFiles();
-            if(addDefault){
-                for(int i = 0; i < NUM_DEFAULT; i++) {
+            if (addDefault) {
+                for (int i = 0; i < NUM_DEFAULT; i++) {
                     String des = "Drone flies.";
-                    savedMissions.add(new SpecificMission(String.format(Locale.getDefault(), "Default Mission %d", DEFAULT_ID++)));
+                    savedMissions.add(new TestMission(String.format(Locale.getDefault(), "Default Mission %d", DEFAULT_ID++)));
                 }
             }
             for (File f : files) {
-                savedMissions.add(loadFile(f));
+                Mission mission = loadFile(f);
+                if (mission != null) {
+                    savedMissions.add(mission);
+                }
             }
         } else {
             throw new RuntimeException("Could not load missions from default directory");
         }
     }
 
-    void saveMission(Mission mission){
-        try{
+    void saveMission(Mission mission) {
+        try {
             Gson gson = gBuilder.create();
             Writer output = null;
-            File file = new File(attachedActivity.getExternalFilesDir(null), String.format("%s.json",mission.getTitle()));
+            File file = new File(attachedActivity.getExternalFilesDir(null), String.format("%s.json", mission.getTitle()));
             output = new BufferedWriter(new FileWriter(file));
             output.write(gson.toJson(mission, Mission.class));
             output.close();
@@ -88,7 +88,7 @@ class MissionSaver {
         savedMissions.add(mission);
     }
 
-    private Mission loadFile(File file){
+    private Mission loadFile(File file) {
         Mission missionFile = null;
         try {
             InputStream is = new FileInputStream(file.getPath());

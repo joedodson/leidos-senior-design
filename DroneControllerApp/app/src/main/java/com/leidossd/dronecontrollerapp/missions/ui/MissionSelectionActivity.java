@@ -24,8 +24,11 @@ import com.leidossd.dronecontrollerapp.missions.MissionAdapter;
 import com.leidossd.dronecontrollerapp.missions.MissionRunner;
 import com.leidossd.dronecontrollerapp.missions.MissionRunnerService;
 import com.leidossd.dronecontrollerapp.missions.Task;
+import com.leidossd.dronecontrollerapp.missions.ui.fragments.SurveillanceFragment;
+import com.leidossd.dronecontrollerapp.missions.ui.fragments.TestFragment;
+import com.leidossd.dronecontrollerapp.missions.ui.fragments.WaypointFragment;
 
-public class MissionSelectionActivity extends MenuActivity implements MissionAdapter.MissionAdapterListener, Task.StatusUpdateListener{
+public class MissionSelectionActivity extends MenuActivity implements MissionAdapter.MissionAdapterListener, Task.StatusUpdateListener {
     //Constants for inner classes
     private static final int CREATE_MISSION = 1001;
     private static final int CONFIRM_MISSION = 1002;
@@ -71,7 +74,7 @@ public class MissionSelectionActivity extends MenuActivity implements MissionAda
         listView.addItemDecoration(new DividerItemDecoration(this));
 
         adapter = new MissionAdapter(this);
-        missionRunner = new MissionRunner(this,this);
+        missionRunner = new MissionRunner(this, this);
         listView.setAdapter(adapter);
     }
 
@@ -87,12 +90,15 @@ public class MissionSelectionActivity extends MenuActivity implements MissionAda
 
         popupMenu.setOnMenuItemClickListener(menuItem -> {
             Intent intent = new Intent(this, MissionCreationActivity.class);
-            switch(menuItem.getItemId()){
+            switch (menuItem.getItemId()) {
                 case (R.id.mtype_waypoint):
                     intent.putExtra("Fragment Class", WaypointFragment.class);
                     break;
                 case (R.id.mtype_surveillance):
                     intent.putExtra("Fragment Class", SurveillanceFragment.class);
+                    break;
+                case R.id.mtype_test:
+                    intent.putExtra("Fragment Class", TestFragment.class);
                     break;
                 //TODO: Define other mission types.
                 case (R.id.mtype_custom):
@@ -110,9 +116,9 @@ public class MissionSelectionActivity extends MenuActivity implements MissionAda
         popupMenu.show();
     }
 
-    public void updateStatus(Task.TaskState state){
+    public void updateStatus(Task.TaskState state) {
         MissionRunnerService missionRunnerService = MissionRunner.missionRunnerService;
-        if(missionRunnerService != null) {
+        if (missionRunnerService != null) {
             Mission mission = missionRunnerService.getCurrentMission();
             if (mission != null) {
                 if (state.toString().equals("RUNNING")) {
@@ -135,7 +141,7 @@ public class MissionSelectionActivity extends MenuActivity implements MissionAda
     }
 
     @Override
-    public void statusUpdate(Task.TaskState status, String message){
+    public void statusUpdate(Task.TaskState status, String message) {
         updateStatus(status);
 
     }
@@ -145,8 +151,8 @@ public class MissionSelectionActivity extends MenuActivity implements MissionAda
         if (resultCode == AppCompatActivity.RESULT_OK) {
             Mission mission = data.getParcelableExtra("Mission");
             boolean saveMission = data.getBooleanExtra("Save Mission", false);
-            if(saveMission) adapter.addMission(mission);
-            if (mission != null){
+            if (saveMission) adapter.addMission(mission);
+            if (mission != null) {
                 missionRunner.startMission(this, mission);
             }
         }

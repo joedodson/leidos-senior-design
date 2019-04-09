@@ -15,7 +15,7 @@ import com.leidossd.djiwrapper.FlightControllerWrapper;
 
 import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
-public class GridParentActivity extends AppCompatActivity implements GridFragment.GridInteractionListener, FlightControllerWrapper.PositionListener{
+public class GridParentActivity extends AppCompatActivity implements GridFragment.GridInteractionListener, FlightControllerWrapper.PositionListener {
 
     FragmentManager fragmentManager;
     GridFragment gridFragment;
@@ -80,7 +80,7 @@ public class GridParentActivity extends AppCompatActivity implements GridFragmen
     }
 
     @Override
-    public void updatePosition(Coordinate position){
-        runOnUiThread(()->positionText.setText("Position: " + position));
+    public void updatePosition(Coordinate position) {
+        runOnUiThread(() -> positionText.setText("Position: " + position));
     }
 }

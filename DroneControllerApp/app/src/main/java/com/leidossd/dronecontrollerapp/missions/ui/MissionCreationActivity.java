@@ -6,14 +6,13 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.leidossd.dronecontrollerapp.R;
 import com.leidossd.dronecontrollerapp.missions.Mission;
 
-public class MissionCreationActivity extends AppCompatActivity implements MissionCreateListener{
-
-    private Fragment baseFragment;
-    private FragmentManager fragmentManager;
+public class MissionCreationActivity extends AppCompatActivity implements MissionCreateListener {
+    private static final String TAG = MissionCreationActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,20 +22,22 @@ public class MissionCreationActivity extends AppCompatActivity implements Missio
 
         try {
             Class fragmentClass = (Class) getIntent().getSerializableExtra("Fragment Class");
-            baseFragment = (Fragment) fragmentClass.newInstance();
-        } catch (IllegalAccessException|InstantiationException|ClassCastException e) {
-            throw new RuntimeException("Error while trying to instantiate fragment class from intent");
-        }
+            Fragment baseFragment = (Fragment) fragmentClass.newInstance();
 
-        fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .add(R.id.fragment, baseFragment)
-                .show(baseFragment)
-                .commit();
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .add(R.id.fragment, baseFragment)
+                    .show(baseFragment)
+                    .commit();
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error while trying to instantiate fragment class from intent");
+            finish();
+        }
     }
 
     @Override
-    public void createMission(Mission mission, boolean saveMission){
+    public void createMission(Mission mission, boolean saveMission) {
         Intent intent = new Intent();
         intent.putExtra("Mission", mission);
         intent.putExtra("Save Mission", saveMission);

@@ -8,11 +8,14 @@ import dji.sdk.sdkmanager.DJISDKManager;
 // easily extend it and try it out, and coordinate flight will still work.
 interface LowLevelFlightControl {
     FlightController flightController = ((Aircraft) DJISDKManager.getInstance().
-                                       getProduct()).getFlightController();
+            getProduct()).getFlightController();
 
     boolean isInFlight();
+
     void move(Coordinate movement);
+
     void rotate(float theta);
+
     void halt();
 
     // need to do a kill/halt function

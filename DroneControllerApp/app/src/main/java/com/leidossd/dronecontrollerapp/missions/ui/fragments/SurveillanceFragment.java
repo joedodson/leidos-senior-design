@@ -1,4 +1,4 @@
-package com.leidossd.dronecontrollerapp.missions.ui;
+package com.leidossd.dronecontrollerapp.missions.ui.fragments;
 
 import android.Manifest;
 import android.content.Context;
@@ -39,6 +39,8 @@ import com.google.android.gms.tasks.Task;
 import com.leidossd.djiwrapper.Coordinate;
 import com.leidossd.dronecontrollerapp.R;
 import com.leidossd.dronecontrollerapp.missions.SurveillanceMission;
+import com.leidossd.dronecontrollerapp.missions.ui.MissionCreateListener;
+import com.leidossd.dronecontrollerapp.missions.ui.MissionMenuAdapter;
 
 import java.util.ArrayList;
 
@@ -76,7 +78,7 @@ public class SurveillanceFragment extends Fragment implements MissionMenuAdapter
 
         createButtonListener = new View.OnClickListener() {
             public void onClick(View view) {
-                if(destination != null){
+                if (destination != null) {
                     float cameraAngle = Float.parseFloat(angleText.getText().toString());
                     SurveillanceMission sm = new SurveillanceMission("New Mission", destination, cameraAngle);
                     surveillanceFragmentListener.createMission(sm, saveCheckbox.isChecked());
@@ -173,13 +175,13 @@ public class SurveillanceFragment extends Fragment implements MissionMenuAdapter
         getLocation();
     }
 
-    private Coordinate getDistance(Location l1, Location l2){
+    private Coordinate getDistance(Location l1, Location l2) {
         Point p = googleMap.getProjection().toScreenLocation(new LatLng(l1.getLatitude(), l1.getLongitude()));
         Point q = googleMap.getProjection().toScreenLocation(new LatLng(l2.getLatitude(), l2.getLongitude()));
-        float x = (float)(q.x-p.x)/p.x;
-        float y = (float)-(q.y-p.y)/p.y;
+        float x = (float) (q.x - p.x) / p.x;
+        float y = (float) -(q.y - p.y) / p.y;
 
-        return new Coordinate(x, y,0);
+        return new Coordinate(x, y, 0);
     }
 
     private void getLocation() {
@@ -195,17 +197,17 @@ public class SurveillanceFragment extends Fragment implements MissionMenuAdapter
                     public void onComplete(@NonNull Task task) {
                         if (task.isSuccessful()) {
                             // Set the map's camera position to the current location of the device.
-                            location = (Location)task.getResult();
+                            location = (Location) task.getResult();
                             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(location.getLatitude(),
                                             location.getLongitude()), DEFAULT_ZOOM));
                         } else {
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0,0), DEFAULT_ZOOM));
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0, 0), DEFAULT_ZOOM));
                         }
                     }
                 });
             }
-        } catch(SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
@@ -221,13 +223,13 @@ public class SurveillanceFragment extends Fragment implements MissionMenuAdapter
                 googleMap.setMyLocationEnabled(false);
                 location = null;
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         mapView.onResume();
     }
@@ -252,7 +254,7 @@ public class SurveillanceFragment extends Fragment implements MissionMenuAdapter
 
     @Override
     public void menuClicked(int pos) {
-        if(pos == curMenuSelection){
+        if (pos == curMenuSelection) {
             curMenuSelection = 0;
         } else {
             curMenuSelection = pos;
@@ -260,14 +262,14 @@ public class SurveillanceFragment extends Fragment implements MissionMenuAdapter
         updateFragment();
     }
 
-    private void updateFragment(){
-        if(curMenuSelection == WAYPOINT){
+    private void updateFragment() {
+        if (curMenuSelection == WAYPOINT) {
             mapView.setVisibility(View.VISIBLE);
             angleText.setVisibility(View.INVISIBLE);
             angleTextInfo.setVisibility(View.INVISIBLE);
             description.setVisibility(View.INVISIBLE);
             droneImage.setVisibility(View.INVISIBLE);
-        } else if (curMenuSelection == CAMERA_ANGLE){
+        } else if (curMenuSelection == CAMERA_ANGLE) {
             mapView.setVisibility(View.INVISIBLE);
             angleText.setVisibility(View.VISIBLE);
             angleTextInfo.setVisibility(View.VISIBLE);

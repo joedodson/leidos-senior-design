@@ -24,21 +24,20 @@ public class CompassActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compass);
         Aircraft aircraft = MainApplication.getDroneInstance();
-        if(aircraft != null && aircraft.getFlightController() != null && aircraft.getFlightController().getCompass() != null){
+        if (aircraft != null && aircraft.getFlightController() != null && aircraft.getFlightController().getCompass() != null) {
             compass = aircraft.getFlightController().getCompass();
-        }
-        else
+        } else
             compass = null;
     }
 
     @Override
-    public void onClick(View v){
-        switch(v.getId()){
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.btn_compass_calib_start:
                 compass.startCalibration(new CommonCallbacks.CompletionCallback() {
                     @Override
                     public void onResult(DJIError djiError) {
-                        if(djiError == null)
+                        if (djiError == null)
                             showToast("Compass Calibration Started");
                         else
                             showToast(djiError.getDescription());
@@ -49,7 +48,7 @@ public class CompassActivity extends AppCompatActivity implements View.OnClickLi
                 compass.stopCalibration(new CommonCallbacks.CompletionCallback() {
                     @Override
                     public void onResult(DJIError djiError) {
-                        if(djiError == null)
+                        if (djiError == null)
                             showToast("Compass Calibration Ended");
                         else
                             showToast(djiError.getDescription());
@@ -60,7 +59,7 @@ public class CompassActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.btn_compass_calib_status:
                 if (compass != null) {
                     CompassCalibrationState state = compass.getCalibrationState();
-                    switch(state){
+                    switch (state) {
                         case FAILED:
                             showToast("Compass Calibration State: FAILED");
                             break;

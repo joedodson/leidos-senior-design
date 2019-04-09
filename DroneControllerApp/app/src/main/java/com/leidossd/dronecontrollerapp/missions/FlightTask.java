@@ -7,23 +7,21 @@ import com.leidossd.djiwrapper.Coordinate;
 import com.leidossd.djiwrapper.CoordinateFlightControl;
 import com.leidossd.djiwrapper.FlightControllerWrapper;
 
-import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
-
 public class FlightTask extends Task {
     private Coordinate destination;
 
-    FlightTask(Coordinate destination){
+    FlightTask(Coordinate destination) {
         super("Fly to " + destination);
         this.destination = destination;
     }
 
     @Override
-    void start(){
+    void start() {
         FlightControllerWrapper.getInstance()
                 .setFlightMode(CoordinateFlightControl.FlightMode.ABSOLUTE);
 
         FlightControllerWrapper.getInstance().gotoXYZ(destination, (error) -> {
-            if(error != null)
+            if (error != null)
                 listener.statusUpdate(TaskState.FAILED, "ERROR IN gotoXYZ! " + error);
             else {
                 currentState = TaskState.COMPLETED;
@@ -33,7 +31,7 @@ public class FlightTask extends Task {
     }
 
     @Override
-    void stop(){
+    void stop() {
         FlightControllerWrapper.getInstance().haltFlight();
     }
 
@@ -43,7 +41,7 @@ public class FlightTask extends Task {
             float y = in.readFloat();
             float z = in.readFloat();
 
-            return new FlightTask(new Coordinate(x,y,z));
+            return new FlightTask(new Coordinate(x, y, z));
         }
 
         public FlightTask[] newArray(int size) {

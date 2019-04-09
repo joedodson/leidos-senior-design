@@ -1,11 +1,8 @@
 package com.leidossd.dronecontrollerapp.missions;
 
-import android.os.Bundle;
 import android.os.Looper;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import java.util.ArrayList;
 
 import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
@@ -17,7 +14,7 @@ public class ToastTask extends Task {
         this.toast = toast;
     }
 
-    void start(){
+    void start() {
         Looper.prepare();
         currentState = TaskState.RUNNING;
         listener.statusUpdate(currentState, String.format("Task \"%s\" started.", title));
@@ -27,7 +24,7 @@ public class ToastTask extends Task {
         Looper.loop();
     }
 
-    void stop(){
+    void stop() {
 
     }
 

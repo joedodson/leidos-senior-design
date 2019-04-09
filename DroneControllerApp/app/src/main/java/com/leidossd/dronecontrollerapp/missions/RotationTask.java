@@ -8,21 +8,21 @@ import com.leidossd.djiwrapper.FlightControllerWrapper;
 public class RotationTask extends Task {
     private float angle;
 
-    RotationTask(float angle){
+    RotationTask(float angle) {
         super("Rotate to %f" + Float.toString(angle));
         this.angle = angle;
     }
 
-    void start(){
-        FlightControllerWrapper.getInstance().rotateTo(angle, (error)->{
-            if(error != null)
+    void start() {
+        FlightControllerWrapper.getInstance().rotateTo(angle, (error) -> {
+            if (error != null)
                 listener.statusUpdate(TaskState.FAILED, "ROTATION FAILED!");
             else
                 listener.statusUpdate(TaskState.COMPLETED, "ROTATION SUCCESS");
         });
     }
 
-    void stop(){
+    void stop() {
 
     }
 

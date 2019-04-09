@@ -9,30 +9,27 @@
     tools:context=".droneconnection.ConnectWalkthroughActivity">
 
     <TextView
-        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/fragment_choosetoconnect_main_text"
         android:textAlignment="center"
         android:textSize="@dimen/text_size_large"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="20dp" />
 
     <Button
-        android:id="@+id/btn_choose_connect_connect"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="10dp"
         android:text="Connect"
-        android:onClick="connect"/>
+        android:onClick="connect" />
 
     <Button
-        android:id="@+id/btn_choose_connect_skip"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="10dp"
         android:text="Skip"
-        android:onClick="skip"/>
+        android:onClick="skip" />
 </LinearLayout>

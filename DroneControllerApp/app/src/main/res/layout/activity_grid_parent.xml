@@ -20,6 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout"
         android:layout_width="476dp"
         android:layout_height="81dp"
         android:layout_marginStart="8dp"
@@ -51,7 +52,6 @@
             app:layout_constraintVertical_bias="0.529" />
 
         <Button
-            android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -85,8 +85,13 @@
     </android.support.constraint.ConstraintLayout>
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/tv_grid_parent_position"
-        android:text="(00.0,00.0,00.0)"/>
+        android:layout_width="wrap_content"
+        android:layout_height="14dp"
+        android:text="(00.0,00.0,00.0)"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/grid_fragment_container" />
 </android.support.constraint.ConstraintLayout>

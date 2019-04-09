@@ -12,6 +12,7 @@ abstract public class Task implements Parcelable {
     // NOTE: DO NOT ADD MISSION TYPES HERE, THEY BELONG IN THE MISSION ABSTRACT CLASS
 
     abstract void start();
+
     abstract void stop();
 
     Task(String title) {
@@ -27,11 +28,11 @@ abstract public class Task implements Parcelable {
         return currentState.toString();
     }
 
-    void setListener(StatusUpdateListener listener){
+    void setListener(StatusUpdateListener listener) {
         this.listener = listener;
     }
 
-    void clearListener(){
+    void clearListener() {
         this.listener = null;
     }
 
@@ -43,19 +44,20 @@ abstract public class Task implements Parcelable {
         public TaskState state;
         public String message;
 
-        StatusUpdate(TaskState state, String message){
+        StatusUpdate(TaskState state, String message) {
             this.state = state;
             this.message = message;
         }
     }
-    
+
     @Override
-    public int describeContents(){
+    public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) { }
+    public void writeToParcel(Parcel dest, int flags) {
+    }
 
     public enum TaskState {
         NOT_READY,
