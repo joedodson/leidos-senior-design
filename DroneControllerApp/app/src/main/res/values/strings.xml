@@ -2,8 +2,6 @@
     <string name="app_name">SimpliFly</string>
 
     <!-- Common -->
-    <string name="button_next">Next</string>
-    <string name="button_previous">Previous</string>
 
     <!-- Splash Screen Progress Bar Text -->
     <string name="activity_splashscreen_progressBarText">Registering DJI SDK…</string>
@@ -15,18 +13,9 @@
 
     <!-- Drone Connection -->
     <string name="fragment_choosetoconnect_main_text">Would you like to connect to a drone or skip for now?</string>
-    <string name="fragment_chooseconnecttype_main_text">How would you like to connect to the drone?</string>
-    <string name="fragment_chooseconnecttype_wired">Wired</string>
-    <string name="fragment_chooseconnecttype_wireless">Wireless</string>
-    <string name="activity_wired_connect_title">Wired Connection Walkthrough</string>
     <string name="activity_wireless_connect_title">Wireless Connection Walkthrough</string>
     <string name="drone_connection_default_subtitle">Step 1</string>
-    <string name="activity_droneconnection_infoText">Please ensure drone is connected to the device via USB or WiFi</string>
-    <string name="activity_droneconnection_buttonText">Connect</string>
-    <string name="activity_droneconnection_statusLabel">Status: </string>
     <string name="activity_droneconnection_statusDisconnected">Disconnected</string>
-    <string name="activity_droneconnection_statusConnected">Connected</string>
-    <string name="activity_droneconnection_statusChanged">Component Changed</string>
     <string name="activity_droneconnection_connecting">Connecting…</string>
     <string name="activity_droneconnection_connectSuccess">Connection Success - Continue</string>
     <string name="activity_droneconnection_connectError">Failed to Connect - Retry</string>
@@ -36,37 +25,48 @@
     <string name="activity_sdkregistrationerror_button">Retry Registration</string>
 
     <!-- Menus -->
+    <string name="menu_main_item_home_title">Home</string>
     <string name="menu_main_item_missions_title">Missions</string>
     <string name="menu_main_item_settings_title">Settings</string>
-    <string name="menu_main_item_simulator_title">Simulator</string>
     <string name="menu_main_item_developer_title">Developer</string>
     <string name="menu_main_item_compass_title">Compass</string>
     <string name="menu_main_item_grid_title">Grid</string>
 
     <string name="halt_button">HALT TEST</string>
-    <string name="on_button">On</string>
-    <string name="off_button">Off</string>
     <string name="back_button">← Previous</string>
     <string name="confirm_button">Confirm</string>
     <string name="default_num">0</string>
     <string name="takeoff_button">Takeoff</string>
     <string name="landing_button">Land</string>
 
-    <string name="simulator_status_off">Simulator is off</string>
-    <string name="simulator_action_start">Start Simulator</string>
-    <string name="simulator_action_stop">Stop Simulator</string>
-    <string name="simulator_action_take_off">Take Off</string>
-    <string name="simulator_action_land">Land</string>
-    <string name="simulator_telemetry">Yaw: %1$.2f \tPitch: %2$.2f \tRoll: %3$.2f\n
-        X: %4$.2f \tY:%5$.2f \tZ:%6$.2f</string>
-
+    <!-- Compass activity -->
     <string name="activity_compass_guide_title">Compass Calibration</string>
     <string name="drone_compass_default_subtitle">Compass subtitle</string>
     <string name="compass_action_calib_start">Start Compass Calibration</string>
     <string name="compass_action_calib_stop">Stop Compass Calibration</string>
     <string name="compass_action_calib_status">Compass Calibration Status</string>
 
+    <!-- Mission titles and descriptions -->
+    <string name="mission_blank">Create a mission to start.</string>
+
+    <string name="mission_waypoint_title">Waypoint Mission</string>
+
+    <string name="mission_surveillance_title">Surveillance Mission</string>
+
+    <string name="mission_test_title">Test Mission</string>
+    <string name="mission_test_description">Testing mission for developers - who knows what it\'ll do&#8230;</string>
+
+    <string name="mission_custom_title">Custom Mission</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_compass">CompassActivity</string>
+    <string name="title_activity_mission">MissionActivity</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_menu">MenuActivity</string>
+
+    <!-- Barcode capture -->
+    <string name="ok">OK</string>
+    <string name="no_camera_permission">This application cannot run because it does not have the camera permission.  The application will now exit.</string>
+    <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
+    <string name="barcode_instruction">"Center barcode in frame and hold camera steady"</string>
 </resources>

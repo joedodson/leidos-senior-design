@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -75,7 +74,7 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onTick(long millisUntilFinished) {
-                float percentTimeLeft = (float)millisUntilFinished / progressMaxTimeMs;
+                float percentTimeLeft = (float) millisUntilFinished / progressMaxTimeMs;
                 progressBar.setProgress(maxProgress - Math.round(percentTimeLeft * 100));
             }
 
@@ -152,7 +151,7 @@ public class SplashActivity extends AppCompatActivity {
         if (missingPermissions.isEmpty()) {
             permissionsGranted.set(true);
             startNextActivityConditionally();
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        } else {
             ActivityCompat.requestPermissions(this,
                     missingPermissions.toArray(new String[missingPermissions.size()]),
                     PERMISSION_REQUEST_CODE);
@@ -176,7 +175,7 @@ public class SplashActivity extends AppCompatActivity {
             }
         }
         // If no missing permissions, continue to MainActivity
-        if(missingPermissions.isEmpty()) {
+        if (missingPermissions.isEmpty()) {
             permissionsGranted.set(true);
             startNextActivityConditionally();
         } else {
@@ -187,7 +186,7 @@ public class SplashActivity extends AppCompatActivity {
 
     // continue on to main screen if all requirements fulfilled
     public void startNextActivityConditionally() {
-        if(registrationSuccess.get() && permissionsGranted.get()) {
+        if (registrationSuccess.get() && permissionsGranted.get()) {
             startActivity(new Intent(SplashActivity.this, ConnectWalkthroughActivity.class));
             finish();
         } else {

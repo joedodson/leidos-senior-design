@@ -29,7 +29,8 @@ public class WirelessPage2Fragment extends Fragment {
     LocalBroadcastManager localBroadcastManager;
     BroadcastReceiver connectionChangeReceiver;
 
-    public WirelessPage2Fragment() { }
+    public WirelessPage2Fragment() {
+    }
 
     public static WirelessPage2Fragment newInstance() {
         return new WirelessPage2Fragment();
@@ -43,7 +44,7 @@ public class WirelessPage2Fragment extends Fragment {
 
         handler = new Handler();
 
-        if(getActivity() != null) {
+        if (getActivity() != null) {
             localBroadcastManager = LocalBroadcastManager.getInstance(getActivity().getApplicationContext());
 
             connectionChangeReceiver = new BroadcastReceiver() {
@@ -53,7 +54,7 @@ public class WirelessPage2Fragment extends Fragment {
 
                     String droneStatus = connectionChangeIntent.getStringExtra(CONNECTION_CHANGE.getResultKey());
 
-                    if(droneStatus.equals(DroneConnectionStatus.DRONE_CONNECTED.toString())) {
+                    if (droneStatus.equals(DroneConnectionStatus.DRONE_CONNECTED.toString())) {
                         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(connectionChangeReceiver);
                         testConnectButton.setText(getString(R.string.activity_droneconnection_connectSuccess));
                         testConnectButton.setEnabled(true);
@@ -67,7 +68,7 @@ public class WirelessPage2Fragment extends Fragment {
         }
         testConnectButton = view.findViewById(R.id.btn_frag_wireless_test_connect);
         testConnectButton.setOnClickListener(v -> {
-            if(getActivity() != null) {
+            if (getActivity() != null) {
                 LocalBroadcastManager.getInstance(getActivity()).registerReceiver(connectionChangeReceiver, new IntentFilter(CONNECTION_CHANGE.getActionString()));
                 DJISDKManager.getInstance().startConnectionToProduct();
                 testConnectButton.setText(getString(R.string.activity_droneconnection_connecting));

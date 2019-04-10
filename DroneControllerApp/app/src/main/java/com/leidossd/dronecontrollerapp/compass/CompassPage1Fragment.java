@@ -13,7 +13,8 @@ public class CompassPage1Fragment extends Fragment {
 
     Button cancelButton;
 
-    public CompassPage1Fragment() { }
+    public CompassPage1Fragment() {
+    }
 
     public static CompassPage1Fragment newInstance(String param1) {
         return new CompassPage1Fragment();

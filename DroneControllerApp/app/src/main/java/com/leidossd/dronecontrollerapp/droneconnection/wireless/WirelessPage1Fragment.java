@@ -10,7 +10,8 @@ import com.leidossd.dronecontrollerapp.R;
 
 
 public class WirelessPage1Fragment extends Fragment {
-    public WirelessPage1Fragment() { }
+    public WirelessPage1Fragment() {
+    }
 
     public static WirelessPage1Fragment newInstance() {
         return new WirelessPage1Fragment();

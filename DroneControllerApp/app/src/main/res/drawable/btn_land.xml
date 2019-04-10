@@ -1,0 +1,38 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false">
+        <layer-list>
+            <item android:width="@dimen/land_button_bg_size" android:height="@dimen/land_button_bg_size" android:gravity="center">
+                <shape android:shape="oval">
+                    <solid android:color="#BFDD2323" />
+                </shape>
+            </item>
+
+            <item android:drawable="@drawable/ic_land_white" android:width="@dimen/land_button_icon_size" android:height="@dimen/land_button_icon_size" android:gravity="center" />
+        </layer-list>
+    </item>
+
+    <item android:state_pressed="true">
+        <layer-list>
+            <item android:width="@dimen/land_button_bg_size" android:height="@dimen/land_button_bg_size" android:gravity="center">
+                <shape android:shape="oval">
+                    <solid android:color="#BFC7C7C7" />
+                </shape>
+            </item>
+
+            <item android:drawable="@drawable/ic_land_white" android:width="@dimen/land_button_icon_size" android:height="@dimen/land_button_icon_size" android:gravity="center" />
+        </layer-list>
+    </item>
+
+    <!-- Default -->
+    <item>
+        <layer-list>
+            <item android:width="@dimen/land_button_bg_size" android:height="@dimen/land_button_bg_size" android:gravity="center">
+                <shape android:shape="oval">
+                    <solid android:color="#BF4B4B4B" />
+                </shape>
+            </item>
+
+            <item android:drawable="@drawable/ic_land_white" android:width="@dimen/land_button_icon_size" android:height="@dimen/land_button_icon_size" android:gravity="center" />
+        </layer-list>
+    </item>
+</selector>

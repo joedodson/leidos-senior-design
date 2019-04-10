@@ -1,23 +1,25 @@
 package com.leidossd.dronecontrollerapp;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
-import com.leidossd.djiwrapper.FlightControllerWrapper;
 import com.leidossd.djiwrapper.Coordinate;
+import com.leidossd.djiwrapper.FlightControllerWrapper;
 
 import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
-public class GridParentActivity extends AppCompatActivity implements GridFragment.GridInteractionListener {
+public class GridParentActivity extends AppCompatActivity implements GridFragment.GridInteractionListener, FlightControllerWrapper.PositionListener {
 
     FragmentManager fragmentManager;
     GridFragment gridFragment;
+    TextView positionText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +27,11 @@ public class GridParentActivity extends AppCompatActivity implements GridFragmen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grid_parent);
 
+        positionText = findViewById(R.id.tv_grid_parent_position);
         fragmentManager = getSupportFragmentManager();
         gridFragment = new GridFragment();
+
+        FlightControllerWrapper.getInstance().setPositionListener(this);
 
         fragmentManager.beginTransaction()
                 .add(R.id.grid_fragment_container, gridFragment)
@@ -59,7 +64,7 @@ public class GridParentActivity extends AppCompatActivity implements GridFragmen
 
     public void sendInput(Coordinate coordinate) {
         showToast("GridParent received: " + coordinate.toString());
-        FlightControllerWrapper.getInstance().gotoXYZ(coordinate);
+        FlightControllerWrapper.getInstance().gotoAbsoluteXYZ(coordinate, null);
     }
 
     public void takeOff(View view) {
@@ -72,5 +77,10 @@ public class GridParentActivity extends AppCompatActivity implements GridFragmen
 
     public void confirmLand(View view) {
         FlightControllerWrapper.getInstance().confirmLanding(null);
+    }
+
+    @Override
+    public void updatePosition(Coordinate position) {
+        runOnUiThread(() -> positionText.setText("Position: " + position));
     }
 }

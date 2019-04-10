@@ -1,8 +1,8 @@
 package com.leidossd.dronecontrollerapp;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -11,11 +11,9 @@ import android.widget.TextView;
 
 import com.leidossd.djiwrapper.Coordinate;
 import com.leidossd.djiwrapper.FlightControllerWrapper;
-import com.leidossd.djiwrapper.VirtualStickFlightControl;
 
 import dji.common.error.DJIError;
 import dji.common.util.CommonCallbacks;
-import dji.sdk.flightcontroller.FlightController;
 
 import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
@@ -23,6 +21,7 @@ import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 public class FlightTestActivity extends AppCompatActivity {
 
     private DroneState state = DroneState.ON;
+
     public enum DroneState {
         ON, READY, WAITING
     }
@@ -51,69 +50,75 @@ public class FlightTestActivity extends AppCompatActivity {
     //TODO: Prevent buttons from being clicked at the wrong times.
     public void onClicked(View view) {
         switch (view.getId()) {
-            case(R.id.button_1): { //Back Button
+            case (R.id.button_1): { //Back Button
                 if (getState() == DroneState.ON) {
                     startActivity(new Intent(this, MainActivity.class));
                     finish();
                     break;
                 }
 
-            }case(R.id.button_2):{ //Halt button
+            }
+            case (R.id.button_2): { //Halt button
                 FlightControllerWrapper.getInstance().haltFlight();
                 break;
 
-            } case(R.id.button_3): { //Confirm button
-                FlightControllerWrapper.getInstance().gotoRelativeXYZ(new Coordinate((float) toIntEmpty(xBox),(float) toIntEmpty(yBox),(float) toIntEmpty(zBox)));
+            }
+            case (R.id.button_3): { //Confirm button
+                FlightControllerWrapper.getInstance().gotoRelativeXYZ(new Coordinate((float) toIntEmpty(xBox), (float) toIntEmpty(yBox), (float) toIntEmpty(zBox)), null);
                 break;
 
-            } case(R.id.button_4): { //Takeoff button
+            }
+            case (R.id.button_4): { //Takeoff button
                 //if(getState() == DroneState.ON){
-                    FlightControllerWrapper.getInstance().startTakeoff(new CommonCallbacks.CompletionCallback() {
-                        @Override
-                        public void onResult(DJIError djiError) {
-                            if(BuildConfig.DEBUG){
-                                if (djiError != null) {
-                                    showToast(djiError.getDescription());
-                                } else {
-                                    setState(DroneState.READY);
-                                    showToast("Take off success!");
-                                }
+                FlightControllerWrapper.getInstance().startTakeoff(new CommonCallbacks.CompletionCallback() {
+                    @Override
+                    public void onResult(DJIError djiError) {
+                        if (BuildConfig.DEBUG) {
+                            if (djiError != null) {
+                                showToast(djiError.getDescription());
+                            } else {
+                                setState(DroneState.READY);
+                                showToast("Take off success!");
                             }
                         }
-                    });
+                    }
+                });
                 //}
                 break;
-            } case(R.id.button_5): { //Landing button
+            }
+            case (R.id.button_5): { //Landing button
                 //if(getState() == DroneState.READY){
-                    FlightControllerWrapper.getInstance().startLanding(new CommonCallbacks.CompletionCallback() {
-                        @Override
-                        public void onResult(DJIError djiError) {
-                            setState(DroneState.ON);
-                            if(BuildConfig.DEBUG){
-                                if (djiError != null) {
-                                    showToast(djiError.getDescription());
-                                } else {
-                                    showToast("Landing started.");
-                                }
+                FlightControllerWrapper.getInstance().startLanding(new CommonCallbacks.CompletionCallback() {
+                    @Override
+                    public void onResult(DJIError djiError) {
+                        setState(DroneState.ON);
+                        if (BuildConfig.DEBUG) {
+                            if (djiError != null) {
+                                showToast(djiError.getDescription());
+                            } else {
+                                showToast("Landing started.");
                             }
                         }
-                    });
+                    }
+                });
                 //}
                 break;
             }
         }
     }
 
-    private void addCoordinateListener(EditText box){
+    private void addCoordinateListener(EditText box) {
         box.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
                 checkTextStatus();
             }
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
                                       int count) {
@@ -122,7 +127,7 @@ public class FlightTestActivity extends AppCompatActivity {
         });
     }
 
-    private void checkTextStatus(){
+    private void checkTextStatus() {
         int x = toIntEmpty(xBox);
         int y = toIntEmpty(yBox);
         int z = toIntEmpty(zBox);
@@ -146,7 +151,11 @@ public class FlightTestActivity extends AppCompatActivity {
         return s.isEmpty() ? 0 : Integer.parseInt(s);
     }
 
-    public DroneState getState() { return state; }
+    public DroneState getState() {
+        return state;
+    }
 
-    public void setState(DroneState ds) { state = ds; }
+    public void setState(DroneState ds) {
+        state = ds;
+    }
 }

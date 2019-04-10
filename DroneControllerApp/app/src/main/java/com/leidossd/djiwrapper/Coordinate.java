@@ -1,59 +1,68 @@
 package com.leidossd.djiwrapper;
 
-public class Coordinate {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.Locale;
+
+public class Coordinate implements Parcelable {
 
     private float x;
     private float y;
     private float z;
 
-    public Coordinate(float x, float y, float z){
+    public Coordinate(float x, float y, float z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public float getX(){
+    public float getX() {
         return this.x;
     }
 
-    public float getY(){
+    public float getY() {
         return this.y;
     }
 
-    public float getZ(){
+    public float getZ() {
         return this.z;
     }
 
-    public Coordinate add(Coordinate other){
+    public Coordinate add(Coordinate other) {
         return new Coordinate(x + other.x, y + other.y, z + other.z);
     }
 
-    public Coordinate scale(float constant){
-        return new Coordinate(x*constant, y*constant, z*constant);
+    public Coordinate scale(float constant) {
+        return new Coordinate(x * constant, y * constant, z * constant);
     }
 
-    public Coordinate unit(){
-        if(this.magnitude() == 0)
+    public Coordinate unit() {
+        if (this.magnitude() == 0)
             throw new IllegalArgumentException("Cannot create unit coordinate with 0 magnitude");
-        return this.scale(1/this.magnitude());
+        return this.scale(1 / this.magnitude());
     }
 
-    public float magnitude(){
-        return (float) Math.sqrt(x*x + y*y + z*z);
+    public float magnitude() {
+        return (float) Math.sqrt(x * x + y * y + z * z);
+    }
+
+    public float xyMagnitude() {
+        return (float) Math.sqrt(x * x + y * y);
     }
 
     // a unit vector perpendicular to the current vector in the x,y plane
-    public Coordinate perpendicularUnit(){
-        if(x == 0 && y == 0)
+    public Coordinate perpendicularUnit() {
+        if (x == 0 && y == 0)
             throw new IllegalArgumentException("Can't get a perpendicular unit vector from a 0 vector!");
-        if(x == 0)
-            return new Coordinate(1, -x/y, 0).unit();
+        if (x == 0)
+            return new Coordinate(1, -x / y, 0).unit();
         else
-            return new Coordinate(y/x, -1, 0).unit();
+            return new Coordinate(y / x, -1, 0).unit();
     }
 
-    public float dot(Coordinate other){
-        return x*other.x + y*other.y + z*other.z;
+    public float dot(Coordinate other) {
+        return x * other.x + y * other.y + z * other.z;
     }
 
     // If the aircraft is rotated to angle theta, and I want to keep it rotated that way
@@ -62,35 +71,35 @@ public class Coordinate {
 
     // To do that, we'll have to rotate the movement vector by negative theta
 
-    public Coordinate rotateByAngle(float theta){
+    public Coordinate rotateByAngle(float theta) {
         // this is a cute way of multiplying by a rotation matrix with negative theta
         float newX = this.dot(new Coordinate((float) Math.cos(Math.toRadians(theta)),
-                (float) Math.sin(Math.toRadians(theta)),0));
+                (float) Math.sin(Math.toRadians(theta)), 0));
         float newY = this.dot(new Coordinate((float) -Math.sin(Math.toRadians(theta)),
-                (float) Math.cos(Math.toRadians(theta)),0));
+                (float) Math.cos(Math.toRadians(theta)), 0));
 
         return new Coordinate(newX, newY, this.z);
     }
 
-    public float angleFacing(){
-        float sin = this.x/this.magnitude();
-        float angle = (float) (180*Math.asin(Math.abs(this.x/this.magnitude()))/Math.PI);
-        if(this.x >= 0 && y >= 0)
-            return (float) (180*Math.asin(this.x/this.magnitude())/Math.PI);
-        else if(this.x >= 0)
-            return (float) (90 + 180*Math.asin(-this.y/this.magnitude())/Math.PI);
-        else if(this.y >= 0)
-            return (float) (-180*Math.asin(-this.x/this.magnitude())/Math.PI);
+    public float angleFacing() {
+        float sin = this.x / this.magnitude();
+        float angle = (float) (180 * Math.asin(Math.abs(this.x / this.magnitude())) / Math.PI);
+        if (this.x >= 0 && y >= 0)
+            return (float) (180 * Math.asin(this.x / this.magnitude()) / Math.PI);
+        else if (this.x >= 0)
+            return (float) (90 + 180 * Math.asin(-this.y / this.magnitude()) / Math.PI);
+        else if (this.y >= 0)
+            return (float) (-180 * Math.asin(-this.x / this.magnitude()) / Math.PI);
         else
-            return (float) (-90 - 180*Math.asin(-this.y/this.magnitude())/Math.PI);
+            return (float) (-90 - 180 * Math.asin(-this.y / this.magnitude()) / Math.PI);
     }
 
     // The angle between the given angle and the angle that the current vector points at
-    public float angleBetween(float angle){
+    public float angleBetween(float angle) {
         float diff = angle - angleFacing();
-        if(diff > 180)
+        if (diff > 180)
             return 360 - diff;
-        if(diff < -180)
+        if (diff < -180)
             return 360 + diff;
 
         return diff;
@@ -103,7 +112,7 @@ public class Coordinate {
 
     // representation of a coordinate in a basis formed with x, y
     // we do not care about z-axis here
-    public Coordinate inBasis(Coordinate x, Coordinate y){
+    public Coordinate inBasis(Coordinate x, Coordinate y) {
         // picture a transformation matrix
         //
         //     | a  b |
@@ -123,21 +132,25 @@ public class Coordinate {
         float c = x.getY();
         float b = y.getX();
         float d = y.getY();
-        float det = a*d - b*c;
+        float det = a * d - b * c;
 
-        if(det < .01)
+        if (det < .01)
             throw new IllegalArgumentException("x and y cannot form a basis if parallel!" +
                     x + ", " + y);
 
         // this gives us rows of the inverse
-        Coordinate row1 = new Coordinate(d, -b, 0).scale(1/det);
-        Coordinate row2 = new Coordinate(-c, a, 0).scale(1/det);
+        Coordinate row1 = new Coordinate(d, -b, 0).scale(1 / det);
+        Coordinate row2 = new Coordinate(-c, a, 0).scale(1 / det);
 
         // simple matrix multiplication made to look complicated
         float newX = row1.dot(this);
         float newY = row2.dot(this);
 
-        return new Coordinate(newX,newY,this.z);
+        return new Coordinate(newX, newY, this.z);
+    }
+
+    public static Coordinate sum(Coordinate c1, Coordinate c2) {
+        return new Coordinate(c1.x + c2.x, c1.y + c2.y, c1.z + c2.z);
     }
 
     @Override
@@ -161,7 +174,34 @@ public class Coordinate {
     }
 
     @Override
-    public String toString(){
-        return String.format("(%.3f,%.3f,%.3f)", x,y,z);
+    public String toString() {
+        return String.format(Locale.getDefault(), "(%.2f,%.2f,%.2f)", x, y, z);
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeFloat(x);
+        dest.writeFloat(y);
+        dest.writeFloat(z);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static Creator<Coordinate> CREATOR = new Creator<Coordinate>() {
+        @Override
+        public Coordinate createFromParcel(Parcel source) {
+            float x = source.readFloat();
+            float y = source.readFloat();
+            float z = source.readFloat();
+            return new Coordinate(x, y, z);
+        }
+
+        @Override
+        public Coordinate[] newArray(int size) {
+            return new Coordinate[0];
+        }
+    };
 }

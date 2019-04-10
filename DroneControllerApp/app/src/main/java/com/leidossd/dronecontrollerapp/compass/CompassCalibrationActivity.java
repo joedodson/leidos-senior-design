@@ -7,21 +7,20 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.leidossd.djiwrapper.FlightControllerWrapper;
+import com.leidossd.dronecontrollerapp.MenuActivity;
 import com.leidossd.dronecontrollerapp.R;
 
 import dji.common.flightcontroller.CompassCalibrationState;
 
-public class CompassCalibrationActivity extends AppCompatActivity implements CompassStartPageFragment.StartPage, CompassPage1Fragment.Page1, CompassPage2Fragment.Page2 {
+public class CompassCalibrationActivity extends MenuActivity implements CompassStartPageFragment.StartPage, CompassPage1Fragment.Page1, CompassPage2Fragment.Page2 {
     FragmentPagerAdapter fragmentPagerAdapter;
     CustomViewPager viewPager;
     TextView currentPageTextView;
     TextView statusTextView;
     boolean calibStarted = false;
-    boolean cancelUpdates = false;
     AlertDialog calibFailedDialog;
     AlertDialog calibSuccessDialog;
     CompassCalibrationState currentCalibState;
@@ -58,13 +57,12 @@ public class CompassCalibrationActivity extends AppCompatActivity implements Com
             }
         });
 
-
         // tell the user that the calibration failed
         calibFailedDialog = new AlertDialog.Builder(this)
                 .setTitle("Calibration Failed!")
                 .setMessage("Try again?")
                 .setPositiveButton("Yes", null)
-                 // A null listener allows the button to dismiss the dialog and take no further action.
+                // A null listener allows the button to dismiss the dialog and take no further action.
                 .setNegativeButton("No", (dialog, which) -> finish())
                 .create();
 
@@ -76,11 +74,12 @@ public class CompassCalibrationActivity extends AppCompatActivity implements Com
                 .setNegativeButton("No", null)
                 .create();
 
-            FlightControllerWrapper.getInstance().compassSetCalibrationStateCallback(compassCalibrationState -> {
-                if(compassCalibrationState != currentCalibState) {
-                    updateStatus(compassCalibrationState);
-                }
-            });
+        FlightControllerWrapper.getInstance().compassSetCalibrationStateCallback(compassCalibrationState -> {
+            // only update if there is a change
+            if (compassCalibrationState != currentCalibState) {
+                updateStatus(compassCalibrationState);
+            }
+        });
     }
 
     @Override
@@ -93,48 +92,39 @@ public class CompassCalibrationActivity extends AppCompatActivity implements Com
         }
     }
 
-    public void updateStatus(){
-        updateStatus(FlightControllerWrapper.getInstance().getCompassCalibrationState(null));
-    }
-
-    public synchronized void updateStatus(CompassCalibrationState calibrationState) {
+    public void updateStatus(CompassCalibrationState calibrationState) {
         currentCalibState = calibrationState;
         int oldPage = viewPager.getCurrentItem();
         boolean compassHasError = FlightControllerWrapper.getInstance().compassHasError();
 
-        switch(calibrationState){
+        switch (calibrationState) {
             case NOT_CALIBRATING:
                 runOnUiThread(() -> {
-                    if(oldPage != 0)
+                    if (oldPage != 0)
                         viewPager.setCurrentItem(0);
-                });
-                if(compassHasError) {
-                    runOnUiThread(() -> {
+                    if (compassHasError) {
                         statusTextView.setText(" Not Calibrated ");
                         ((GradientDrawable) statusTextView.getBackground()).setColor(getColor(R.color.background_failure));
-                    });
-                    if(calibStarted) {
-                        runOnUiThread(() -> calibFailedDialog.show());
-                        calibStarted = false;
-                    }
-                }
-                else {
-                    runOnUiThread(() -> {
+                        if (calibStarted) {
+                            calibFailedDialog.show();
+                            calibStarted = false;
+                        }
+                    } else {
                         statusTextView.setText(" Calibrated ");
                         ((GradientDrawable) statusTextView.getBackground()).setColor(getColor(R.color.background_success));
-                    });
-                    if(calibStarted) {
-                        runOnUiThread(() -> calibSuccessDialog.show());
-                        calibStarted = false;
+                        if (calibStarted) {
+                            calibSuccessDialog.show();
+                            calibStarted = false;
+                        }
                     }
-                }
+                });
                 break;
 
             case HORIZONTAL:
                 runOnUiThread(() -> {
                     statusTextView.setText(" Horizontal ");
                     ((GradientDrawable) statusTextView.getBackground()).setColor(getColor(R.color.background_inprogress));
-                    if(oldPage != 1)
+                    if (oldPage != 1)
                         viewPager.setCurrentItem(1);
                 });
                 break;
@@ -143,7 +133,7 @@ public class CompassCalibrationActivity extends AppCompatActivity implements Com
                 runOnUiThread(() -> {
                     statusTextView.setText(" Vertical ");
                     ((GradientDrawable) statusTextView.getBackground()).setColor(getColor(R.color.background_inprogress));
-                    if(oldPage != 2)
+                    if (oldPage != 2)
                         viewPager.setCurrentItem(2);
                 });
                 break;
@@ -151,7 +141,7 @@ public class CompassCalibrationActivity extends AppCompatActivity implements Com
             case FAILED:
                 //pop up dialog to tell the user that it failed
                 runOnUiThread(() -> {
-                    if(oldPage != 0)
+                    if (oldPage != 0)
                         viewPager.setCurrentItem(0);
                     calibFailedDialog.show();
                 });
@@ -160,7 +150,7 @@ public class CompassCalibrationActivity extends AppCompatActivity implements Com
             case SUCCESSFUL:
                 //pop up dialog to tell the user that it succeeded
                 runOnUiThread(() -> {
-                    if(oldPage != 0)
+                    if (oldPage != 0)
                         viewPager.setCurrentItem(0);
                     calibSuccessDialog.show();
                 });
@@ -172,15 +162,6 @@ public class CompassCalibrationActivity extends AppCompatActivity implements Com
                     ((GradientDrawable) statusTextView.getBackground()).setColor(getColor(R.color.background_unknown));
                 });
         }
-
-    }
-
-    public void enableStatusUpdate(){
-        cancelUpdates = false;
-    }
-
-    public void disableStatusUpdate(){
-        cancelUpdates = true;
     }
 
     public static class CompassPagerAdapter extends FragmentPagerAdapter {
@@ -211,29 +192,29 @@ public class CompassCalibrationActivity extends AppCompatActivity implements Com
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return String.format("%s of %s", position+1, NUM_ITEMS);
+            return String.format("%s of %s", position + 1, NUM_ITEMS);
         }
     }
 
     @Override
-    public void startCalibration(){
+    public void startCalibration() {
         FlightControllerWrapper.getInstance().compassStartCalibration(null);
         calibStarted = true;
     }
 
     @Override
-    public void exitCalibration(){
+    public void exitCalibration() {
         finish();
     }
 
     @Override
-    public void cancelPage1(){
+    public void cancelPage1() {
         calibStarted = false;
         FlightControllerWrapper.getInstance().compassStopCalibration(null);
     }
 
     @Override
-    public void cancelPage2(){
+    public void cancelPage2() {
         calibStarted = false;
         FlightControllerWrapper.getInstance().compassStopCalibration(null);
     }

@@ -1,56 +1,85 @@
 package com.leidossd.dronecontrollerapp.missions;
 
+import android.os.Bundle;
 import android.os.Parcel;
-import android.os.Parcelable;
 
-abstract public class Mission implements Parcelable {
-    protected String title;
-    MissionState currentState;
+import java.util.ArrayList;
 
-    MissionUpdateCallback missionUpdateCallback;
+
+abstract public class Mission extends Task implements Task.StatusUpdateListener {
+    private Task currentTask;
+    private int currentTaskId = 0;
+    ArrayList<Task> taskIterable;
 
     Mission(String title) {
-        this(title, null);
+        super(title);
     }
 
-    Mission(String title, MissionUpdateCallback missionUpdateCallback) {
-        this.title = title;
-        this.missionUpdateCallback = missionUpdateCallback;
-        this.currentState = MissionState.NOT_READY;
+    Mission(String title, ArrayList<Task> taskIterable) {
+        super(title);
+        this.taskIterable = taskIterable;
     }
 
-    Mission(Parcel in) {
-        title = in.readString();
-        currentState = MissionState.valueOf(in.readString());
+    private void nextTask() {
+        if (!(currentTaskId < taskIterable.size())) {
+            currentState = TaskState.COMPLETED;
+            listener.statusUpdate(currentState, "Mission finished.");
+            return;
+        }
+
+        if (currentTaskId != 0)
+            currentTask.setListener(null);
+        currentTask = taskIterable.get(currentTaskId);
+        currentTaskId += 1;
+
+        currentTask.setListener(this);
+        currentTask.start();
     }
 
-    public String getTitle() {
-        return title;
-    }
-    public String getStatus() { return currentState.toString(); }
+    void start() {
+        if (currentState != TaskState.READY)
+            return;
 
-    public interface MissionUpdateCallback {
-        void onMissionStart(String missionStartResult);
-        void onMissionFinish(String missionFinishResult);
-        void onMissionError(String missionErrorMessage);
+        currentState = TaskState.RUNNING;
+        listener.statusUpdate(currentState, String.format("Mission \"%s\" started", title));
+        new Thread(this::nextTask).start();
     }
 
-    void setMissionUpdateCallback(MissionUpdateCallback missionUpdateCallback) {
-        this.missionUpdateCallback = missionUpdateCallback;
+    void stop() {
+        currentTask.stop();
+        currentState = TaskState.COMPLETED;
+        listener.statusUpdate(currentState, String.format("Mission \"%s\" stopped", title));
     }
 
-    MissionUpdateCallback getMissionUpdateCallback() {
-        return missionUpdateCallback;
+    @Override
+    public void statusUpdate(Task.TaskState state, String message) {
+        // Tasks shouldn't report ready/notready/running
+        switch (state) {
+            case COMPLETED:
+//                listener.statusUpdate(TaskState.RUNNING, message + " " + Integer.toString(currentTaskId));
+//                showToast("Task finished: " + message);
+                listener.statusUpdate(TaskState.RUNNING, message);
+                new Thread(this::nextTask).start();
+//                nextTask();
+                break;
+            case FAILED:
+//                showToast("Task failed: " + message);
+                listener.statusUpdate(state, message);
+                break;
+            default:
+                break;
+        }
     }
 
-    abstract protected void start();
-    abstract protected void stop();
+    public String getCurrentTaskName() {
+        return currentTask.getClass().getSimpleName();
+    }
 
-    public enum MissionState {
-        NOT_READY,
-        READY,
-        RUNNING,
-        COMPLETED,
-        FAILED
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("tasks", taskIterable);
+        dest.writeBundle(bundle);
     }
 }

@@ -28,3 +28,8 @@ Thumbs.db
 
 # Ignore project specific .gitignores
 /*/.gitignore
+
+# VS Code files
+*.project
+*.prefs
+*.classpath

@@ -17,6 +17,8 @@ import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 import dji.common.camera.SettingsDefinitions;
 import dji.common.camera.SettingsDefinitions.CameraMode;
 import dji.common.camera.SystemState;
@@ -34,7 +36,7 @@ import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 public class LiveVideoFragment extends Fragment implements
         SurfaceTextureListener, OnClickListener, CompoundButton.OnCheckedChangeListener {
 
-    private static final String TAG = MainActivity.class.getName();
+    private static final String TAG = LiveVideoFragment.class.getName();
     protected VideoFeeder.VideoDataListener videoDataListener = null;
 
     protected DJICodecManager codecManager = null;
@@ -82,7 +84,7 @@ public class LiveVideoFragment extends Fragment implements
                     int minutes = (recordTime % 3600) / 60;
                     int seconds = recordTime % 60;
 
-                    final String timeString = String.format("%02d:%02d", minutes, seconds);
+                    final String timeString = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
                     final boolean isVideoRecording = cameraSystemState.isRecording();
 
                     if (getActivity() != null) {
@@ -127,7 +129,7 @@ public class LiveVideoFragment extends Fragment implements
 
         // capture control components
         Switch captureModeSwitch = view.findViewById(R.id.switch_capture_mode);
-        cameraCaptureButton= view.findViewById(R.id.btn_capture);
+        cameraCaptureButton = view.findViewById(R.id.btn_capture);
         recordingTime = view.findViewById(R.id.timer);
 
         captureModeSwitch.setOnCheckedChangeListener(this);
@@ -159,9 +161,9 @@ public class LiveVideoFragment extends Fragment implements
 
     private void uninitPreviewer() {
         Camera camera = MainApplication.getCameraInstance();
-        if (camera != null){
+        if (camera != null) {
             // Reset the callback
-            for(VideoDataListener v : videoFeed.getListeners()) {
+            for (VideoDataListener v : videoFeed.getListeners()) {
 
             }
         }
@@ -171,11 +173,11 @@ public class LiveVideoFragment extends Fragment implements
     public void onClick(View view) {
         // might add components in future so leaving as switch for now
         switch (view.getId()) {
-            case R.id.btn_capture:{
-                if(currentCameraMode == CameraMode.SHOOT_PHOTO) {
+            case R.id.btn_capture: {
+                if (currentCameraMode == CameraMode.SHOOT_PHOTO) {
                     capturePhoto();
-                } else if(currentCameraMode == CameraMode.RECORD_VIDEO) {
-                    if(!recording) {
+                } else if (currentCameraMode == CameraMode.RECORD_VIDEO) {
+                    if (!recording) {
                         startRecording();
                     } else {
                         stopRecording();
@@ -190,8 +192,8 @@ public class LiveVideoFragment extends Fragment implements
 
     @Override
     public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-        if(button.getId() == R.id.switch_capture_mode) {
-            if(isChecked){
+        if (button.getId() == R.id.switch_capture_mode) {
+            if (isChecked) {
                 currentCameraMode = CameraMode.RECORD_VIDEO;
                 cameraCaptureButton.setImageResource(R.drawable.ic_video_record_button);
             } else {
@@ -202,7 +204,7 @@ public class LiveVideoFragment extends Fragment implements
         }
     }
 
-    private void switchCameraMode(){
+    private void switchCameraMode() {
         Camera camera = MainApplication.getCameraInstance();
         if (camera != null) {
             camera.setMode(currentCameraMode, new CommonCallbacks.CompletionCallback() {
@@ -220,12 +222,12 @@ public class LiveVideoFragment extends Fragment implements
     }
 
     // Method for taking photo
-    private void capturePhoto(){
+    private void capturePhoto() {
         final Camera camera = MainApplication.getCameraInstance();
         if (camera != null) {
 
             SettingsDefinitions.ShootPhotoMode photoMode = SettingsDefinitions.ShootPhotoMode.SINGLE; // Set the camera capture mode as Single mode
-            camera.setShootPhotoMode(photoMode, new CommonCallbacks.CompletionCallback(){
+            camera.setShootPhotoMode(photoMode, new CommonCallbacks.CompletionCallback() {
                 @Override
                 public void onResult(DJIError djiError) {
                     if (null == djiError) {
@@ -252,16 +254,16 @@ public class LiveVideoFragment extends Fragment implements
         }
     }
 
-    private void startRecording(){
+    private void startRecording() {
         final Camera camera = MainApplication.getCameraInstance();
         if (camera != null) {
-            camera.startRecordVideo(new CommonCallbacks.CompletionCallback(){
+            camera.startRecordVideo(new CommonCallbacks.CompletionCallback() {
                 @Override
                 public void onResult(DJIError djiError) {
                     if (djiError == null) {
                         recording = true;
                         showToast("Record video: success");
-                    }else {
+                    } else {
                         recording = false;
                         showToast(djiError.getDescription());
                     }
@@ -270,17 +272,16 @@ public class LiveVideoFragment extends Fragment implements
         }
     }
 
-    private void stopRecording(){
+    private void stopRecording() {
         Camera camera = MainApplication.getCameraInstance();
         if (camera != null) {
-            camera.stopRecordVideo(new CommonCallbacks.CompletionCallback(){
+            camera.stopRecordVideo(new CommonCallbacks.CompletionCallback() {
                 @Override
-                public void onResult(DJIError djiError)
-                {
-                    if(djiError == null) {
+                public void onResult(DJIError djiError) {
+                    if (djiError == null) {
                         recording = false;
                         showToast("Stop recording: success");
-                    }else {
+                    } else {
                         recording = true;
                         showToast(djiError.getDescription());
                     }
@@ -296,7 +297,7 @@ public class LiveVideoFragment extends Fragment implements
         initPreviewer();
         onProductChange();
 
-        if(videoTextureView == null) {
+        if (videoTextureView == null) {
             Log.e(TAG, "videoTextureView is null");
         }
     }
@@ -337,7 +338,7 @@ public class LiveVideoFragment extends Fragment implements
 
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-        Log.e(TAG,"onSurfaceTextureDestroyed");
+        Log.e(TAG, "onSurfaceTextureDestroyed");
         if (codecManager != null) {
             codecManager.cleanSurface();
             codecManager = null;
@@ -347,5 +348,6 @@ public class LiveVideoFragment extends Fragment implements
     }
 
     @Override
-    public void onSurfaceTextureUpdated(SurfaceTexture surface) { }
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+    }
 }

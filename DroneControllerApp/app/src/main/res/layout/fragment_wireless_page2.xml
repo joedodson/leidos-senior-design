@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical"
-    android:background="@color/primary"
-    tools:context=".droneconnection.wired.WiredPage1Fragment">
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/tv_wireless_frag_p2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:gravity="center"
         android:layout_weight=".1"
         android:text="Enable Drone WAP"
         android:textSize="@dimen/text_size_medium" />
 
     <ImageView
-        android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="202dp"
         android:layout_gravity="center"
@@ -27,7 +21,6 @@
         android:src="@drawable/img_drone_connect_highlight" />
 
     <LinearLayout
-        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight=".5"
@@ -39,26 +32,39 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight=".25"
+            android:gravity="center"
             android:paddingBottom="10dp"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
             android:text="1. Press, then press and hold the Function button at the rear of the aircraft until the drone beeps twice"
             android:textAlignment="center" />
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight=".25"
-            android:paddingBottom="10dp"
-            android:paddingStart="5dp"
-            android:paddingEnd="5dp"
-            android:text="2. Open this devices Wi-Fi settings and connect to the drone's network."
-            android:textAlignment="center" />
+            android:layout_weight=".5">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:gravity="center"
+                android:text="2. Open this devices Wi-Fi settings and connect to the drone's network."
+                android:textAlignment="center" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/ic_barcode_white"
+                android:onClick="openBarcodeScanner" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight=".25"
+            android:gravity="center"
             android:paddingBottom="10dp"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
@@ -69,6 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
             android:textStyle="bold"
