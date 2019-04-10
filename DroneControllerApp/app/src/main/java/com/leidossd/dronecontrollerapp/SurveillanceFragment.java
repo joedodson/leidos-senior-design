@@ -77,8 +77,12 @@ public class SurveillanceFragment extends Fragment implements MenuAdapter.MenuLi
             public void onClick(View view) {
                 if(destination != null){
                     float cameraAngle = Float.parseFloat(angleText.getText().toString());
-                    SurveillanceMission sm = new SurveillanceMission("New Mission", destination, cameraAngle);
-                    surveillanceFragmentListener.createMission(sm, saveCheckbox.isChecked());
+                    if(cameraAngle >= -90 && cameraAngle <= 30) {
+                        SurveillanceMission sm = new SurveillanceMission("New Mission", destination, cameraAngle);
+                        surveillanceFragmentListener.createMission(sm, saveCheckbox.isChecked());
+                    } else {
+                        showToast("Angle must be between -90 and 30 degrees.");
+                    }
                 } else {
                     showToast("Please Enter a Location.");
                 }
