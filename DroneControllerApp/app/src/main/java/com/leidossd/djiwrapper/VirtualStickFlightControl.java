@@ -48,7 +48,8 @@ public class VirtualStickFlightControl {
 
     private VirtualStickFlightControl() {
         pitch = roll = yaw = throttle = 0;
-        updatePeriod = 200;
+        // must be between 40 and 200
+        updatePeriod = 100;
         inFlight = false;
         flightController = ((Aircraft) DJISDKManager.getInstance().
                 getProduct()).getFlightController();
@@ -117,15 +118,20 @@ public class VirtualStickFlightControl {
     }
 
     public void setDirection(Coordinate direction) {
+        if(direction.magnitude() == 0)
+            return;
         Coordinate unitDirection = direction.unit();
         this.roll = unitDirection.getX() * speed;
         this.pitch = unitDirection.getY() * speed;
         this.throttle = unitDirection.getZ() * speed;
     }
 
-    public void setYaw(float yaw) {
+    public void setYaw(boolean clockwise) {
+        if(clockwise)
+            this.yaw = angularVelocity;
+        else
+            this.yaw = -angularVelocity;
         Log.v(TAG,"Setting yaw to " + String.valueOf(yaw));
-        this.yaw = yaw;
     }
 
     public float getPitch() {

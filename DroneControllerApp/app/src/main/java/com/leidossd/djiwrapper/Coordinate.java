@@ -43,6 +43,10 @@ public class Coordinate implements Parcelable {
         return this.scale(1 / this.magnitude());
     }
 
+    public Coordinate xyUnit() {
+        return new Coordinate(this.x, this.y, 0).unit();
+    }
+
     public float magnitude() {
         return (float) Math.sqrt(x * x + y * y + z * z);
     }
