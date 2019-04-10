@@ -1,5 +1,6 @@
 package com.leidossd.dronecontrollerapp;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +19,8 @@ import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
 import com.leidossd.dronecontrollerapp.compass.CompassCalibrationActivity;
+import com.leidossd.dronecontrollerapp.missions.ui.MissionSelectionActivity;
+import com.leidossd.dronecontrollerapp.missions.ui.MissionServiceExampleActivity;
 import com.leidossd.utils.MenuAction;
 import com.leidossd.utils.SwipeGestureListener;
 
@@ -92,6 +95,7 @@ public class MenuActivity extends AppCompatActivity implements
 
     @Override
     public void setContentView(int layoutResID) {
+        @SuppressLint("InflateParams")
         FrameLayout fullView = (FrameLayout) getLayoutInflater().inflate(R.layout.activity_menu, null);
         FrameLayout childView = fullView.findViewById(R.id.child_activity_container);
         actionBar = fullView.findViewById(R.id.status_actionbar);
@@ -108,7 +112,7 @@ public class MenuActivity extends AppCompatActivity implements
         Handler handler = new Handler();
 
         handler.postDelayed(() -> {
-            if(MainApplication.getDroneInstance() != null) {
+            if (MainApplication.getDroneInstance() != null) {
                 updateDroneStatus(DRONE_CONNECTED.toString());
             }
         }, 500);
@@ -124,7 +128,7 @@ public class MenuActivity extends AppCompatActivity implements
                 DJISDKManager.getInstance().startConnectionToProduct();
                 break;
             case R.id.action_bar_compass:
-                if(MainApplication.getDroneInstance() == null || !MainApplication.getDroneInstance().isConnected())
+                if (MainApplication.getDroneInstance() == null || !MainApplication.getDroneInstance().isConnected())
                     //droneNotConnectedDialog.show();
                     MainApplication.showToast("showing drone not connected dialog");
                 else
@@ -150,20 +154,17 @@ public class MenuActivity extends AppCompatActivity implements
                 startActivity(new Intent(this, MainActivity.class));
                 break;
             case OPEN_MISSIONS:
-                startActivity(new Intent(this, MissionActivity.class));
+                startActivity(new Intent(this, MissionSelectionActivity.class));
                 break;
             case OPEN_DEVELOPER:
                 // Start Brians Activity
                 startActivity(new Intent(this, MissionServiceExampleActivity.class));
                 break;
-            case OPEN_SIMULATOR:
-//                startActivity(new Intent(this, SimulatorActivity.class));
-//                break;
             case OPEN_SETTINGS:
 //                showToast("Settings");
 //                break;
             case OPEN_COMPASS:
-                if(MainApplication.getDroneInstance() == null || !MainApplication.getDroneInstance().isConnected())
+                if (MainApplication.getDroneInstance() == null || !MainApplication.getDroneInstance().isConnected())
                     //droneNotConnectedDialog.show();
                     MainApplication.showToast("showing drone not connected dialog");
                 else {
@@ -181,7 +182,7 @@ public class MenuActivity extends AppCompatActivity implements
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event){
+    public boolean onTouchEvent(MotionEvent event) {
         this.gestureDetector.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
@@ -226,7 +227,7 @@ public class MenuActivity extends AppCompatActivity implements
         MenuView.ItemView statusView = findViewById(R.id.action_bar_status);
         String status = droneStatus;
 
-        if(droneStatus.equals(DRONE_CONNECTED.toString())) {
+        if (droneStatus.equals(DRONE_CONNECTED.toString())) {
             status += " to " + getDroneInstance().getModel().getDisplayName();
 
             handler.removeCallbacksAndMessages(null);
@@ -252,7 +253,7 @@ public class MenuActivity extends AppCompatActivity implements
             handler.post(updateBatteryRunnable);
         }
 
-        if(statusView != null) {
+        if (statusView != null) {
             statusView.setTitle(status);
         }
     }

@@ -23,9 +23,11 @@ public class GridFragment extends Fragment {
 
     private static final float MOVEMENT_MULTI = 1.0f;
 
-    public GridFragment() { }
+    public GridFragment() {
+    }
 
     float x, y, z;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +38,7 @@ public class GridFragment extends Fragment {
             public void onClick(View view) {
                 Coordinate coordinate = null;
                 int id = view.getId();
-                switch(id) {
+                switch (id) {
                     case R.id.grid_nw:
                         x -= MOVEMENT_MULTI;
                         y += MOVEMENT_MULTI;
@@ -71,7 +73,7 @@ public class GridFragment extends Fragment {
                     default:
                         return;
                 }
-                gridInteractionListener.sendInput(new Coordinate(x,y,z));
+                gridInteractionListener.sendInput(new Coordinate(x, y, z));
             }
         };
 
@@ -88,7 +90,7 @@ public class GridFragment extends Fragment {
                 R.id.grid_w, R.id.grid_center, R.id.grid_e,
                 R.id.grid_sw, R.id.grid_s, R.id.grid_se};
 
-        for (int i : buttons){
+        for (int i : buttons) {
             view.findViewById(i).setOnClickListener(gridSelectListener);
         }
         currentPosition = view.findViewById(R.id.current_position);
@@ -122,7 +124,7 @@ public class GridFragment extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(flightControllerWrapper != null) {
+                if (flightControllerWrapper != null) {
                     currentPosition.setText("x: " + flightControllerWrapper.getPosition().getX() +
                             ", y: " + flightControllerWrapper.getPosition().getY() +
                             ", z: " + flightControllerWrapper.getPosition().getZ());

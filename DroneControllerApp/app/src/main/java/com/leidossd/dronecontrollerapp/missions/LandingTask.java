@@ -1,49 +1,47 @@
 package com.leidossd.dronecontrollerapp.missions;
 
 import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
 
 import com.leidossd.djiwrapper.FlightControllerWrapper;
 
 public class LandingTask extends Task {
-    LandingTask(){
+    private static final String TAG = LandingTask.class.getSimpleName();
+
+    LandingTask() {
         super("Landing...");
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString("LANDING_TASK");
-        dest.writeString("HAHA");
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    void start(){
-        if(!FlightControllerWrapper.getInstance().isAirborne())
+    void start() {
+        if (!FlightControllerWrapper.getInstance().isAirborne())
             listener.statusUpdate(TaskState.COMPLETED, title + " completed");
         FlightControllerWrapper.getInstance()
                 .startLanding((error) -> {
-                    if(error != null)
+                    if (error != null) {
                         listener.statusUpdate(TaskState.FAILED, "ERROR IN Landing!");
-                    currentState = TaskState.COMPLETED;
-                    listener.statusUpdate(currentState, title + " completed");
+                        Log.e(TAG, "Could not land: " + error.getDescription());
+                    } else {
+                        currentState = TaskState.COMPLETED;
+                        listener.statusUpdate(currentState, title + " completed");
+                        Log.d(TAG, "Land completed succesfully");
+                    }
                 });
     }
 
     @Override
-    void write(Parcel out){
-        out.writeString("LANDING_TASK");
+    void stop() {
     }
 
-    public static LandingTask create(Parcel in){
-        in.readString();
-        return new LandingTask();
-    }
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public LandingTask createFromParcel(Parcel in) {
+            return new LandingTask();
 
-    @Override
-    void stop(){
-    }
+        }
+
+        public LandingTask[] newArray(int size) {
+            return new LandingTask[size];
+        }
+    };
 }

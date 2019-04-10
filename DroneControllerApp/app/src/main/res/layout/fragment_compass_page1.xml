@@ -5,19 +5,16 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="horizontal"
-    android:background="@color/primary"
     tools:context=".compass.CompassPage1Fragment">
 
-<ImageView
-    android:id="@+id/imageView"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_weight="1"
-    android:layout_gravity="center"
-    android:src="@drawable/img_comp_calib_horiz" />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:src="@drawable/img_comp_calib_horiz" />
 
     <LinearLayout
-        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight=".85"
@@ -55,7 +52,7 @@
                 android:id="@+id/btn_compass_pg1_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cancel Calibration"/>
+                android:text="Cancel Calibration" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

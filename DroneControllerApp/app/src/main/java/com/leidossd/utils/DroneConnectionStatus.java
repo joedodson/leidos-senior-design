@@ -8,6 +8,7 @@ public enum DroneConnectionStatus {
     DRONE_CONNECTION_ERROR("Error");
 
     String status;
+
     DroneConnectionStatus(String status) {
         this.status = status;
     }

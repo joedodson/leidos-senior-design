@@ -2,16 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/mtype_waypoint"
-        android:title="@string/mission_waypoint">
-    </item>
+        android:title="@string/mission_waypoint_title"></item>
 
     <item
         android:id="@+id/mtype_surveillance"
-        android:title="@string/mission_surveillancet">
-    </item>
+        android:title="@string/mission_surveillance_title"></item>
 
     <item
         android:id="@+id/mtype_custom"
-        android:title="@string/mission_custom">
-    </item>
+        android:title="@string/mission_custom_title"></item>
+
+    <item
+        android:id="@+id/mtype_test"
+        android:title="@string/mission_test_title" />
 </menu>

@@ -1,11 +1,13 @@
 package com.leidossd.djiwrapper;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
+
+import com.leidossd.dronecontrollerapp.missions.RotationTask;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-import dji.common.error.DJIError;
 import dji.common.flightcontroller.virtualstick.FlightControlData;
 import dji.common.flightcontroller.virtualstick.FlightCoordinateSystem;
 import dji.common.flightcontroller.virtualstick.RollPitchControlMode;
@@ -16,7 +18,9 @@ import dji.sdk.flightcontroller.FlightController;
 import dji.sdk.products.Aircraft;
 import dji.sdk.sdkmanager.DJISDKManager;
 
-public class VirtualStickFlightControl  {
+public class VirtualStickFlightControl {
+    private static final String TAG = VirtualStickFlightControl.class.getSimpleName();
+
     static private VirtualStickFlightControl instance = null;
     private FlightController flightController = null;
 
@@ -30,141 +34,151 @@ public class VirtualStickFlightControl  {
     private float yaw;
     private float throttle;
 
-    DeadReckoningFlightControl posListener;
+    private long updatePeriod;
+
+    VirtualSticksIncrementListener listener;
+
+    CommonCallbacks.CompletionCallback callbackFail;
+
     private boolean inFlight;
+    private boolean enabled;
 
-    private Timer inputTimer = null;
-    private Timer endTimer;
+    private Timer inputTimer;
+    private TimerTask inputTask;
 
-    VirtualSticksUpdateTask virtualSticksUpdateTask;
-
-    private VirtualStickFlightControl(){
+    private VirtualStickFlightControl() {
         pitch = roll = yaw = throttle = 0;
+        updatePeriod = 200;
         inFlight = false;
         flightController = ((Aircraft) DJISDKManager.getInstance().
-                                       getProduct()).getFlightController();
-        inputTimer = new Timer();
-        virtualSticksUpdateTask = new VirtualSticksUpdateTask();
-        inputTimer.schedule(virtualSticksUpdateTask,0, 200);
-    }
+                getProduct()).getFlightController();
 
-    public void setPosListener(DeadReckoningFlightControl drfc){
-        this.posListener = drfc;
+        flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
+        flightController.setVerticalControlMode(VerticalControlMode.VELOCITY);
+        flightController.setYawControlMode(YawControlMode.ANGULAR_VELOCITY);
+        inputTimer = null;
+        inputTask = null;
+        enabled = false;
     }
 
     public static VirtualStickFlightControl getInstance() {
-        if(instance == null)
+        if (instance == null)
             instance = new VirtualStickFlightControl();
         return instance;
     }
 
-    public float getPitch(){
+
+    public void setListener(VirtualSticksIncrementListener listener) {
+        this.listener = listener;
+    }
+
+    public void setCallbackFail(@Nullable CommonCallbacks.CompletionCallback callback) {
+        callbackFail = callback;
+    }
+
+    public void enable() {
+        if (enabled)
+            return;
+        roll = pitch = yaw = throttle = 0;
+        inputTimer = new Timer();
+        inputTask = new VirtualSticksUpdateTask();
+        flightController.setVirtualStickModeEnabled(true, (error) -> {
+            inputTimer.schedule(inputTask, 0, updatePeriod);
+            enabled = true;
+        });
+    }
+
+    public void disable() {
+        if (!enabled)
+            return;
+        roll = pitch = yaw = throttle = 0;
+        flightController.setVirtualStickModeEnabled(false, null);
+        inputTimer.cancel();
+        inputTimer.purge();
+        inputTimer = null;
+        inputTask = null;
+        enabled = false;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setRollPitchCoordinateSystem(FlightCoordinateSystem fcs) {
+        flightController.setRollPitchCoordinateSystem(fcs);
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public float getAngularVelocity() {
+        return angularVelocity;
+    }
+
+    public void setDirection(Coordinate direction) {
+        Coordinate unitDirection = direction.unit();
+        this.roll = unitDirection.getX() * speed;
+        this.pitch = unitDirection.getY() * speed;
+        this.throttle = unitDirection.getZ() * speed;
+    }
+
+    public void setYaw(float yaw) {
+        Log.v(TAG,"Setting yaw to " + String.valueOf(yaw));
+        this.yaw = yaw;
+    }
+
+    public float getPitch() {
         return pitch;
     }
 
-    public float getRoll(){
+    public float getRoll() {
         return roll;
     }
 
-    public float getYaw(){
+    public float getYaw() {
         return yaw;
     }
 
-    public float getThrottle(){
+    public float getThrottle() {
         return throttle;
     }
 
-    public boolean isInFlight(){
+    public boolean isInFlight() {
         return inFlight;
     }
 
-    public void move(Coordinate movement, @Nullable CommonCallbacks.CompletionCallback callback){
-       move(movement, FlightCoordinateSystem.BODY, callback);
-    }
-
-    public void move(Coordinate movement, FlightCoordinateSystem flightCoordinateSystem, @Nullable CommonCallbacks.CompletionCallback callback){
-        flightController.setRollPitchCoordinateSystem(flightCoordinateSystem);
-
-        float duration = (float) movement.magnitude()/speed;
-
-        float p = (float) movement.getY()/duration;
-        float r = (float) movement.getX()/duration;
-        float t = (float) movement.getZ()/duration;
-
-        startTask(r,p,0, t, (long) (duration*1000), callback);
-    }
-
-    public void rotate(float theta, @Nullable CommonCallbacks.CompletionCallback callback){
-        float duration = (float) theta/angularVelocity;
-
-        startTask(0,0, angularVelocity,0, (long) (duration*1000), callback);
-    }
-
-    public void halt(){
+    public void halt() {
         pitch = roll = yaw = throttle = 0;
-        inFlight = false;
-        flightController.setVirtualStickModeEnabled(false, null);
-    }
-
-    private void startTask(float roll, float pitch, float yaw, float throttle, long duration, @Nullable CommonCallbacks.CompletionCallback callback){
-        // make sure we aren't doing yaw with anything else simultaneously
-        // may need to throw some kind of exception, for now just do nothing.
-        if(yaw != 0 && (pitch != 0 || roll != 0 || throttle != 0))
-            return;
-
-        // TODO: make sure that no other task is already running, more rigorously
-        if(isInFlight())
-            return;
-
-        // enable flight before starting. may break out into separate functions to enable/disable
-        flightController.setVirtualStickModeEnabled(true, null);
-        // changing these values changes the flight in real time
-        this.pitch = pitch;
-        this.roll = roll;
-        this.throttle = throttle;
-        this.yaw = yaw;
-
-        this.inFlight = true;
-
-        // schedule a halt after the time has passed
-        endTimer = new Timer();
-        endTimer.schedule(new VirtualSticksClearTask(callback), duration);
-    }
-
-
-    class VirtualSticksClearTask extends TimerTask {
-        CommonCallbacks.CompletionCallback callback;
-
-        VirtualSticksClearTask(@Nullable CommonCallbacks.CompletionCallback callback){
-            this.callback = callback;
-        }
-        @Override
-        public void run(){
-            halt();
-            if(callback != null)
-                callback.onResult(null);
-        }
+//        inFlight = false;
+//        flightController.setVirtualStickModeEnabled(false, null);
     }
 
     class VirtualSticksUpdateTask extends TimerTask {
         @Override
-        public void run(){
+        public void run() {
             if (flightController != null) {
-                flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
-                flightController.setVerticalControlMode(VerticalControlMode.VELOCITY);
-                flightController.setYawControlMode(YawControlMode.ANGULAR_VELOCITY);
+//                flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
+//                flightController.setVerticalControlMode(VerticalControlMode.VELOCITY);
+//                flightController.setYawControlMode(YawControlMode.ANGULAR_VELOCITY);
 
                 flightController.sendVirtualStickFlightControlData(
-                    new FlightControlData(
-                            roll, pitch, yaw, throttle
-                    ), new CommonCallbacks.CompletionCallback() {
-                        @Override
-                        public void onResult(DJIError djiError) {
-                        }
-                    }
-            );
-//                posListener.incrementPosition(new Coordinate(roll,pitch,throttle));
+                        new FlightControlData(roll, pitch, yaw, throttle), (error) -> {
+                            if (error != null) {
+                                if (callbackFail != null)
+                                    callbackFail.onResult(error);
+                                halt();
+                            }
+                        });
+                if (listener != null)
+                    listener.increment(
+                            new Coordinate(roll, pitch, throttle).scale((updatePeriod / (float) 1000.0)),
+                            yaw * (updatePeriod / (float) 1000.0));
+            }
         }
-        }
+    }
+
+    interface VirtualSticksIncrementListener {
+        void increment(Coordinate positionDelta, float rotationDelta);
     }
 }

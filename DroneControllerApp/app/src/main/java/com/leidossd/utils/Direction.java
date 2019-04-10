@@ -8,7 +8,11 @@ public enum Direction {
 
     private final String dir;
 
-    Direction(String dir) { this.dir = dir; }
+    Direction(String dir) {
+        this.dir = dir;
+    }
 
-    public String getDir() { return dir; }
+    public String getDir() {
+        return dir;
+    }
 }

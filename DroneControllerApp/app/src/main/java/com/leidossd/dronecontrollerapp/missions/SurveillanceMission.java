@@ -1,43 +1,37 @@
 package com.leidossd.dronecontrollerapp.missions;
 
+import android.os.Bundle;
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.leidossd.djiwrapper.Coordinate;
 
 import java.util.ArrayList;
 
 public class SurveillanceMission extends Mission {
-    public SurveillanceMission(String title, Coordinate coord, float cameraAngle){
+    public SurveillanceMission(String title, Coordinate coord, float cameraAngle) {
         super(title);
         ArrayList<Task> tasks = new ArrayList<>();
         //TODO: Fill with necessary tasks.
         taskIterable = tasks;
     }
 
-    private SurveillanceMission(String title, ArrayList<Task> tasks){
+    private SurveillanceMission(String title, ArrayList<Task> tasks) {
         super(title, tasks);
         currentState = Task.TaskState.READY;
     }
 
-    @Override
-    public int describeContents() { return 0; }
+    // Parcelable functionality
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public SurveillanceMission createFromParcel(Parcel in) {
+            String title = in.readString();
+            Bundle taskBundle = in.readBundle(SurveillanceMission.class.getClassLoader());
+            ArrayList<Task> tasks = taskBundle.getParcelableArrayList("tasks");
+            return new SurveillanceMission(title, tasks);
+        }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        write(dest);
-    }
-
-    public static SurveillanceMission create(Parcel in){
-        String title = in.readString();
-        ArrayList<Task> tasks = new ArrayList<>();
-        in.readTypedList(tasks, TaskCreator.CREATOR);
-        return new SurveillanceMission(title, tasks);
-    }
-
-    @Override
-    public void write(Parcel out) {
-        out.writeString("SURVEILLANCE_MISSION");
-        out.writeString(title);
-        out.writeTypedList(taskIterable);
-    }
+        public SurveillanceMission[] newArray(int size) {
+            return new SurveillanceMission[size];
+        }
+    };
 }

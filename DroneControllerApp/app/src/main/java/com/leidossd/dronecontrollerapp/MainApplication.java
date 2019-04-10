@@ -137,7 +137,7 @@ public class MainApplication extends Application {
     public static synchronized Camera getCameraInstance() {
         if (getDroneInstance() == null) {
             cameraInstance = null;
-        } else if(cameraInstance == null) {
+        } else if (cameraInstance == null) {
             cameraInstance = getDroneInstance().getCamera();
         }
 

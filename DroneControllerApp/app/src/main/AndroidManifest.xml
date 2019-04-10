@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -37,7 +38,7 @@
         android:supportsRtl="true"
         tools:ignore="GoogleAppIndexingWarning">
 
-         <!-- DJI SDK -->
+        <!-- DJI SDK -->
         <uses-library android:name="com.android.future.usb.accessory" />
 
         <meta-data
@@ -93,13 +94,7 @@
             android:name=".FlightTestActivity"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".simulator.SimulatorActivity"
-            android:launchMode="singleTop"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="sensorLandscape"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name=".CompassActivity"
+            android:name=".compass.CompassActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme" />
@@ -107,9 +102,9 @@
             android:name=".GridParentActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="sensorLandscape" />
-        <activity android:name=".ConfirmMissionActivity" />
+        <activity android:name=".missions.ui.ConfirmMissionActivity" />
         <activity
-            android:name=".CreateMissionActivity"
+            android:name=".missions.ui.MissionCreationActivity"
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".compass.CompassCalibrationActivity"
@@ -117,21 +112,16 @@
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".MissionServiceExampleActivity"
+            android:name=".missions.ui.MissionServiceExampleActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".MissionStatusActivity"
+            android:name=".missions.ui.MissionStatusActivity"
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".droneconnection.ConnectWalkthroughActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".droneconnection.wired.WiredConnectActivity"
-            android:parentActivityName=".droneconnection.ConnectWalkthroughActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -140,15 +130,21 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".droneconnection.barcode.BarcodeCaptureActivity"
+            android:parentActivityName=".droneconnection.ConnectWalkthroughActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".MenuActivity"
             android:label="@string/title_activity_menu" />
         <activity
-            android:name=".MissionActivity"
+            android:name=".missions.ui.MissionSelectionActivity"
             android:label="@string/title_activity_mission"
             android:screenOrientation="sensorLandscape" />
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
+
         <service android:name=".missions.MissionRunnerService" />
     </application>
 </manifest>

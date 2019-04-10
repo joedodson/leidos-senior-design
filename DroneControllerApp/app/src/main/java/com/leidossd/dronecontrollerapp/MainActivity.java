@@ -8,6 +8,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
+import android.view.View;
+
+import com.leidossd.djiwrapper.FlightControllerWrapper;
 
 import static com.leidossd.utils.DroneConnectionStatus.DRONE_CONNECTED;
 import static com.leidossd.utils.IntentAction.CONNECTION_CHANGE;
@@ -52,7 +56,7 @@ public class MainActivity extends MenuActivity {
 
     // remove callback to prevent failed message, set correct status, and log result
     private void toggleLiveVideo(String droneStatus) {
-        if(droneStatus.equals(DRONE_CONNECTED.toString())) {
+        if (droneStatus.equals(DRONE_CONNECTED.toString())) {
             startLiveVideo();
         } else {
             stopLiveVideo();
@@ -60,7 +64,7 @@ public class MainActivity extends MenuActivity {
     }
 
     private void startLiveVideo() {
-        if(!liveVideoFragment.isAdded()) {
+        if (!liveVideoFragment.isAdded()) {
             fragmentManager.beginTransaction()
                     .add(R.id.live_video_fragment_container, liveVideoFragment)
                     .commitAllowingStateLoss();
@@ -68,10 +72,40 @@ public class MainActivity extends MenuActivity {
     }
 
     private void stopLiveVideo() {
-        if(liveVideoFragment.isAdded()) {
+        if (liveVideoFragment.isAdded()) {
             fragmentManager.beginTransaction()
                     .remove(liveVideoFragment)
                     .commitAllowingStateLoss();
+        }
+    }
+
+    // TODO: remove before release
+    public void land(View view) {
+        try {
+            FlightControllerWrapper.getInstance().startLanding(djiError -> {
+                if (djiError != null) {
+                    runOnUiThread(() -> MainApplication.showToast("Couldn't not land - check logs"));
+                    findViewById(R.id.btn_land).setEnabled(false);
+                    Log.e(TAG, "Could not land: " + djiError.getDescription());
+                }
+            });
+        } catch (Exception e) {
+            MainApplication.showToast("Could not land - Check logs");
+            findViewById(R.id.btn_land).setEnabled(false);
+            Log.e(TAG, "Could not land: " + e.getMessage());
+        }
+    }
+
+    // TODO: remove before release
+    public void confirmLand(View view) {
+        try {
+            FlightControllerWrapper.getInstance().confirmLanding(djiError -> {
+                if (djiError == null)
+                    runOnUiThread(() -> MainApplication.showToast("Unable to land - DJIError"));
+            });
+        } catch (Exception e) {
+            MainApplication.showToast("Could not confirm land - Check logs");
+            Log.e(TAG, "Could not confirm land: " + e.getMessage());
         }
     }
 
@@ -84,7 +118,7 @@ public class MainActivity extends MenuActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if(MainApplication.getDroneInstance() != null && MainApplication.getDroneInstance().isConnected()) {
+        if (MainApplication.getDroneInstance() != null && MainApplication.getDroneInstance().isConnected()) {
             startLiveVideo();
         }
     }

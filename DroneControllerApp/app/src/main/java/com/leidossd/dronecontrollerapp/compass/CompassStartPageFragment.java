@@ -49,6 +49,7 @@ public class CompassStartPageFragment extends Fragment {
 
     interface StartPage {
         void startCalibration();
+
         void exitCalibration();
     }
 }
