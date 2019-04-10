@@ -1,6 +1,9 @@
 package com.leidossd.djiwrapper;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
+
+import com.leidossd.dronecontrollerapp.missions.RotationTask;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,6 +19,8 @@ import dji.sdk.products.Aircraft;
 import dji.sdk.sdkmanager.DJISDKManager;
 
 public class VirtualStickFlightControl {
+    private static final String TAG = VirtualStickFlightControl.class.getSimpleName();
+
     static private VirtualStickFlightControl instance = null;
     private FlightController flightController = null;
 
@@ -119,6 +124,7 @@ public class VirtualStickFlightControl {
     }
 
     public void setYaw(float yaw) {
+        Log.v(TAG,"Setting yaw to " + String.valueOf(yaw));
         this.yaw = yaw;
     }
 

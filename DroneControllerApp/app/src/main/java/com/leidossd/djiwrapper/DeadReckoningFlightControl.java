@@ -2,6 +2,9 @@ package com.leidossd.djiwrapper;
 
 
 import android.support.annotation.Nullable;
+import android.util.Log;
+
+import com.leidossd.dronecontrollerapp.missions.RotationTask;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -10,6 +13,8 @@ import dji.common.flightcontroller.virtualstick.FlightCoordinateSystem;
 import dji.common.util.CommonCallbacks;
 
 public class DeadReckoningFlightControl implements CoordinateFlightControl, VirtualStickFlightControl.VirtualSticksIncrementListener {
+    private static final String TAG = DeadReckoningFlightControl.class.getSimpleName();
+
     private FlightMode flightMode = null;
     private boolean rotationLock;
     private Coordinate position;
@@ -143,6 +148,7 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
     }
 
     public void rotate(float theta, @Nullable CommonCallbacks.CompletionCallback callback) {
+        Log.v(TAG, "Starting flight with theta = " + String.valueOf(theta));
         startFlight(new Coordinate(0, 0, 0), theta, callback);
     }
 
@@ -160,6 +166,7 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
             virtualSticks.setDirection(movement);
         } else {
             duration = (long) (theta / virtualSticks.getAngularVelocity());
+            Log.v(TAG,"Duration = " + String.valueOf(duration));
             virtualSticks.setYaw(theta);
         }
 
@@ -169,6 +176,7 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
             @Override
             public void run() {
                 halt();
+                Log.v(TAG, "End timer executed");
                 if (callback != null)
                     callback.onResult(null);
             }

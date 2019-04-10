@@ -3,9 +3,12 @@ package com.leidossd.dronecontrollerapp.missions;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.leidossd.djiwrapper.CoordinateFlightControl;
 import com.leidossd.djiwrapper.FlightControllerWrapper;
 
 public class RotationTask extends Task {
+    private static final String TAG = RotationTask.class.getSimpleName();
+
     private float angle;
 
     RotationTask(float angle) {
@@ -14,6 +17,9 @@ public class RotationTask extends Task {
     }
 
     void start() {
+        FlightControllerWrapper.getInstance()
+                .setFlightMode(CoordinateFlightControl.FlightMode.ABSOLUTE);
+
         FlightControllerWrapper.getInstance().rotateTo(angle, (error) -> {
             if (error != null)
                 listener.statusUpdate(TaskState.FAILED, "ROTATION FAILED!");

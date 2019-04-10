@@ -122,7 +122,7 @@ public class MissionSelectionActivity extends MenuActivity implements MissionAda
             Mission mission = missionRunnerService.getCurrentMission();
             if (mission != null) {
                 if (state.toString().equals("RUNNING")) {
-                    missionText.setText(String.format("%s - %s", mission.getTitle(), state.toString()));
+                    missionText.setText(String.format("%s - %s - %s", mission.getTitle(), state.toString(), mission.getCurrentTaskName()));
                     noMissionText.setVisibility(View.INVISIBLE);
                     missionText.setVisibility(View.VISIBLE);
                     droneImage.setVisibility(View.VISIBLE);

@@ -1,7 +1,9 @@
 package com.leidossd.dronecontrollerapp.missions;
 
+import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.util.Locale;
 import java.util.Timer;
@@ -21,19 +23,20 @@ public class WaitTask extends Task {
     }
 
     void start() {
-//        Handler handler = new Handler();
-//        handler.postDelayed(() -> {
-//            currentState = TaskState.COMPLETED;
-//            listener.statusUpdate(TaskState.COMPLETED, "Wait finished");
+//        new Timer().schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                currentState = TaskState.COMPLETED;
+//                listener.statusUpdate(TaskState.COMPLETED, "Wait finished");
+//            }
 //        }, milliseconds);
-
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                currentState = TaskState.COMPLETED;
-                listener.statusUpdate(TaskState.COMPLETED, "Wait finished");
-            }
-        }, milliseconds);
+        try {
+            Thread.sleep(milliseconds);
+        } catch(InterruptedException e){
+            Log.e("TAG", e.getLocalizedMessage());
+        }
+        currentState = TaskState.COMPLETED;
+        listener.statusUpdate(currentState, "Wait finished");
     }
 
     void stop() {

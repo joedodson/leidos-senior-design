@@ -71,6 +71,10 @@ abstract public class Mission extends Task implements Task.StatusUpdateListener 
         }
     }
 
+    public String getCurrentTaskName() {
+        return currentTask.getClass().getSimpleName();
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
