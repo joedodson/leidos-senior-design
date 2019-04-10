@@ -9,10 +9,19 @@ import com.leidossd.djiwrapper.Coordinate;
 import java.util.ArrayList;
 
 public class SurveillanceMission extends Mission {
-    public SurveillanceMission(String title, Coordinate coord, float cameraAngle) {
+    public SurveillanceMission(String title, Coordinate destination, float cameraAngle){
         super(title);
         ArrayList<Task> tasks = new ArrayList<>();
-        //TODO: Fill with necessary tasks.
+        tasks.add(new TakeOffTask());
+//        tasks.add(new RotationTask(180));
+        tasks.add(new WaitTask(10000));
+        tasks.add(new FlightTask(destination));
+        tasks.add(new WaitTask(3000));
+//        tasks.add(new SetGimbalAngleTask(cameraAngle));
+//        tasks.add(new SetGimbalAngleTask(0));
+        tasks.add(new WaitTask(5000));
+        tasks.add(new FlightTask(new Coordinate(0,0,0)));
+        tasks.add(new LandingTask());
         taskIterable = tasks;
     }
 
