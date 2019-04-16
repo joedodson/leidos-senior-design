@@ -61,6 +61,13 @@ public class FlightControllerWrapper implements DeadReckoningFlightControl.Posit
         coordinateFlightControl.rotateTo(angle, callback);
     }
 
+    public void rotateBy(float angle, @Nullable CommonCallbacks.CompletionCallback callback){
+        coordinateFlightControl.rotateBy(angle, callback);
+    }
+
+    public void setRotationLock(boolean rotationLock){
+        coordinateFlightControl.setRotationLock(rotationLock);
+    }
     public void setFlightMode(CoordinateFlightControl.FlightMode flightMode) {
         coordinateFlightControl.setFlightMode(flightMode);
     }

@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.leidossd.djiwrapper.Coordinate;
+import com.leidossd.djiwrapper.FlightControllerWrapper;
 
 import java.util.ArrayList;
 
@@ -14,17 +15,31 @@ public class WaypointMission extends Mission {
         ArrayList<Task> tasks = new ArrayList<>();
         tasks.add(new TakeOffTask());
         tasks.add(new WaitTask(10000));
-        tasks.add(new RotationTask(180));
-//        tasks.add(new FlightTask(new Coordinate(0, 1, 0)));
-        tasks.add(new WaitTask(2000));
-        tasks.add(new RotationTask(90));
-//        tasks.add(new FlightTask(new Coordinate(0, -1, 0)));
-        tasks.add(new WaitTask(2000));
-//        tasks.add(new FlightTask(new Coordinate(0, 0, 0)));
-        tasks.add(new RotationTask(-90));
+//        tasks.add(new RotateToTask(180));
+        FlightControllerWrapper.getInstance().setRotationLock(true);
+//        tasks.add(new RotateToTask(180));
+        tasks.add(new FlightTask(new Coordinate(0, 0, (float)1.5)));
 //        tasks.add(new WaitTask(2000));
+//        tasks.add(new FlightTask(new Coordinate(0, 1, 0)));
+//        tasks.add(new RotateToTask(90));
+//        tasks.add(new FlightTask(new Coordinate(0, -1, 0)));
+//        tasks.add(new WaitTask(2000));
+//        tasks.add(new FlightTask(new Coordinate(0, 0, 0)));
+//        tasks.add(new RotateByTask(-180));
+//        tasks.add(new WaitTask(2000));
+//        tasks.add(new WaitTask(2000));
+//        tasks.add(new RotateToTask(0));
+        tasks.add(new WaitTask(1000));
+        tasks.add(new SetGimbalAngleTask(-20));
         tasks.add(new WaitTask(2000));
-        tasks.add(new RotationTask(0));
+        tasks.add(new StartRecordingTask());
+        tasks.add(new WaitTask(1000));
+        tasks.add(new RotateByTask(360));
+//        tasks.add(new WaitTask(2000));
+        tasks.add(new WaitTask(1000));
+        tasks.add(new StopRecordingTask());
+        tasks.add(new WaitTask(2000));
+        tasks.add(new FlightTask(new Coordinate(0,0,0)));
         tasks.add(new WaitTask(2000));
         tasks.add(new LandingTask());
         taskIterable = tasks;

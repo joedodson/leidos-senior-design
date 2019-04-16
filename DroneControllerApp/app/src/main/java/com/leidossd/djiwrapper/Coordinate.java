@@ -100,13 +100,21 @@ public class Coordinate implements Parcelable {
 
     // The angle between the given angle and the angle that the current vector points at
     public float angleBetween(float angle) {
-        float diff = angle - angleFacing();
-        if (diff > 180)
-            return 360 - diff;
-        if (diff < -180)
-            return 360 + diff;
-
-        return diff;
+        float diff = (angle - angleFacing()) % 360;
+        // this is because java % can give negatives (WHY?!)
+        if(diff < 0)
+            diff += 360;
+        // diff should be between 0 and 360 now, if it's more than 180 we want it to go the other way
+        if(diff > 180)
+            return diff - 360;
+        else
+            return diff;
+//        if (diff > 180)
+//            return 360 - diff;
+//        if (diff < -180)
+//            return 360 + diff;
+//
+//        return diff;
     }
 
     // do not use
@@ -138,7 +146,7 @@ public class Coordinate implements Parcelable {
         float d = y.getY();
         float det = a * d - b * c;
 
-        if (det < .01)
+        if (Math.abs(det) < .01)
             throw new IllegalArgumentException("x and y cannot form a basis if parallel!" +
                     x + ", " + y);
 

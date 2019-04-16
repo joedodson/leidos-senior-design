@@ -13,7 +13,7 @@ public class SurveillanceMission extends Mission {
         super(title);
         ArrayList<Task> tasks = new ArrayList<>();
         tasks.add(new TakeOffTask());
-//        tasks.add(new RotationTask(180));
+//        tasks.add(new RotateByTask(180));
         tasks.add(new WaitTask(10000));
         tasks.add(new FlightTask(destination));
         tasks.add(new WaitTask(3000));

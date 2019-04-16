@@ -3,8 +3,6 @@ package com.leidossd.djiwrapper;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.leidossd.dronecontrollerapp.missions.RotationTask;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -27,7 +25,7 @@ public class VirtualStickFlightControl {
     // m/s, probably should make a constant for the speed and angular velocity, no magic numbers
     private float speed = (float) .5;
     // deg/s
-    private float angularVelocity = 50;
+    private float angularVelocity = 25;
 
     private float pitch;
     private float roll;
@@ -49,7 +47,7 @@ public class VirtualStickFlightControl {
     private VirtualStickFlightControl() {
         pitch = roll = yaw = throttle = 0;
         // must be between 40 and 200
-        updatePeriod = 100;
+        updatePeriod = 50;
         inFlight = false;
         flightController = ((Aircraft) DJISDKManager.getInstance().
                 getProduct()).getFlightController();
@@ -173,7 +171,7 @@ public class VirtualStickFlightControl {
                             if (error != null) {
                                 if (callbackFail != null)
                                     callbackFail.onResult(error);
-                                halt();
+//                                halt();
                             }
                         });
                 if (listener != null)

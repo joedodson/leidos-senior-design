@@ -1,16 +1,17 @@
 package com.leidossd.djiwrapper;
 
 
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.util.Log;
-
-import com.leidossd.dronecontrollerapp.missions.RotationTask;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 import dji.common.flightcontroller.virtualstick.FlightCoordinateSystem;
 import dji.common.util.CommonCallbacks;
+
+import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
 public class DeadReckoningFlightControl implements CoordinateFlightControl, VirtualStickFlightControl.VirtualSticksIncrementListener {
     private static final String TAG = DeadReckoningFlightControl.class.getSimpleName();
@@ -19,7 +20,6 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
     private boolean rotationLock;
     private Coordinate position;
     private Coordinate direction;
-    private Coordinate destination;
     private Timer endTimer;
     private TimerTask endTask;
     private DeadReckoningFlightControl.PositionListener positionListener = null;
@@ -33,6 +33,12 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
         endTask = null;
         virtualSticks = VirtualStickFlightControl.getInstance();
         virtualSticks.setListener(this);
+        virtualSticks.setCallbackFail((error) ->
+        {
+            Looper.loop();
+            showToast("VS ERROR: " + error.getDescription());
+            Looper.prepare();
+        });
     }
 
     public void setPositionListener(DeadReckoningFlightControl.PositionListener listener) {
@@ -52,12 +58,11 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
     }
 
     public void goTo(Coordinate destination, @Nullable CommonCallbacks.CompletionCallback callback) {
-//        if(destination.add(position).magnitude() < .01) {
-//            if(callback != null)
-//                callback.onResult(null);
-//            return;
-//        }
-        this.destination = destination;
+        if(destination.add(position.scale(-1)).magnitude() < .01) {
+            if(callback != null)
+                callback.onResult(null);
+            return;
+        }
         if (flightMode == FlightMode.RELATIVE)
             relativeGoTo(destination, callback);
         else if (flightMode == FlightMode.ABSOLUTE)
@@ -66,58 +71,48 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
             throw new IllegalStateException("FlightMode not set!");
     }
 
+    public void setRotationLock(boolean rotationLock){
+        this.rotationLock = rotationLock;
+    }
+
     public void rotateTo(float theta, @Nullable CommonCallbacks.CompletionCallback callback) {
-        if (rotationLock) {
-            if (callback != null)
-                callback.onResult(null);
-            return;
-        }
+        rotate(direction.angleBetween(theta), callback);
+    }
 
-        // Distinguish between absolute/relative
-        if (flightMode == FlightMode.ABSOLUTE) {
-            rotate(direction.angleBetween(theta), callback);
-//            this.direction = this.direction.rotateByAngle(this.direction.angleBetween(theta));
-
-        } else if (flightMode == FlightMode.RELATIVE) {
-            rotate(theta, callback);
-//            this.direction  = this.direction.rotateByAngle(theta);
-        } else
-            throw new IllegalStateException("FlightMode not set!");
+    public void rotateBy(float theta, @Nullable CommonCallbacks.CompletionCallback callback) {
+        rotate(theta, callback);
     }
 
     public void relativeGoTo(Coordinate destination, @Nullable CommonCallbacks.CompletionCallback callback) {
         // Don't need to rotate.
         // Move the drone to the destination, which is easy since it's in the relative coordinates
+        Coordinate movement = destination.add(position.scale(-1));
         if (!rotationLock)
-            rotateTo(position.add(destination.scale(-1)).angleFacing(), (error) -> {
-                if(error != null)
+            rotateTo(movement.angleFacing(), (error) -> {
+                if(error == null)
                     move(destination, callback);
+                else
+                    if(callback != null)
+                        callback.onResult(error);
             });
         else
-            move(destination, callback);
-
-        //What is hard is figuring out where the drone ended up in the absolute coordinates
-
-        // Using a unit vector perpendicular to the direction vector
-//        Coordinate perpendicular = direction.perpendicularUnit();
-
-        // We make the movement in the drones relative coordinate system
-        // don't need to inject movement anymore
-//        position = position.add(perpendicular.scale(destination.getX())
-//                     .add(direction.scale(direction.getY())));
+            move(movement, callback);
     }
 
     public void absoluteGoTo(Coordinate destination, @Nullable CommonCallbacks.CompletionCallback callback) {
         // If rotations not locked, then rotate so that you're facing the right way, then do a
         // normal relative goTo.
         Coordinate movement = destination.add(position.scale(-1));
-//        if(!rotationLock)
-//            rotateTo(movement.angleFacing(), (error) -> move(movement.inBasis(direction.perpendicularUnit(), direction), callback));
-//        else
-        move(movement.inBasis(direction.perpendicularUnit(), direction), callback);
-
-        // don't need to inject movement anymore
-//        position = destination;
+        if(!rotationLock)
+            rotateTo(movement.angleFacing(), (error) -> {
+                if(error == null)
+                    move(movement.inBasis(direction.perpendicularUnit(), direction), callback);
+                else
+                    if(callback != null)
+                        callback.onResult(error);
+            });
+        else
+            move(movement.inBasis(direction.perpendicularUnit(), direction), callback);
     }
 
     public boolean isInFlight() {
@@ -182,7 +177,8 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
             Log.v(TAG,"Duration = " + String.valueOf(duration));
             virtualSticks.setYaw(theta > 0);
         } else {
-            // rotating and moving... not currently handled.
+            // rotating and moving... not currently handled. would require adjusting speed so that
+            // both rotation and movement happen in the same amount of time
             throw new IllegalArgumentException("Simultaneous rotation and movement not supported");
         }
 
@@ -209,10 +205,13 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
     public void increment(Coordinate positionDelta, float rotationDelta) {
         // What follows is complicated math stuff
 
-        if(rotationDelta == 0)
+        if(rotationDelta == 0) {
             position = position.add(positionDelta);
+            Log.v(TAG, "New position: " + position);
+        }
         else {
             direction = direction.rotateByAngle(rotationDelta);
+            Log.v(TAG, "New direction: " + direction);
 
             // for our team, we probably won't use both rotation and movement simultaneously
             // but for the future teams who may want to (based on camera input..), this will be useful

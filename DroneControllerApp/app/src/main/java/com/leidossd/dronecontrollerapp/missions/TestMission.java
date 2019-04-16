@@ -30,9 +30,9 @@ public class TestMission extends Mission {
 //      Test 2
         tasks.add(new TakeOffTask());
         tasks.add(new WaitTask(7000));
-        tasks.add(new RotationTask(90));
+        tasks.add(new RotateByTask(90));
         tasks.add(new WaitTask(1000));
-        tasks.add(new RotationTask(-90));
+        tasks.add(new RotateByTask(-90));
         tasks.add(new WaitTask(1000));
         tasks.add(new LandingTask());
 //        tasks.add(new ToastTask("Starting"));
