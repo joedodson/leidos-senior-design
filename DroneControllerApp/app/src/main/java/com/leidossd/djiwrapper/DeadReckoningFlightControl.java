@@ -23,6 +23,7 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
     private Timer endTimer;
     private TimerTask endTask;
     private DeadReckoningFlightControl.PositionListener positionListener = null;
+    private DeadReckoningFlightControl.DirectionListener directionListener = null;
     private VirtualStickFlightControl virtualSticks;
 
     public DeadReckoningFlightControl() {
@@ -45,6 +46,18 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
         this.positionListener = listener;
     }
 
+    public void setDirectionListener(DeadReckoningFlightControl.DirectionListener listener){
+        this.directionListener = listener;
+    }
+
+    public void setDirection(Coordinate direction){
+        this.direction = direction;
+    }
+
+    public void setPosition(Coordinate position){
+        this.position = position;
+    }
+
     public FlightMode getFlightMode() {
         return flightMode;
     }
@@ -55,6 +68,10 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
 
     public Coordinate getPosition() {
         return position;
+    }
+
+    public float getAngleFacing(){
+        return direction.angleFacing();
     }
 
     public void goTo(Coordinate destination, @Nullable CommonCallbacks.CompletionCallback callback) {
@@ -201,6 +218,10 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
         public void updatePosition(Coordinate position);
     }
 
+    interface DirectionListener {
+        public void updateDirection(float angle);
+    }
+
     @Override
     public void increment(Coordinate positionDelta, float rotationDelta) {
         // What follows is complicated math stuff
@@ -258,5 +279,7 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
 
         if (positionListener != null)
             positionListener.updatePosition(position);
+        if(directionListener != null)
+            directionListener.updateDirection(direction.angleFacing());
     }
 }

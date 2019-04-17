@@ -2,20 +2,25 @@ package com.leidossd.djiwrapper;
 
 import android.support.annotation.Nullable;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import dji.common.flightcontroller.CompassCalibrationState;
 import dji.common.util.CommonCallbacks;
 import dji.sdk.flightcontroller.FlightController;
 import dji.sdk.products.Aircraft;
 import dji.sdk.sdkmanager.DJISDKManager;
 
-public class FlightControllerWrapper implements DeadReckoningFlightControl.PositionListener {
+public class FlightControllerWrapper implements DeadReckoningFlightControl.PositionListener, DeadReckoningFlightControl.DirectionListener {
     private static FlightControllerWrapper instance = null;
 
     private FlightController flightController;
     // hacky, gotta replace this with the interface
     private DeadReckoningFlightControl coordinateFlightControl;
     private PositionListener positionListener = null;
+    private DirectionListener directionListener = null;
     private boolean isAirborne = false;
+
+    private LatLng home;
 
     public static FlightControllerWrapper getInstance() {
         if (instance == null)
@@ -29,10 +34,33 @@ public class FlightControllerWrapper implements DeadReckoningFlightControl.Posit
                 getProduct()).getFlightController();
         coordinateFlightControl = new DeadReckoningFlightControl();
         coordinateFlightControl.setPositionListener(this);
+        coordinateFlightControl.setDirectionListener(this);
+        home = null;
+    }
+
+    public boolean isHomeSet(){
+        return home != null;
+    }
+
+    public void setHome(LatLng newHome){
+        this.home = newHome;
+    }
+
+    public LatLng getHome(){
+        return this.home;
+    }
+
+    public void syncDirection(){
+        coordinateFlightControl.setDirection(new Coordinate(0,1,0)
+                .rotateByAngle(flightController.getCompass().getHeading()));
     }
 
     public void setPositionListener(PositionListener listener) {
         this.positionListener = listener;
+    }
+
+    public void setDirectionListener(DirectionListener listener){
+        this.directionListener = listener;
     }
 
     public boolean isInFlight() {
@@ -72,6 +100,14 @@ public class FlightControllerWrapper implements DeadReckoningFlightControl.Posit
         coordinateFlightControl.setFlightMode(flightMode);
     }
 
+    public void setPosition(Coordinate position){
+        coordinateFlightControl.setPosition(position);
+    }
+
+    public float getAngleFacing(){
+        return coordinateFlightControl.getAngleFacing();
+    }
+
     public Coordinate getPosition() {
         return coordinateFlightControl.getPosition();
     }
@@ -84,12 +120,21 @@ public class FlightControllerWrapper implements DeadReckoningFlightControl.Posit
         public void updatePosition(Coordinate position);
     }
 
+    public interface DirectionListener {
+        public void updateDirection(float angle);
+    }
+
     @Override
     public void updatePosition(Coordinate position) {
         if (positionListener != null)
             positionListener.updatePosition(position);
     }
 
+    @Override
+    public void updateDirection(float angle){
+        if(directionListener != null)
+            directionListener.updateDirection(angle);
+    }
 
     // Here lie forwarded functions, add them as you need them
 
