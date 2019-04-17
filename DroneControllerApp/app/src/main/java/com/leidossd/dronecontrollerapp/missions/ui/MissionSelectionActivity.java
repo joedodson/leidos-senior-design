@@ -81,9 +81,7 @@ public class MissionSelectionActivity extends MenuActivity implements MissionAda
         listView.setAdapter(adapter);
         missionRunner = new MissionRunner(this, this);
         missionBindHandler = new Handler();
-        missionBindHandler.postDelayed(() -> {
-            checkBinding();
-        }, 250);
+        missionBindHandler.postDelayed(this::checkBinding, 250);
     }
 
     @Override
@@ -126,8 +124,9 @@ public class MissionSelectionActivity extends MenuActivity implements MissionAda
 
     public void checkBinding(){
         if(missionRunner.isBinded()){
-            showToast("aaa");
             missionRunner.loadMission();
+        } else {
+            missionBindHandler.postDelayed(this::checkBinding, 250);
         }
     }
 

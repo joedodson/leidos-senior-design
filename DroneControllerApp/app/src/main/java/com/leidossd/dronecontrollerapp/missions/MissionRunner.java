@@ -45,11 +45,11 @@ public class MissionRunner {
     private BroadcastReceiver missionErrorBroadcastReceiver;
 
     private NotificationManagerCompat notificationManager;
-    private NotificationCompat.Builder notificationBuilder;
+    private static NotificationCompat.Builder notificationBuilder;
     private int notificationId;
+    private static Timer timer;
     private static final long notificationUpdateIntervalMs = 1000;
     private Handler handler;
-    private Timer timer;
     private long missionStartTime = 0;
 
     Task.StatusUpdateListener listener;
@@ -231,8 +231,11 @@ public class MissionRunner {
 
     public void loadMission(){
         if(missionRunnerServiceIsBound.get()){
-            if(missionRunnerService.mission != null){
-                registerReceivers(missionRunnerService.mission);
+            Mission mission = missionRunnerService.mission;
+
+            if(mission != null){
+                registerReceivers(mission);
+                listener.statusUpdate(mission.currentState, mission.getStatus());
             }
         }
     }
