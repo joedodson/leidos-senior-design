@@ -41,18 +41,18 @@ public class MenuFragment extends Fragment {
                     case R.id.main_menu_mission:
                         action = OPEN_MISSIONS;
                         break;
-                    case R.id.main_menu_developer:
-                        action = OPEN_DEVELOPER;
-                        break;
-                    case R.id.main_menu_settings:
-                        action = OPEN_SETTINGS;
-                        break;
+//                    case R.id.main_menu_developer:
+//                        action = OPEN_DEVELOPER;
+//                        break;
+//                    case R.id.main_menu_settings:
+//                        action = OPEN_SETTINGS;
+//                        break;
                     case R.id.main_menu_compass:
                         action = OPEN_COMPASS;
                         break;
-                    case R.id.main_menu_grid:
-                        action = OPEN_GRID_VIEW;
-                        break;
+//                    case R.id.main_menu_grid:
+//                        action = OPEN_GRID_VIEW;
+//                        break;
                     default:
                         action = CLOSE_MENU;
                 }
@@ -72,10 +72,10 @@ public class MenuFragment extends Fragment {
                 R.id.main_menu_home,
                 R.id.main_menu_close,
                 R.id.main_menu_mission,
-                R.id.main_menu_developer,
+//                R.id.main_menu_developer,
                 R.id.main_menu_compass,
-                R.id.main_menu_grid,
-                R.id.main_menu_settings,
+//                R.id.main_menu_grid,
+//                R.id.main_menu_settings,
         };
 
         // Set listener for all menu items

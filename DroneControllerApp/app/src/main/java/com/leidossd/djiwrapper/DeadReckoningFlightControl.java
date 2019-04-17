@@ -8,6 +8,7 @@ import android.util.Log;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import dji.common.error.DJIError;
 import dji.common.flightcontroller.virtualstick.FlightCoordinateSystem;
 import dji.common.util.CommonCallbacks;
 
@@ -34,11 +35,9 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
         endTask = null;
         virtualSticks = VirtualStickFlightControl.getInstance();
         virtualSticks.setListener(this);
-        virtualSticks.setCallbackFail((error) ->
+        virtualSticks.setCallbackFail((DJIError error) ->
         {
-            Looper.loop();
-            showToast("VS ERROR: " + error.getDescription());
-            Looper.prepare();
+            Log.v(TAG, "VS ERROR: " + error.getDescription());
         });
     }
 
@@ -178,7 +177,7 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
 
         // prep sticks for inputs
         virtualSticks.enable();
-        virtualSticks.setCallbackFail(callback);
+//        virtualSticks.setCallbackFail(callback);
         if(theta == 0 && movement.magnitude() == 0) {
             if (callback != null)
                 callback.onResult(null);

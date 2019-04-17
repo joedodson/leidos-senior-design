@@ -25,11 +25,17 @@ public class SurveillanceMission extends Mission {
 
         ArrayList<Task> tasks = new ArrayList<>();
         tasks.add(new TakeOffTask());
-        tasks.add(new WaitTask(10000));
+        tasks.add(new WaitTask(6000));
         tasks.add(new FlightTask(destination));
-        tasks.add(new WaitTask(3000));
-
+        tasks.add(new WaitTask(500));
+        tasks.add(new StartRecordingTask());
+        tasks.add(new WaitTask(500));
+        tasks.add(new RotateByTask(360));
+        tasks.add(new WaitTask(500));
+        tasks.add(new StopRecordingTask());
+        tasks.add(new WaitTask(500));
         tasks.add(new FlightTask(new Coordinate(0,0,0)));
+        tasks.add(new WaitTask(500));
         tasks.add(new LandingTask());
         taskIterable = tasks;
     }
@@ -40,7 +46,11 @@ public class SurveillanceMission extends Mission {
     }
 
     public String argsToString() {
-        return String.format(Locale.getDefault(), "Flies to coordinate: %s", this.destination.toString());
+        if(this.destination != null) {
+            return String.format(Locale.getDefault(), "Flies to coordinate: %s", this.destination.toString());
+
+        }
+        return "";
     }
 
     // Parcelable functionality

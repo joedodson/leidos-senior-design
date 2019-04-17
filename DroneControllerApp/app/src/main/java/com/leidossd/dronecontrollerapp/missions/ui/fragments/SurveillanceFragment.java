@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
@@ -35,13 +36,19 @@ import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
 import com.google.android.gms.tasks.Task;
+import com.google.maps.android.SphericalUtil;
 import com.leidossd.djiwrapper.Coordinate;
+import com.leidossd.djiwrapper.FlightControllerWrapper;
+import com.leidossd.dronecontrollerapp.MainApplication;
 import com.leidossd.dronecontrollerapp.R;
 import com.leidossd.dronecontrollerapp.missions.SurveillanceMission;
 import com.leidossd.dronecontrollerapp.missions.ui.MissionCreateListener;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Locale;
+
+import dji.sdk.products.Aircraft;
+import dji.sdk.sdkmanager.DJISDKManager;
 
 import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
 
@@ -60,12 +67,13 @@ public class SurveillanceFragment extends Fragment implements OnMapReadyCallback
     private FusedLocationProviderClient fusedLocationClient;
     private static Marker waypointMarker;
     private static Marker droneLocationMarker;
+    private static FlightControllerWrapper flightController;
 
     private Location location;
     private Coordinate destination = null;
     private int locationPermission;
 
-    private final static float DISTANCE_SCALE = 1.0f;
+    private final static float DISTANCE_SCALE = 0.2f;
 
     View.OnClickListener enlargeListener;
     View.OnClickListener collapseListener;
@@ -189,10 +197,20 @@ public class SurveillanceFragment extends Fragment implements OnMapReadyCallback
         float distance = l1.distanceTo(l2) * DISTANCE_SCALE;
         double angleRadians = Math.toRadians(l1.bearingTo(l2));
 
-        float x = (float) (distance * Math.cos(angleRadians));
-        float y = (float) (distance * Math.sin(angleRadians));
+        float y = (float) (distance * Math.cos(angleRadians));
+        float x = (float) (distance * Math.sin(angleRadians));
 
         return new Coordinate(x, y, 0);
+    }
+
+    private LatLng coordToLatLng(Coordinate coord) {
+        double dist = Math.sqrt(Math.pow(coord.getX(),2) + Math.pow(coord.getY(), 2));
+
+        if(dist == 0) {
+            return flightController.getHome();
+        } else {
+            return SphericalUtil.computeOffset(flightController.getHome(), dist, coord.angleFacing());
+        }
     }
 
     private void getLocation() {
@@ -204,14 +222,37 @@ public class SurveillanceFragment extends Fragment implements OnMapReadyCallback
                         location = (Location) task.getResult();
 
                         if (location != null) {
-                            droneLocationMarker = googleMap.addMarker(new MarkerOptions()
-                                    .position(new LatLng(location.getLatitude(), location.getLongitude()))
-                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_drone_white_direction))
-                                    .anchor(0.5f, 0.5f));
-
                             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(location.getLatitude(),
                                             location.getLongitude()), MAX_ZOOM));
+
+                            LatLng pos;
+                            flightController = FlightControllerWrapper.getInstance();
+                            if(flightController != null) {
+                                if(!flightController.isHomeSet()) {
+                                    pos = new LatLng(location.getLatitude(), location.getLongitude());
+                                    flightController.setHome(pos);
+                                } else {
+                                    pos = coordToLatLng(flightController.getPosition());
+                                }
+
+                                flightController.syncDirection();
+                                droneLocationMarker = googleMap.addMarker(new MarkerOptions()
+                                        .position(pos)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_drone_white_direction))
+                                        .anchor(0.5f, 0.5f)
+                                        .rotation(flightController.getAngleFacing()));
+
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        flightController.syncDirection();
+                                        droneLocationMarker.setRotation(flightController.getAngleFacing());
+                                        handler.postDelayed(this, 100);
+                                    }
+                                }, 100);
+                            }
                         }
                     } else {
                         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0, 0), MAX_ZOOM));

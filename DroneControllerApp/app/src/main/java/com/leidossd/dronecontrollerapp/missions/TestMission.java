@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.leidossd.djiwrapper.Coordinate;
+import com.leidossd.djiwrapper.FlightControllerWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
