@@ -1,155 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".missions.ui.fragments.SurveillanceFragment">
+    tools:context=".missions.ui.fragments.WaypointFragment"
+    android:animateLayoutChanges="true"
+    android:orientation="horizontal"
+    android:baselineAligned="false">
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/drone_image"
-            android:layout_width="117dp"
-            android:layout_height="95dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="92dp"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/drone_icon_white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.495"
-            app:layout_constraintStart_toEndOf="@+id/view"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/mission_description"
-            android:layout_width="228dp"
-            android:layout_height="51dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="160dp"
-            android:text="Drone flies in a direction, performs surveillance, then flies back."
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.483"
-            app:layout_constraintStart_toEndOf="@+id/view"
-            app:layout_constraintTop_toBottomOf="@+id/drone_image"
-            app:layout_constraintVertical_bias="0.328" />
-
-        <EditText
-            android:id="@+id/angle_box"
-            android:layout_width="108dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:ems="10"
-            android:hint="@string/default_num"
-            android:inputType="number"
-            android:text="@string/default_num"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.658"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.56" />
+    <FrameLayout
+        android:id="@+id/map_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="5"
+        android:padding="@dimen/margin_small"
+        android:animateLayoutChanges="true">
 
         <com.google.android.gms.maps.MapView
             android:id="@+id/mapView"
-            android:layout_width="449dp"
-            android:layout_height="221dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/button_create"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.516"
-            app:layout_constraintStart_toEndOf="@+id/view"
-            app:layout_constraintTop_toBottomOf="@+id/mission_type"
-            app:layout_constraintVertical_bias="0.277" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:visibility="invisible" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="end|top"
+            android:animateLayoutChanges="true">
+
+            <FrameLayout
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="#BEFFFFFF">
+
+                <Button
+                    android:id="@+id/btn_map_scale"
+                    style="@style/CustomWidget.Button.Standard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_expand_gray" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:background="#BEFFFFFF">
+
+                <Button
+                    android:id="@+id/btn_map_center"
+                    style="@style/CustomWidget.Button.Standard"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/ic_center_gray" />
+            </FrameLayout>
+
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/text_angle"
-            android:layout_width="wrap_content"
-            android:layout_height="23dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="Select the angle for the camera to turn (from -90 to 30):"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/view"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.419" />
+            android:id="@+id/tv_map_loading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Loading Map\nPlease Wait"
+            android:textAlignment="center"
+            android:textSize="@dimen/text_size_medium" />
 
-        <View
-            android:id="@+id/view"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@color/primary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.276"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/mission_info_container"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_small">
 
         <TextView
             android:id="@+id/mission_type"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="Surveillance Mission"
-            android:textSize="@dimen/text_size_large"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/view"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/button_create"
-            android:layout_width="184dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="Create"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.045"
-            app:layout_constraintStart_toEndOf="@+id/mission_save" />
-
-        <CheckBox
-            android:id="@+id/mission_save"
-            android:layout_width="82dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="88dp"
-            android:layout_marginBottom="8dp"
-            android:text="Save Mission"
-            android:textSize="@dimen/text_size_xsmall"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/view" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/properties"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/view"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Surveillance Mission"
+            android:textAlignment="center"
+            android:textSize="@dimen/text_size_large" />
 
-    </android.support.constraint.ConstraintLayout>
+        <EditText
+            android:id="@+id/mission_name"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:gravity="center"
+            android:hint="(Optional) Enter mission name..."
+            android:importantForAutofill="no"
+            android:inputType="textPersonName" />
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/mission_description"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/mission_surveillance_description"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/text_position"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="Select a direction for the drone to fly to."
+            android:textAlignment="center" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/mission_save"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Save Mission"
+                android:textSize="@dimen/text_size_xsmall" />
+
+            <Button
+                android:id="@+id/button_create"
+                style="@style/CustomWidget.Button.Standard"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Create" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -34,7 +34,7 @@ public class TestFragment extends Fragment {
             TestMission mission;
             String mName = missionName.getText().toString();
             if (mName.equals(""))
-                mission = new TestMission("Test Mission");
+                mission = new TestMission();
             else
                 mission = new TestMission(mName);
             testFragmentListener.createMission(mission, saveCheckbox.isChecked());

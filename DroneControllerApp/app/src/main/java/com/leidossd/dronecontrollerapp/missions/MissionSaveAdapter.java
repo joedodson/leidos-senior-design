@@ -13,7 +13,7 @@ import java.lang.reflect.Type;
 
 /**
  * MissionSaveAdapter Class:
- * Handles conversion from Class data to a Json File.  A custom type adapter, suc as this one
+ * Handles conversion from Class data to a Json File.  A custom type adapter, such as this one
  * is needed, when polymorphism is used to assign different types of subclass, such as Dogs and Cats,
  * to a parent class, such as Animals.  It needs this adapter to be able to determine the actual type.
  */

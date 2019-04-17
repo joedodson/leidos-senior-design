@@ -8,10 +8,17 @@ import com.leidossd.djiwrapper.Coordinate;
 import com.leidossd.djiwrapper.FlightControllerWrapper;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class WaypointMission extends Mission {
+    private static String title = "Waypoint Mission";
+    private static String description = "Fly to specified waypoint and then return home";
+    private Coordinate destination;
+
     public WaypointMission(Coordinate destination) {
-        super("Waypoint Mission to " + destination);
+        super(title, description);
+
+        this.destination = destination;
         ArrayList<Task> tasks = new ArrayList<>();
         tasks.add(new TakeOffTask());
         tasks.add(new WaitTask(7000));
@@ -59,9 +66,13 @@ public class WaypointMission extends Mission {
         taskIterable = tasks;
     }
 
-    WaypointMission(String title, ArrayList<Task> tasks) {
-        super(title, tasks);
+    private WaypointMission(String title, ArrayList<Task> tasks) {
+        super(title, description, tasks);
         currentState = Task.TaskState.READY;
+    }
+
+    public String argsToString() {
+        return String.format(Locale.getDefault(), "Flies to coordinate: %s", this.destination.toString());
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

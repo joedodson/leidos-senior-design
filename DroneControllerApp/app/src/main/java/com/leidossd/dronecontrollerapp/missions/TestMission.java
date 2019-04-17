@@ -11,8 +11,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class TestMission extends Mission {
+    private static String title = "Test Mission";
+    private static String description = "Testing mission for developers - who knows what it'll do...";
+
+    public TestMission() {
+        this(title);
+    }
     public TestMission(String title) {
-        super(title);
+        super(title, description);
         ArrayList<Task> tasks = new ArrayList<>();
 
 //        Test 1
@@ -37,6 +43,7 @@ public class TestMission extends Mission {
         tasks.add(new RotateByTask(-90));
         tasks.add(new WaitTask(1000));
         tasks.add(new LandingTask());
+
 //        tasks.add(new ToastTask("Starting"));
 //        tasks.add(new WaitTask(2000));
 //        tasks.add(new ToastTask("Moving Gimbal in 2 seconds"));
@@ -97,12 +104,16 @@ public class TestMission extends Mission {
     }
 
     TestMission(String title, ArrayList<Task> tasks) {
-        super(title, tasks);
+        super(title, description, tasks);
         currentState = TaskState.READY;
     }
 
     public List<String> getTaskNames() {
         return taskIterable.stream().map(task -> task.getClass().getSimpleName()).collect(Collectors.toList());
+    }
+
+    public String argsToString() {
+        return String.format("Tasks: %s", getTaskNames());
     }
 
     // Parcelable functionality

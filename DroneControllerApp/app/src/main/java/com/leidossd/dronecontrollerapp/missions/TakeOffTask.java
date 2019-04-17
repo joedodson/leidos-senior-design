@@ -17,24 +17,28 @@ public class TakeOffTask extends Task {
 
     @Override
     void start() {
-        if (FlightControllerWrapper.getInstance().isAirborne())
-            listener.statusUpdate(TaskState.COMPLETED, title + " completed");
-        FlightControllerWrapper.getInstance()
-                .startTakeoff((error) -> {
-                    if (error != null) {
-                        if (FlightControllerWrapper.getInstance().compassHasError()) {
-                            listener.statusUpdate(TaskState.FAILED, "Compass needs to be calibrated!");
-                            Log.e(TAG, "Could not takeoff: compass not calibrated");
+        try {
+            FlightControllerWrapper.getInstance()
+                    .startTakeoff((error) -> {
+                        if (error != null) {
+                            if (FlightControllerWrapper.getInstance().compassHasError()) {
+                                listener.statusUpdate(TaskState.FAILED, "Compass needs to be calibrated!");
+                                Log.e(TAG, "Could not takeoff: compass not calibrated");
+                            } else {
+                                listener.statusUpdate(TaskState.FAILED, error.toString());
+                                Log.e(TAG, "Could not take off: " + error.getDescription());
+                            }
                         } else {
-                            listener.statusUpdate(TaskState.FAILED, error.toString());
-                            Log.e(TAG, "Could not take off: " + error.getDescription());
+                            currentState = TaskState.COMPLETED;
+                            listener.statusUpdate(currentState, title + " completed");
                         }
-                    } else {
-                        currentState = TaskState.COMPLETED;
-                        listener.statusUpdate(currentState, title + " completed");
-                    }
-                    ;
-                });
+                    });
+            if (FlightControllerWrapper.getInstance().isAirborne())
+                listener.statusUpdate(TaskState.COMPLETED, title + " completed");
+        } catch (Exception e) {
+            Log.e(TAG, "Could not take off: " + e.getMessage());
+            listener.statusUpdate(TaskState.FAILED, e.getMessage());
+        }
     }
 
     @Override
