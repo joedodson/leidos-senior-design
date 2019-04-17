@@ -206,7 +206,11 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
         // What follows is complicated math stuff
 
         if(rotationDelta == 0) {
-            position = position.add(positionDelta);
+            Coordinate movement =
+                    direction.perpendicularUnit().scale(positionDelta.getX())
+                    .add(direction.scale(positionDelta.getY()))
+                    .add(new Coordinate(0,0,positionDelta.getZ()));
+            position = position.add(movement);
             Log.v(TAG, "New position: " + position);
         }
         else {

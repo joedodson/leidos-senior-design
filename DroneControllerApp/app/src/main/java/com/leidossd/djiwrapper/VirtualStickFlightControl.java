@@ -173,11 +173,17 @@ public class VirtualStickFlightControl {
                                     callbackFail.onResult(error);
 //                                halt();
                             }
+                            else {
+                                if (listener != null)
+                                    listener.increment(
+                                            new Coordinate(roll, pitch, throttle).scale((updatePeriod / (float) 1000.0)),
+                                            yaw * (updatePeriod / (float) 1000.0));
+                            }
                         });
-                if (listener != null)
-                    listener.increment(
-                            new Coordinate(roll, pitch, throttle).scale((updatePeriod / (float) 1000.0)),
-                            yaw * (updatePeriod / (float) 1000.0));
+//                if (listener != null)
+//                    listener.increment(
+//                            new Coordinate(roll, pitch, throttle).scale((updatePeriod / (float) 1000.0)),
+//                            yaw * (updatePeriod / (float) 1000.0));
             }
         }
     }
