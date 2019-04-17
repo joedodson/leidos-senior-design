@@ -28,13 +28,16 @@ public class TestMission extends Mission {
 //        tasks.add(new ToastTask("Ending..."));
 
 //      Test 2
-        tasks.add(new TakeOffTask());
-        tasks.add(new WaitTask(7000));
-        tasks.add(new RotationTask(90));
-        tasks.add(new WaitTask(1000));
-        tasks.add(new RotationTask(-90));
-        tasks.add(new WaitTask(1000));
-        tasks.add(new LandingTask());
+//        tasks.add(new TakeOffTask());
+        tasks.add(new WaitTask(3000));
+        tasks.add(new ToastTask("Test 1."));
+//        tasks.add(new RotationTask(90));
+        tasks.add(new WaitTask(3000));
+        tasks.add(new ToastTask("Test 2."));
+//        tasks.add(new RotationTask(-90));
+        tasks.add(new WaitTask(3000));
+        tasks.add(new ToastTask("Done."));
+//        tasks.add(new LandingTask());
 //        tasks.add(new ToastTask("Starting"));
 //        tasks.add(new WaitTask(2000));
 //        tasks.add(new ToastTask("Moving Gimbal in 2 seconds"));

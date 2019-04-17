@@ -45,11 +45,11 @@ public class MissionRunner {
     private BroadcastReceiver missionErrorBroadcastReceiver;
 
     private NotificationManagerCompat notificationManager;
-    private NotificationCompat.Builder notificationBuilder;
+    private static NotificationCompat.Builder notificationBuilder;
     private int notificationId;
+    private static Timer timer;
     private static final long notificationUpdateIntervalMs = 1000;
     private Handler handler;
-    private Timer timer;
     private long missionStartTime = 0;
 
     Task.StatusUpdateListener listener;
@@ -100,6 +100,10 @@ public class MissionRunner {
         };
         applicationContext.bindService(intent, missionRunnerServiceConnection, Context.BIND_AUTO_CREATE);
         localBroadcastManager = LocalBroadcastManager.getInstance(applicationContext);
+    }
+
+    public boolean isBinded(){
+        return missionRunnerServiceIsBound.get();
     }
 
     /**
@@ -208,7 +212,7 @@ public class MissionRunner {
                                 .build());
 
 //                mission.getMissionUpdateCallback().onMissionError(intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
-                listener.statusUpdate(Task.TaskState.FAILED, intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
+                listener.statusUpdate(Task.TaskState.COMPLETED, intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
             }
         };
 
@@ -223,6 +227,17 @@ public class MissionRunner {
         localBroadcastManager.registerReceiver(missionStartBroadcastReceiver, new IntentFilter(ServiceStatusUpdate.MISSION_START.action));
         localBroadcastManager.registerReceiver(missionFinishBroadcastReceiver, new IntentFilter(ServiceStatusUpdate.MISSION_FINISH.action));
         localBroadcastManager.registerReceiver(missionErrorBroadcastReceiver, new IntentFilter(ServiceStatusUpdate.MISSION_ERROR.action));
+    }
+
+    public void loadMission(){
+        if(missionRunnerServiceIsBound.get()){
+            Mission mission = missionRunnerService.mission;
+
+            if(mission != null){
+                registerReceivers(mission);
+                listener.statusUpdate(mission.currentState, mission.getStatus());
+            }
+        }
     }
 
 

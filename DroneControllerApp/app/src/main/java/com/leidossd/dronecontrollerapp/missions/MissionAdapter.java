@@ -17,8 +17,7 @@ import com.leidossd.dronecontrollerapp.R;
  * view holders, which are the containers for each item in the list, defining the text for each item in
  * the list, and handling the logic when an item on the list is clicked on.
  * <p>
- * Manages a separate MissionSaver than handles the saving and loading of all missions in the form of a
- * MissionFrame.
+ * Manages a separate MissionSaver than handles the saving and loading of all missions.
  * <p>
  * Any activity that uses it must implement its corresponding listener, so it can send missions through it.
  */
@@ -27,21 +26,26 @@ public class MissionAdapter extends RecyclerView.Adapter<MissionAdapter.MissionH
     private MissionSaver missionSaver;
 
     public MissionAdapter(Context context) {
+        //Any activity that uses this adapter MUST implement this, so the adapter can send it
+        //data through send mission.
         if (context instanceof MissionAdapterListener) {
             this.missionAdapterListener = (MissionAdapterListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement MissionAdapterListener");
         }
+        //Create MissionSaver and loads it with missions.
         this.missionSaver = new MissionSaver((Activity) context, true);
         missionSaver.unloadMissions();
     }
 
+    //Creates the viewholders, which contain the UI elements to be displayed by the MissionAdapter.
     @NonNull
     @Override
     public MissionHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.saved_mission_rows, viewGroup, false);
         MissionHolder vh = new MissionHolder(v);
+        //This is what gets executed when the UI element that corresponds to this one gets clicked on.
         v.setOnClickListener((View view) -> {
             int pos = vh.getAdapterPosition();
             sendMission(pos);
@@ -49,6 +53,7 @@ public class MissionAdapter extends RecyclerView.Adapter<MissionAdapter.MissionH
         return vh;
     }
 
+    //Binds the viewholder to the adapter, and sets the properties of the viewholder.
     @Override
     public void onBindViewHolder(@NonNull MissionHolder viewHolder, int pos) {
         String type = "Waypoint Mission";
@@ -63,27 +68,25 @@ public class MissionAdapter extends RecyclerView.Adapter<MissionAdapter.MissionH
         return missionSaver.size();
     }
 
-    @Override
-    public int getItemViewType(int pos) {
-//        if (missionSaver.getMissionAt(pos).getIsDefault()) return 0;
-        return 1;
-    }
-
-
+    //Adds new mission to the MissionAdapter, and sends it to MissionSaver to save it.
     public void addMission(Mission mission) {
         missionSaver.saveMission(mission);
         notifyItemInserted(getItemCount() + 1);
     }
 
+    //Gets mission from missionSaver and sends it to the associated Activity.
+    //The activity MUST implement missionClicked.
     private void sendMission(int pos) {
         Mission mission = missionSaver.getMissionAt(pos);
         missionAdapterListener.missionClicked(mission);
     }
 
+    //Interface used to interact with the associated activity.
     public interface MissionAdapterListener {
         void missionClicked(Mission mission);
     }
 
+    //Defines custom UI list container, with properties specific to missions.
     class MissionHolder extends RecyclerView.ViewHolder {
         TextView mTitle;
         TextView mType;

@@ -23,7 +23,6 @@ public class MissionServiceExampleActivity extends MenuActivity implements Task.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mission_service_example);
 
-
         missionStatusTextView = findViewById(R.id.tv_activity_mission_service_example_status);
 
         mission = new WaypointMission(new Coordinate(0, 3, 0));

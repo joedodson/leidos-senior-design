@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,8 @@ import com.leidossd.dronecontrollerapp.missions.ui.fragments.SurveillanceFragmen
 import com.leidossd.dronecontrollerapp.missions.ui.fragments.TestFragment;
 import com.leidossd.dronecontrollerapp.missions.ui.fragments.WaypointFragment;
 
+import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
+
 public class MissionSelectionActivity extends MenuActivity implements MissionAdapter.MissionAdapterListener, Task.StatusUpdateListener {
     //Constants for inner classes
     private static final int CREATE_MISSION = 1001;
@@ -46,6 +49,7 @@ public class MissionSelectionActivity extends MenuActivity implements MissionAda
     private ImageView droneImage;
     private ImageView nextArrow;
     private ConstraintLayout missionBar;
+    private Handler missionBindHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +78,10 @@ public class MissionSelectionActivity extends MenuActivity implements MissionAda
         listView.addItemDecoration(new DividerItemDecoration(this));
 
         adapter = new MissionAdapter(this);
-        missionRunner = new MissionRunner(this, this);
         listView.setAdapter(adapter);
+        missionRunner = new MissionRunner(this, this);
+        missionBindHandler = new Handler();
+        missionBindHandler.postDelayed(this::checkBinding, 250);
     }
 
     @Override
@@ -116,6 +122,14 @@ public class MissionSelectionActivity extends MenuActivity implements MissionAda
         popupMenu.show();
     }
 
+    public void checkBinding(){
+        if(missionRunner.isBinded()){
+            missionRunner.loadMission();
+        } else {
+            missionBindHandler.postDelayed(this::checkBinding, 250);
+        }
+    }
+
     public void updateStatus(Task.TaskState state) {
         MissionRunnerService missionRunnerService = MissionRunner.missionRunnerService;
         if (missionRunnerService != null) {
@@ -143,7 +157,6 @@ public class MissionSelectionActivity extends MenuActivity implements MissionAda
     @Override
     public void statusUpdate(Task.TaskState status, String message) {
         updateStatus(status);
-
     }
 
     @Override
