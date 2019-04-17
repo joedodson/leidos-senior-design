@@ -64,12 +64,13 @@ public class Coordinate implements Parcelable {
 
     // a unit vector perpendicular to the current vector in the x,y plane
     public Coordinate perpendicularUnit() {
-        if (x == 0 && y == 0)
-            throw new IllegalArgumentException("Can't get a perpendicular unit vector from a 0 vector!");
-        if (x == 0)
-            return new Coordinate(1, -x / y, 0).unit();
-        else
-            return new Coordinate(y / x, -1, 0).unit();
+        return this.rotateByAngle(90);
+//        if (x == 0 && y == 0)
+//            throw new IllegalArgumentException("Can't get a perpendicular unit vector from a 0 vector!");
+//        if (x == 0)
+//            return new Coordinate(1, -x / y, 0).unit();
+//        else
+//            return new Coordinate(y / x, -1, 0).unit();
     }
 
     public float dot(Coordinate other) {
