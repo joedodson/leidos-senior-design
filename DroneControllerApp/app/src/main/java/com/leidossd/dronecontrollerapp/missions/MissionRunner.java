@@ -102,6 +102,10 @@ public class MissionRunner {
         localBroadcastManager = LocalBroadcastManager.getInstance(applicationContext);
     }
 
+    public boolean isBinded(){
+        return missionRunnerServiceIsBound.get();
+    }
+
     /**
      * Main driver for running the actual mission. Synchronized to prevent race conditions of multiple
      * MissionRunners trying to start missions.
@@ -208,7 +212,7 @@ public class MissionRunner {
                                 .build());
 
 //                mission.getMissionUpdateCallback().onMissionError(intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
-                listener.statusUpdate(Task.TaskState.FAILED, intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
+                listener.statusUpdate(Task.TaskState.COMPLETED, intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
             }
         };
 
@@ -223,6 +227,14 @@ public class MissionRunner {
         localBroadcastManager.registerReceiver(missionStartBroadcastReceiver, new IntentFilter(ServiceStatusUpdate.MISSION_START.action));
         localBroadcastManager.registerReceiver(missionFinishBroadcastReceiver, new IntentFilter(ServiceStatusUpdate.MISSION_FINISH.action));
         localBroadcastManager.registerReceiver(missionErrorBroadcastReceiver, new IntentFilter(ServiceStatusUpdate.MISSION_ERROR.action));
+    }
+
+    public void loadMission(){
+        if(missionRunnerServiceIsBound.get()){
+            if(missionRunnerService.mission != null){
+                registerReceivers(missionRunnerService.mission);
+            }
+        }
     }
 
 

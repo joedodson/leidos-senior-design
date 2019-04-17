@@ -15,12 +15,12 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Locale;
 
-//TODO: Replace "Drone flies." with actual description; have Mission print out type in the form of a String.
-
 /**
  * Mission Adapter Class:
  * Handles saving and loading of missions, as well as managing a list of saved missions. Sends and retrieves
- * mission data in the form of a MissionFrame.  Uses json files to record mission data.
+ * mission data to the MissionSaveAdapter.  Uses json files to record mission data.
+ *
+ * The Gson library is used to handle conversion of all class variables and data to Json form.
  */
 
 class MissionSaver {
@@ -36,11 +36,15 @@ class MissionSaver {
         this(activity, false);
     }
 
+    //Creates MissionSaver.  Uses GSon to convert missions to JSon data.
     MissionSaver(Activity activity, boolean addDefault) {
         savedMissions = new ArrayList<>();
         attachedActivity = activity;
         this.addDefault = addDefault;
+        //Used to create GSon, which does class to Json conversion.
         gBuilder = new GsonBuilder();
+        //Create custom type adapters for missions and tasks, so Gson knows how to get
+        //the subclass from the parent mission or task class.
         gBuilder.registerTypeAdapter(Mission.class, new MissionSaveAdapter());
         gBuilder.registerTypeAdapter(Task.class, new MissionSaveAdapter());
     }
@@ -53,10 +57,13 @@ class MissionSaver {
         return savedMissions.get(pos);
     }
 
+    //Loads mission list from json files in specified directory
     void unloadMissions() {
+        //Directory to save json files in.  Current directory is an external directory in the app's data folders.
         File directory = attachedActivity.getExternalFilesDir(null);
         if (directory != null) {
             File[] files = directory.listFiles();
+            //Populate the list with default missions if enabled.
             if (addDefault) {
                 for (int i = 0; i < NUM_DEFAULT; i++) {
                     String des = "Drone flies.";
@@ -74,6 +81,7 @@ class MissionSaver {
         }
     }
 
+    //Convert mission to json using GSon
     void saveMission(Mission mission) {
         try {
             Gson gson = gBuilder.create();
@@ -88,6 +96,7 @@ class MissionSaver {
         savedMissions.add(mission);
     }
 
+    //Loads a json file and converts it to a mission.
     private Mission loadFile(File file) {
         Mission missionFile = null;
         try {
