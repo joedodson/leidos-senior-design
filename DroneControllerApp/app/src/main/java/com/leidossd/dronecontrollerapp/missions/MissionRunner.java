@@ -46,7 +46,7 @@ public class MissionRunner {
 
     private NotificationManagerCompat notificationManager;
     private static NotificationCompat.Builder notificationBuilder;
-    private int notificationId;
+    private static int notificationId;
     private static Timer timer;
     private static final long notificationUpdateIntervalMs = 1000;
     private Handler handler;
@@ -59,8 +59,6 @@ public class MissionRunner {
     private static final String MISSION_BUNDLE_EXTRA_NAME = "MISSION_EXTRA";
 
     public MissionRunner(Context applicationContext, Task.StatusUpdateListener listener) {
-        Random random = new Random();
-        notificationId = random.nextInt(1000) + 1;
         notificationManager = NotificationManagerCompat.from(applicationContext);
         this.listener = listener;
         handler = new Handler();
@@ -138,6 +136,8 @@ public class MissionRunner {
             PendingIntent pendingIntent =
                     PendingIntent.getActivity(applicationContext, 0, notificationIntent, 0);
 
+            Random random = new Random();
+            notificationId = random.nextInt(1000) + 1;
             notificationBuilder =
                     new NotificationCompat.Builder(applicationContext, applicationContext.getResources().getString(R.string.notification_channel_name))
                             .setContentTitle("Mission Runner")
