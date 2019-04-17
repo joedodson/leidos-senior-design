@@ -1,6 +1,7 @@
 package com.leidossd.dronecontrollerapp.missions;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -24,6 +25,7 @@ import java.util.Locale;
  */
 
 class MissionSaver {
+    private static final String TAG = MissionSaver.class.getSimpleName();
     //Number of default missions to add (if default missions are enabled).
     private static final int NUM_DEFAULT = 3;
     private int DEFAULT_ID = 1;
@@ -54,7 +56,12 @@ class MissionSaver {
     }
 
     Mission getMissionAt(int pos) {
-        return savedMissions.get(pos);
+        try {
+            return savedMissions.get(pos);
+        } catch (IndexOutOfBoundsException e) {
+            Log.e(TAG, e.getLocalizedMessage());
+            return null;
+        }
     }
 
     //Loads mission list from json files in specified directory
@@ -85,15 +92,37 @@ class MissionSaver {
     void saveMission(Mission mission) {
         try {
             Gson gson = gBuilder.create();
-            Writer output = null;
-            File file = new File(attachedActivity.getExternalFilesDir(null), String.format("%s.json", mission.getTitle()));
-            output = new BufferedWriter(new FileWriter(file));
+            File file = new File(attachedActivity.getExternalFilesDir(null), String.format("%s.json", mission.hashCode()));
+            Writer output = new BufferedWriter(new FileWriter(file));
             output.write(gson.toJson(mission, Mission.class));
             output.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
         savedMissions.add(mission);
+    }
+
+    void deleteMission(Mission mission) {
+        boolean deleteSuccess = false;
+        File directory = attachedActivity.getExternalFilesDir(null);
+
+        if (directory != null) {
+            File[] files = directory.listFiles();
+            for (File f : files) {
+                if (mission.argsToString().equals(loadFile(f).argsToString())) {
+                     deleteSuccess = f.delete();
+                     break;
+                }
+            }
+        } else {
+            throw new RuntimeException("Could not load missions from default directory");
+        }
+
+        if(deleteSuccess) {
+            savedMissions.remove(mission);
+        } else {
+            Log.e(TAG, String.format("Unable to delete mission file for %s", mission.getTitle()));
+        }
     }
 
     //Loads a json file and converts it to a mission.

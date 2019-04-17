@@ -7,16 +7,18 @@ import java.util.ArrayList;
 
 
 abstract public class Mission extends Task implements Task.StatusUpdateListener {
+    private String description;
     private Task currentTask;
     private int currentTaskId = 0;
     ArrayList<Task> taskIterable;
 
-    Mission(String title) {
-        super(title);
+    Mission(String title, String description) {
+        this(title, description, null);
     }
 
-    Mission(String title, ArrayList<Task> taskIterable) {
+    Mission(String title, String description, ArrayList<Task> taskIterable) {
         super(title);
+        this.description = description;
         this.taskIterable = taskIterable;
     }
 
@@ -74,6 +76,13 @@ abstract public class Mission extends Task implements Task.StatusUpdateListener 
     public String getCurrentTaskName() {
         return currentTask.getClass().getSimpleName();
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    // missions implement this to display args in saved mission list
+    abstract public String argsToString();
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {

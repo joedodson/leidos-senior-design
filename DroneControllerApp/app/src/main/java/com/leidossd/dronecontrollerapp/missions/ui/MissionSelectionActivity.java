@@ -29,8 +29,6 @@ import com.leidossd.dronecontrollerapp.missions.ui.fragments.SurveillanceFragmen
 import com.leidossd.dronecontrollerapp.missions.ui.fragments.TestFragment;
 import com.leidossd.dronecontrollerapp.missions.ui.fragments.WaypointFragment;
 
-import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
-
 public class MissionSelectionActivity extends MenuActivity implements MissionAdapter.MissionAdapterListener, Task.StatusUpdateListener {
     //Constants for inner classes
     private static final int CREATE_MISSION = 1001;

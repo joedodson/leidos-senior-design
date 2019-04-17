@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.leidossd.dronecontrollerapp.R;
@@ -35,7 +36,7 @@ public class MissionAdapter extends RecyclerView.Adapter<MissionAdapter.MissionH
                     + " must implement MissionAdapterListener");
         }
         //Create MissionSaver and loads it with missions.
-        this.missionSaver = new MissionSaver((Activity) context, true);
+        this.missionSaver = new MissionSaver((Activity) context);
         missionSaver.unloadMissions();
     }
 
@@ -56,11 +57,12 @@ public class MissionAdapter extends RecyclerView.Adapter<MissionAdapter.MissionH
     //Binds the viewholder to the adapter, and sets the properties of the viewholder.
     @Override
     public void onBindViewHolder(@NonNull MissionHolder viewHolder, int pos) {
-        String type = "Waypoint Mission";
-        String des = "Drone flies.";
         viewHolder.mTitle.setText(missionSaver.getMissionAt(pos).getTitle());
-        viewHolder.mType.setText(type);
-        viewHolder.description.setText(des);
+        viewHolder.description.setText(missionSaver.getMissionAt(pos).getDescription());
+        viewHolder.argsString.setText(missionSaver.getMissionAt(pos).argsToString());
+        viewHolder.deleteBtn.setOnClickListener(v -> {
+            deleteMission(missionSaver.getMissionAt(pos), pos);
+        });
     }
 
     @Override
@@ -72,6 +74,12 @@ public class MissionAdapter extends RecyclerView.Adapter<MissionAdapter.MissionH
     public void addMission(Mission mission) {
         missionSaver.saveMission(mission);
         notifyItemInserted(getItemCount() + 1);
+    }
+
+    public void deleteMission(Mission mission, int pos) {
+        missionSaver.deleteMission(mission);
+        notifyItemRemoved(pos);
+        notifyItemRangeChanged(pos, missionSaver.size());
     }
 
     //Gets mission from missionSaver and sends it to the associated Activity.
@@ -89,14 +97,16 @@ public class MissionAdapter extends RecyclerView.Adapter<MissionAdapter.MissionH
     //Defines custom UI list container, with properties specific to missions.
     class MissionHolder extends RecyclerView.ViewHolder {
         TextView mTitle;
-        TextView mType;
         TextView description;
+        TextView argsString;
+        Button deleteBtn;
 
         MissionHolder(@NonNull View itemView) {
             super(itemView);
             mTitle = itemView.findViewById(R.id.title);
-            mType = itemView.findViewById(R.id.mtype);
+            argsString = itemView.findViewById(R.id.args_string);
             description = itemView.findViewById(R.id.description);
+            deleteBtn = itemView.findViewById(R.id.btn_delete);
         }
     }
 }

@@ -4,8 +4,6 @@ package com.leidossd.djiwrapper;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.leidossd.dronecontrollerapp.missions.RotationTask;
-
 import java.util.Timer;
 import java.util.TimerTask;
 

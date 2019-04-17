@@ -10,8 +10,6 @@ import com.leidossd.dronecontrollerapp.missions.Mission;
 import com.leidossd.dronecontrollerapp.missions.MissionRunner;
 import com.leidossd.dronecontrollerapp.missions.Task;
 
-import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
-
 public class MissionStatusActivity extends AppCompatActivity implements Task.StatusUpdateListener {
     private TextView missionStatus;
     private MissionRunner missionRunner;

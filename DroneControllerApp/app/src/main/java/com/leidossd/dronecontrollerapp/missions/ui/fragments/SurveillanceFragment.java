@@ -4,30 +4,21 @@ import android.Manifest;
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.util.Pair;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -36,22 +27,20 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Tile;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.leidossd.djiwrapper.Coordinate;
 import com.leidossd.dronecontrollerapp.R;
 import com.leidossd.dronecontrollerapp.missions.SurveillanceMission;
 import com.leidossd.dronecontrollerapp.missions.ui.MissionCreateListener;
-import com.leidossd.dronecontrollerapp.missions.ui.MissionMenuAdapter;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.Locale;
 
 import static com.leidossd.dronecontrollerapp.MainApplication.showToast;
@@ -63,15 +52,14 @@ public class SurveillanceFragment extends Fragment implements OnMapReadyCallback
     private View.OnClickListener createButtonListener;
     private MissionCreateListener surveillanceFragmentListener;
 
-    private EditText missionName;
     private CheckBox saveCheckbox;
     private TextView positionText;
     private Button mapScaleButton;
     private GoogleMap googleMap;
     private MapView mapView;
     private FusedLocationProviderClient fusedLocationClient;
-    private EditText angleText;
-    private static Marker currentMarker;
+    private static Marker waypointMarker;
+    private static Marker droneLocationMarker;
 
     private Location location;
     private Coordinate destination = null;
@@ -86,19 +74,12 @@ public class SurveillanceFragment extends Fragment implements OnMapReadyCallback
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        createButtonListener = new View.OnClickListener() {
-            public void onClick(View view) {
-                if (destination != null) {
-                    float cameraAngle = Float.parseFloat(angleText.getText().toString());
-                    if(cameraAngle >= -90 && cameraAngle <= 30) {
-                        SurveillanceMission sm = new SurveillanceMission("New Mission", destination, cameraAngle);
-                        surveillanceFragmentListener.createMission(sm, saveCheckbox.isChecked());
-                    } else {
-                        showToast("Angle must be between -90 and 30 degrees.");
-                    }
-                } else {
-                    showToast("Please Enter a Location.");
-                }
+        createButtonListener = view -> {
+            if (destination != null) {
+                SurveillanceMission sm = new SurveillanceMission(destination);
+                surveillanceFragmentListener.createMission(sm, saveCheckbox.isChecked());
+            } else {
+                showToast("Please Enter a Location.");
             }
         };
     }
@@ -110,17 +91,18 @@ public class SurveillanceFragment extends Fragment implements OnMapReadyCallback
         View view = inflater.inflate(R.layout.fragment_surveillance, container, false);
 
         Button createButton = view.findViewById(R.id.button_create);
-        missionName = view.findViewById(R.id.mission_name);
         saveCheckbox = view.findViewById(R.id.mission_save);
         positionText = view.findViewById(R.id.text_position);
         createButton.setOnClickListener(createButtonListener);
-        angleText = view.findViewById(R.id.angle_box);
 
         mapView = view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
 
         mapScaleButton = view.findViewById(R.id.btn_map_scale);
+
+        // TODO make this call flightcontrollerwrapper's getHomeLocation function when implemented
+        view.findViewById(R.id.btn_map_center).setOnClickListener(null);
 
         saveCheckbox = view.findViewById(R.id.mission_save);
 
@@ -184,10 +166,10 @@ public class SurveillanceFragment extends Fragment implements OnMapReadyCallback
                 .tileProvider(tileProvider));
 
         googleMap.setOnMapClickListener(point -> {
-            if (currentMarker != null) {
-                currentMarker.remove();
+            if (waypointMarker != null) {
+                waypointMarker.remove();
             }
-            currentMarker = googleMap.addMarker(new MarkerOptions().position(point));
+            waypointMarker = googleMap.addMarker(new MarkerOptions().position(point));
 
             Location pLocation = new Location("");
             pLocation.setLatitude(point.latitude);
@@ -198,19 +180,9 @@ public class SurveillanceFragment extends Fragment implements OnMapReadyCallback
             positionText.setText(String.format(Locale.getDefault(), "X: %f, Y: %f, Z: %f", destination.getX(), destination.getY(), destination.getZ()));
         });
 
-        updateMap();
         getLocation();
         mapView.setVisibility(View.VISIBLE);
         getActivity().findViewById(R.id.tv_map_loading).setVisibility(View.INVISIBLE);
-    }
-
-    private void disableControls(GoogleMap gmap){
-        googleMap.setMapType(GoogleMap.MAP_TYPE_NONE);
-        googleMap.getUiSettings().setRotateGesturesEnabled(false);
-        googleMap.getUiSettings().setZoomControlsEnabled(false);
-        googleMap.getUiSettings().setZoomGesturesEnabled(false);
-        googleMap.getUiSettings().setScrollGesturesEnabled(false);
-        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
     }
 
     private Coordinate getDistance(Location l1, Location l2) {
@@ -219,15 +191,6 @@ public class SurveillanceFragment extends Fragment implements OnMapReadyCallback
 
         float x = (float) (distance * Math.cos(angleRadians));
         float y = (float) (distance * Math.sin(angleRadians));
-
-        return new Coordinate(x, y, 0);
-    }
-
-    private Coordinate getTestDistance(Location l1, Location l2, int mult) {
-        Point p = googleMap.getProjection().toScreenLocation(new LatLng(l1.getLatitude(), l1.getLongitude()));
-        Point q = googleMap.getProjection().toScreenLocation(new LatLng(l2.getLatitude(), l2.getLongitude()));
-        float x = (float) (q.x - p.x) / p.x;
-        float y = (float) -(q.y - p.y) / p.y;
 
         return new Coordinate(x, y, 0);
     }
@@ -241,6 +204,11 @@ public class SurveillanceFragment extends Fragment implements OnMapReadyCallback
                         location = (Location) task.getResult();
 
                         if (location != null) {
+                            droneLocationMarker = googleMap.addMarker(new MarkerOptions()
+                                    .position(new LatLng(location.getLatitude(), location.getLongitude()))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_drone_white_direction))
+                                    .anchor(0.5f, 0.5f));
+
                             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(location.getLatitude(),
                                             location.getLongitude()), MAX_ZOOM));
@@ -249,22 +217,6 @@ public class SurveillanceFragment extends Fragment implements OnMapReadyCallback
                         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0, 0), MAX_ZOOM));
                     }
                 });
-            }
-        } catch (SecurityException e) {
-            Log.e("Exception: %s", e.getMessage());
-        }
-    }
-
-    private void updateMap() {
-        if (googleMap == null) {
-            return;
-        }
-        try {
-            if (locationPermission == PackageManager.PERMISSION_GRANTED) {
-                googleMap.setMyLocationEnabled(true);
-            } else {
-                googleMap.setMyLocationEnabled(false);
-                location = null;
             }
         } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
