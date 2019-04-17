@@ -25,7 +25,7 @@ public class VirtualStickFlightControl {
     // m/s, probably should make a constant for the speed and angular velocity, no magic numbers
     private float speed = (float) .5;
     // deg/s
-    private float angularVelocity = 50;
+    private float angularVelocity = 25;
 
     private float pitch;
     private float roll;
@@ -46,7 +46,8 @@ public class VirtualStickFlightControl {
 
     private VirtualStickFlightControl() {
         pitch = roll = yaw = throttle = 0;
-        updatePeriod = 200;
+        // must be between 40 and 200
+        updatePeriod = 50;
         inFlight = false;
         flightController = ((Aircraft) DJISDKManager.getInstance().
                 getProduct()).getFlightController();
@@ -115,15 +116,20 @@ public class VirtualStickFlightControl {
     }
 
     public void setDirection(Coordinate direction) {
+        if(direction.magnitude() == 0)
+            return;
         Coordinate unitDirection = direction.unit();
         this.roll = unitDirection.getX() * speed;
         this.pitch = unitDirection.getY() * speed;
         this.throttle = unitDirection.getZ() * speed;
     }
 
-    public void setYaw(float yaw) {
+    public void setYaw(boolean clockwise) {
+        if(clockwise)
+            this.yaw = angularVelocity;
+        else
+            this.yaw = -angularVelocity;
         Log.v(TAG,"Setting yaw to " + String.valueOf(yaw));
-        this.yaw = yaw;
     }
 
     public float getPitch() {
@@ -165,13 +171,19 @@ public class VirtualStickFlightControl {
                             if (error != null) {
                                 if (callbackFail != null)
                                     callbackFail.onResult(error);
-                                halt();
+//                                halt();
+                            }
+                            else {
+                                if (listener != null)
+                                    listener.increment(
+                                            new Coordinate(roll, pitch, throttle).scale((updatePeriod / (float) 1000.0)),
+                                            yaw * (updatePeriod / (float) 1000.0));
                             }
                         });
-                if (listener != null)
-                    listener.increment(
-                            new Coordinate(roll, pitch, throttle).scale((updatePeriod / (float) 1000.0)),
-                            yaw * (updatePeriod / (float) 1000.0));
+//                if (listener != null)
+//                    listener.increment(
+//                            new Coordinate(roll, pitch, throttle).scale((updatePeriod / (float) 1000.0)),
+//                            yaw * (updatePeriod / (float) 1000.0));
             }
         }
     }

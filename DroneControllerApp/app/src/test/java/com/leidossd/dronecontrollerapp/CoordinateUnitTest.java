@@ -58,6 +58,11 @@ public class CoordinateUnitTest {
     }
 
     @Test
+    public void perpendicular_zeroNegOne(){
+        assertEquals(new Coordinate(0,-1,0).perpendicularUnit(), new Coordinate(-1, 0, 0));
+    }
+
+    @Test
     public void perpendicular_Complicated() {
         assertEquals(new Coordinate(5, 5, 0).perpendicularUnit(), new Coordinate((float) 1.41 / 2, (float) -1.41 / 2, 0));
     }

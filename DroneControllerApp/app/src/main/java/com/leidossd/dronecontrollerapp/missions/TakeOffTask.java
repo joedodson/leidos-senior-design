@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import com.leidossd.djiwrapper.FlightControllerWrapper;
+import com.leidossd.dronecontrollerapp.MainApplication;
 
 
 public class TakeOffTask extends Task {

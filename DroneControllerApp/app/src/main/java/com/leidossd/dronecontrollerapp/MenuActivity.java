@@ -135,7 +135,7 @@ public class MenuActivity extends AppCompatActivity implements
                     startActivity(new Intent(this, CompassCalibrationActivity.class));
                 break;
             case R.id.action_bar_battery:
-                showToast("Battery");
+//                showToast("Battery");
                 break;
             case R.id.action_bar_main_menu:
                 hideActionBar();
