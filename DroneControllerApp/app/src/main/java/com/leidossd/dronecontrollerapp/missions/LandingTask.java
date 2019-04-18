@@ -15,8 +15,6 @@ public class LandingTask extends Task {
 
     @Override
     void start() {
-        if (!FlightControllerWrapper.getInstance().isAirborne())
-            listener.statusUpdate(TaskState.COMPLETED, title + " completed");
         FlightControllerWrapper.getInstance()
                 .startLanding((error) -> {
                     if (error != null) {
