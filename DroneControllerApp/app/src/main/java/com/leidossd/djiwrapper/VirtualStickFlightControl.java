@@ -186,9 +186,14 @@ public class VirtualStickFlightControl {
                                         state.getVelocityX(),
                                         state.getVelocityZ()));
                                 if (listener != null)
-                                    listener.increment(
-                                            new Coordinate(roll, pitch, throttle).scale((updatePeriod / (float) 1000.0)),
-                                            yaw * (updatePeriod / (float) 1000.0));
+//                                    listener.increment(
+//                                            new Coordinate(roll, pitch, throttle).scale((updatePeriod / (float) 1000.0)),
+//                                            yaw * (updatePeriod / (float) 1000.0));
+                                    listener.increment(new Coordinate(
+                                            state.getVelocityY(),
+                                            state.getVelocityX(),
+                                            state.getVelocityZ())
+                                            .scale(updatePeriod/1000f), yaw*(updatePeriod/1000f));
                             }
                         });
 //                if (listener != null)
