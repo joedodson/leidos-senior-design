@@ -34,12 +34,6 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
         endTask = null;
         virtualSticks = VirtualStickFlightControl.getInstance();
         virtualSticks.setListener(this);
-        virtualSticks.setCallbackFail((error) ->
-        {
-            Looper.loop();
-            showToast("VS ERROR: " + error.getDescription());
-            Looper.prepare();
-        });
     }
 
     public void setPositionListener(DeadReckoningFlightControl.PositionListener listener) {
@@ -122,11 +116,16 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
         Coordinate movement = destination.add(position.scale(-1));
         if(!rotationLock)
             rotateTo(movement.angleFacing(), (error) -> {
-                if(error == null)
-                    move(movement.inBasis(direction.perpendicularUnit(), direction), callback);
-                else
-                    if(callback != null)
-                        callback.onResult(error);
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if(error == null)
+                            move(movement.inBasis(direction.perpendicularUnit(), direction), callback);
+                        else
+                        if(callback != null)
+                            callback.onResult(error);
+                    }
+                }, 500);
             });
         else
             move(movement.inBasis(direction.perpendicularUnit(), direction), callback);
@@ -178,7 +177,7 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
 
         // prep sticks for inputs
         virtualSticks.enable();
-        virtualSticks.setCallbackFail(callback);
+//        virtualSticks.setCallbackFail(callback);
         if(theta == 0 && movement.magnitude() == 0) {
             if (callback != null)
                 callback.onResult(null);

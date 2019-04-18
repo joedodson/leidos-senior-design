@@ -6,6 +6,7 @@ import android.util.Log;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import dji.common.flightcontroller.FlightControllerState;
 import dji.common.flightcontroller.virtualstick.FlightControlData;
 import dji.common.flightcontroller.virtualstick.FlightCoordinateSystem;
 import dji.common.flightcontroller.virtualstick.RollPitchControlMode;
@@ -58,6 +59,8 @@ public class VirtualStickFlightControl {
         inputTimer = null;
         inputTask = null;
         enabled = false;
+        listener = null;
+        callbackFail = null;
     }
 
     public static VirtualStickFlightControl getInstance() {
@@ -165,15 +168,23 @@ public class VirtualStickFlightControl {
 //                flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
 //                flightController.setVerticalControlMode(VerticalControlMode.VELOCITY);
 //                flightController.setYawControlMode(YawControlMode.ANGULAR_VELOCITY);
-
+                if(yaw == 0)
+                    Log.v(TAG, String.format("VS: sent     r=%.3f p=%.3f t=%.3f y=%.3f", roll, pitch, throttle, yaw));
                 flightController.sendVirtualStickFlightControlData(
                         new FlightControlData(roll, pitch, yaw, throttle), (error) -> {
                             if (error != null) {
+                                Log.v(TAG, "VS: send failure, error: " + error.getDescription());
                                 if (callbackFail != null)
                                     callbackFail.onResult(error);
 //                                halt();
                             }
                             else {
+                                FlightControllerState state = flightController.getState();
+                                if(yaw == 0)
+                                Log.v(TAG, String.format("VS: measured E=%.3f N=%.3f D=%.3f y=?",
+                                        state.getVelocityY(),
+                                        state.getVelocityX(),
+                                        state.getVelocityZ()));
                                 if (listener != null)
                                     listener.increment(
                                             new Coordinate(roll, pitch, throttle).scale((updatePeriod / (float) 1000.0)),

@@ -2,6 +2,7 @@ package com.leidossd.dronecontrollerapp.missions;
 
 import android.os.Bundle;
 import android.os.Parcel;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -11,6 +12,7 @@ abstract public class Mission extends Task implements Task.StatusUpdateListener 
     private Task currentTask;
     private int currentTaskId = 0;
     ArrayList<Task> taskIterable;
+    private static final String TAG = LandingTask.class.getSimpleName();
 
     Mission(String title, String description) {
         this(title, description, null);
@@ -56,6 +58,7 @@ abstract public class Mission extends Task implements Task.StatusUpdateListener 
     @Override
     public void statusUpdate(Task.TaskState state, String message) {
         // Tasks shouldn't report ready/notready/running
+        Log.v(TAG,"Status update: " + state.toString() + ": " + message);
         switch (state) {
             case COMPLETED:
 //                listener.statusUpdate(TaskState.RUNNING, message + " " + Integer.toString(currentTaskId));

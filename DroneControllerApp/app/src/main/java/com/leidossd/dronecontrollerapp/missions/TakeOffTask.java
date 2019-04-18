@@ -17,7 +17,6 @@ public class TakeOffTask extends Task {
 
     @Override
     void start() {
-        try {
             FlightControllerWrapper.getInstance()
                     .startTakeoff((error) -> {
                         if (error != null) {
@@ -33,12 +32,8 @@ public class TakeOffTask extends Task {
                             listener.statusUpdate(currentState, title + " completed");
                         }
                     });
-            if (FlightControllerWrapper.getInstance().isAirborne())
-                listener.statusUpdate(TaskState.COMPLETED, title + " completed");
-        } catch (Exception e) {
-            Log.e(TAG, "Could not take off: " + e.getMessage());
-            listener.statusUpdate(TaskState.FAILED, e.getMessage());
-        }
+//            if (FlightControllerWrapper.getInstance().isAirborne())
+//                listener.statusUpdate(TaskState.COMPLETED, title + " completed");
     }
 
     @Override
