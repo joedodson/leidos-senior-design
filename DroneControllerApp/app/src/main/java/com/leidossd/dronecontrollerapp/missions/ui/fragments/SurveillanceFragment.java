@@ -226,22 +226,19 @@ public class SurveillanceFragment extends Fragment implements OnMapReadyCallback
                                     new LatLng(location.getLatitude(),
                                             location.getLongitude()), MAX_ZOOM));
 
-                            LatLng pos;
+                            LatLng pos = new LatLng(location.getLatitude(), location.getLongitude());
+                            float droneBearing = 0;
+
                             flightController = FlightControllerWrapper.getInstance();
                             if(flightController != null) {
                                 if(!flightController.isHomeSet()) {
-                                    pos = new LatLng(location.getLatitude(), location.getLongitude());
                                     flightController.setHome(pos);
                                 } else {
                                     pos = coordToLatLng(flightController.getPosition());
                                 }
 
                                 flightController.syncDirection();
-                                droneLocationMarker = googleMap.addMarker(new MarkerOptions()
-                                        .position(pos)
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_drone_white_direction))
-                                        .anchor(0.5f, 0.5f)
-                                        .rotation(flightController.getAngleFacing()));
+                                droneBearing = flightController.getAngleFacing();
 
                                 Handler handler = new Handler();
                                 handler.postDelayed(new Runnable() {
@@ -253,6 +250,12 @@ public class SurveillanceFragment extends Fragment implements OnMapReadyCallback
                                     }
                                 }, 100);
                             }
+
+                            droneLocationMarker = googleMap.addMarker(new MarkerOptions()
+                                    .position(pos)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_drone_white_direction))
+                                    .anchor(0.5f, 0.5f)
+                                    .rotation(droneBearing));
                         }
                     } else {
                         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0, 0), MAX_ZOOM));

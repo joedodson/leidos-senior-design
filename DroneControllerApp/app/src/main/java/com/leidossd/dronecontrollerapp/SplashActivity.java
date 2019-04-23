@@ -177,6 +177,8 @@ public class SplashActivity extends AppCompatActivity {
         // If no missing permissions, continue to MainActivity
         if (missingPermissions.isEmpty()) {
             permissionsGranted.set(true);
+
+            MainApplication.registerSdk();
             startNextActivityConditionally();
         } else {
             startActivity(new Intent(SplashActivity.this, SDKRegistrationErrorActivity.class));

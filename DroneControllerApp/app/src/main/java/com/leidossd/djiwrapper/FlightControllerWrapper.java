@@ -1,6 +1,7 @@
 package com.leidossd.djiwrapper;
 
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -11,6 +12,7 @@ import dji.sdk.products.Aircraft;
 import dji.sdk.sdkmanager.DJISDKManager;
 
 public class FlightControllerWrapper implements DeadReckoningFlightControl.PositionListener, DeadReckoningFlightControl.DirectionListener {
+    private static final String TAG = FlightControllerWrapper.class.getSimpleName();
     private static FlightControllerWrapper instance = null;
 
     private FlightController flightController;
@@ -24,7 +26,12 @@ public class FlightControllerWrapper implements DeadReckoningFlightControl.Posit
 
     public static FlightControllerWrapper getInstance() {
         if (instance == null)
-            instance = new FlightControllerWrapper();
+            try {
+                instance = new FlightControllerWrapper();
+            } catch (NullPointerException e) {
+                Log.e(TAG, "Error creating flight controller. Make sure drone is connected");
+                instance = null;
+            }
 
         return instance;
     }
