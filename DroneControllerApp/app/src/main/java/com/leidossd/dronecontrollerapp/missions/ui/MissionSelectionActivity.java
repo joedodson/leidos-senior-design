@@ -22,8 +22,8 @@ import com.leidossd.dronecontrollerapp.MenuActivity;
 import com.leidossd.dronecontrollerapp.R;
 import com.leidossd.dronecontrollerapp.missions.Mission;
 import com.leidossd.dronecontrollerapp.missions.MissionAdapter;
-import com.leidossd.dronecontrollerapp.missions.MissionRunner;
-import com.leidossd.dronecontrollerapp.missions.MissionRunnerService;
+import com.leidossd.dronecontrollerapp.missions.execution.MissionRunner;
+import com.leidossd.dronecontrollerapp.missions.execution.MissionRunnerService;
 import com.leidossd.dronecontrollerapp.missions.Task;
 import com.leidossd.dronecontrollerapp.missions.ui.fragments.SurveillanceFragment;
 import com.leidossd.dronecontrollerapp.missions.ui.fragments.TestFragment;
@@ -47,7 +47,6 @@ public class MissionSelectionActivity extends MenuActivity implements MissionAda
     private ImageView droneImage;
     private ImageView nextArrow;
     private ConstraintLayout missionBar;
-    private Handler missionBindHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,15 +76,29 @@ public class MissionSelectionActivity extends MenuActivity implements MissionAda
 
         adapter = new MissionAdapter(this);
         listView.setAdapter(adapter);
-        missionRunner = new MissionRunner(this, this);
-        missionBindHandler = new Handler();
-        missionBindHandler.postDelayed(this::checkBinding, 250);
+        missionRunner = new MissionRunner(this);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        updateStatus(Task.TaskState.NOT_READY);
+
+        Mission currentMission = missionRunner.getCurrentMission();
+        if(currentMission != null) {
+            currentMission.addListener(this);
+            updateStatus(currentMission.getCurrentState());
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Mission currentMission = missionRunner.getCurrentMission();
+        if(currentMission != null) {
+            currentMission.addListener(this);
+            updateStatus(currentMission.getCurrentState());
+        }
     }
 
     public void onClicked(View view) {
@@ -120,28 +133,20 @@ public class MissionSelectionActivity extends MenuActivity implements MissionAda
         popupMenu.show();
     }
 
-    public void checkBinding(){
-        if(missionRunner.isBinded()){
-            missionRunner.loadMission();
-        } else {
-            missionBindHandler.postDelayed(this::checkBinding, 250);
-        }
-    }
-
     public void updateStatus(Task.TaskState state) {
-        MissionRunnerService missionRunnerService = MissionRunner.missionRunnerService;
-        if (missionRunnerService != null) {
-            Mission mission = missionRunnerService.getCurrentMission();
+        Mission mission = missionRunner.getCurrentMission();
+
+        runOnUiThread(() -> {
             if (mission != null) {
-                if (state.toString().equals("RUNNING")) {
+                if (state == Task.TaskState.RUNNING) {
                     missionText.setText(String.format("%s - %s - %s", mission.getTitle(), state.toString(), mission.getCurrentTaskName()));
                     noMissionText.setVisibility(View.INVISIBLE);
                     missionText.setVisibility(View.VISIBLE);
                     droneImage.setVisibility(View.VISIBLE);
                     nextArrow.setVisibility(View.VISIBLE);
                     missionBar.setClickable(true);
-                } else if (state.toString().equals("COMPLETED") ||
-                        state.toString().equals("FAILED")) {
+                } else if (state == Task.TaskState.COMPLETED ||
+                        state == Task.TaskState.FAILED) {
                     noMissionText.setVisibility(View.VISIBLE);
                     missionText.setVisibility(View.INVISIBLE);
                     droneImage.setVisibility(View.INVISIBLE);
@@ -149,12 +154,12 @@ public class MissionSelectionActivity extends MenuActivity implements MissionAda
                     missionBar.setClickable(false);
                 }
             }
-        }
+        });
     }
 
     @Override
-    public void statusUpdate(Task.TaskState status, String message) {
-        updateStatus(status);
+    public void statusUpdate(Task.TaskState state, String message) {
+        updateStatus(state);
     }
 
     @Override
@@ -164,7 +169,7 @@ public class MissionSelectionActivity extends MenuActivity implements MissionAda
             boolean saveMission = data.getBooleanExtra("Save Mission", false);
             if (saveMission) adapter.addMission(mission);
             if (mission != null) {
-                missionRunner.startMission(this, mission);
+                missionRunner.startMission(this, mission, this);
             }
         }
     }

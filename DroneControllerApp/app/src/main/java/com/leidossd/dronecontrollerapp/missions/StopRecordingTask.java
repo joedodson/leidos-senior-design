@@ -25,9 +25,9 @@ public class StopRecordingTask extends Task {
 //        DJISDKManager.getInstance().getProduct().getGimbal().
         DJISDKManager.getInstance().getProduct().getCamera().stopRecordVideo((error) -> {
             if (error != null)
-                listener.statusUpdate(TaskState.FAILED, error.getDescription());
+                listeners.statusUpdate(TaskState.FAILED, error.getDescription());
             else
-                listener.statusUpdate(TaskState.COMPLETED, "Stopped Recording...");
+                listeners.statusUpdate(TaskState.COMPLETED, "Stopped Recording...");
         });
     }
 

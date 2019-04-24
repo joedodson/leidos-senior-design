@@ -3,10 +3,12 @@ package com.leidossd.dronecontrollerapp.missions;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+
 abstract public class Task implements Parcelable {
     String title;
     TaskState currentState;
-    StatusUpdateListener listener;
+    ListenerList listeners;
 
     // To add a new task type you'll need to add it to the enum, and the switch statement below
     // NOTE: DO NOT ADD MISSION TYPES HERE, THEY BELONG IN THE MISSION ABSTRACT CLASS
@@ -18,36 +20,31 @@ abstract public class Task implements Parcelable {
     Task(String title) {
         this.title = title;
         this.currentState = TaskState.NOT_READY;
+        this.listeners = new ListenerList();
     }
 
     public String getTitle() {
         return title;
     }
 
-    String getStatus() {
-        return currentState.toString();
+    public void addListener(StatusUpdateListener listener) {
+        this.listeners.add(listener);
     }
 
-    void setListener(StatusUpdateListener listener) {
-        this.listener = listener;
+    public void removeListener(StatusUpdateListener listener) {
+        listeners.remove(listener);
     }
 
-    void clearListener() {
-        this.listener = null;
+    protected void clearListener() {
+        this.listeners.clear();
+    }
+
+    public TaskState getCurrentState() {
+        return currentState;
     }
 
     public interface StatusUpdateListener {
         void statusUpdate(TaskState newStatus, String message);
-    }
-
-    public class StatusUpdate {
-        public TaskState state;
-        public String message;
-
-        StatusUpdate(TaskState state, String message) {
-            this.state = state;
-            this.message = message;
-        }
     }
 
     @Override
@@ -65,5 +62,35 @@ abstract public class Task implements Parcelable {
         RUNNING,
         COMPLETED,
         FAILED
+    }
+
+    protected class ListenerList {
+        ArrayList<StatusUpdateListener> listeners;
+
+        ListenerList() {
+            this(new ArrayList<>());
+        }
+
+        ListenerList(ArrayList<StatusUpdateListener> listeners) {
+            this.listeners = listeners;
+        }
+
+        public void statusUpdate(TaskState newStatus, String message) {
+            for (StatusUpdateListener listener : listeners) {
+                listener.statusUpdate(newStatus, message);
+            }
+        }
+
+        public void add(StatusUpdateListener listener) {
+            listeners.add(listener);
+        }
+
+        public void remove(StatusUpdateListener listener) {
+            listeners.remove(listener);
+        }
+
+        public void clear(){
+            listeners.clear();
+        }
     }
 }

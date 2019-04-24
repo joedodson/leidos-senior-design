@@ -18,10 +18,10 @@ public class RotateByTask extends Task {
     void start() {        
         FlightControllerWrapper.getInstance().rotateBy(angle, (error) -> {
             if (error != null) {
-                listener.statusUpdate(TaskState.FAILED, "ROTATION FAILED! " + error.getDescription());
+                listeners.statusUpdate(TaskState.FAILED, "ROTATION FAILED! " + error.getDescription());
             }
             else
-                listener.statusUpdate(TaskState.COMPLETED, "ROTATION SUCCESS");
+                listeners.statusUpdate(TaskState.COMPLETED, "ROTATION SUCCESS");
         });
     }
 

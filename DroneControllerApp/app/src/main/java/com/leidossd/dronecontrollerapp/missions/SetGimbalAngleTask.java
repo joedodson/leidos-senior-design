@@ -47,9 +47,9 @@ public class SetGimbalAngleTask extends Task {
         // Point camera down at an angle
         DJISDKManager.getInstance().getProduct().getGimbal().rotate(rotation, (error) -> {
             if (error != null)
-                listener.statusUpdate(TaskState.FAILED, title + ": " + error.getDescription());
+                listeners.statusUpdate(TaskState.FAILED, title + ": " + error.getDescription());
             else
-                listener.statusUpdate(TaskState.COMPLETED, String.format(Locale.getDefault(), "Rotated Gimbal to %.1f", angle));
+                listeners.statusUpdate(TaskState.COMPLETED, String.format(Locale.getDefault(), "Rotated Gimbal to %.1f", angle));
         });
     }
 

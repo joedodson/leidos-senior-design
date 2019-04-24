@@ -5,7 +5,6 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import com.leidossd.djiwrapper.FlightControllerWrapper;
-import com.leidossd.dronecontrollerapp.MainApplication;
 
 
 public class TakeOffTask extends Task {
@@ -17,23 +16,23 @@ public class TakeOffTask extends Task {
 
     @Override
     void start() {
-            FlightControllerWrapper.getInstance()
-                    .startTakeoff((error) -> {
-                        if (error != null) {
-                            if (FlightControllerWrapper.getInstance().compassHasError()) {
-                                listener.statusUpdate(TaskState.FAILED, "Compass needs to be calibrated!");
-                                Log.e(TAG, "Could not takeoff: compass not calibrated");
-                            } else {
-                                listener.statusUpdate(TaskState.FAILED, error.toString());
-                                Log.e(TAG, "Could not take off: " + error.getDescription());
-                            }
+        FlightControllerWrapper.getInstance()
+                .startTakeoff((error) -> {
+                    if (error != null) {
+                        if (FlightControllerWrapper.getInstance().compassHasError()) {
+                            listeners.statusUpdate(TaskState.FAILED, "Compass needs to be calibrated!");
+                            Log.e(TAG, "Could not takeoff: compass not calibrated");
                         } else {
-                            currentState = TaskState.COMPLETED;
-                            listener.statusUpdate(currentState, title + " completed");
+                            listeners.statusUpdate(TaskState.FAILED, error.toString());
+                            Log.e(TAG, "Could not take off: " + error.getDescription());
                         }
-                    });
+                    } else {
+                        currentState = TaskState.COMPLETED;
+                        listeners.statusUpdate(currentState, title + " completed");
+                    }
+                });
 //            if (FlightControllerWrapper.getInstance().isAirborne())
-//                listener.statusUpdate(TaskState.COMPLETED, title + " completed");
+//                listeners.statusUpdate(TaskState.COMPLETED, title + " completed");
     }
 
     @Override

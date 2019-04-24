@@ -145,6 +145,6 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
 
-        <service android:name=".missions.MissionRunnerService" />
+        <service android:name=".missions.execution.MissionRunnerService" />
     </application>
 </manifest>

@@ -24,7 +24,7 @@ public class WaitTask extends Task {
 //            @Override
 //            public void run() {
 //                currentState = TaskState.COMPLETED;
-//                listener.statusUpdate(TaskState.COMPLETED, "Wait finished");
+//                listeners.statusUpdate(TaskState.COMPLETED, "Wait finished");
 //            }
 //        }, milliseconds);
         try {
@@ -33,7 +33,7 @@ public class WaitTask extends Task {
             Log.e("TAG", e.getLocalizedMessage());
         }
         currentState = TaskState.COMPLETED;
-        listener.statusUpdate(currentState, "Wait finished");
+        listeners.statusUpdate(currentState, "Wait finished");
     }
 
     void stop() {
