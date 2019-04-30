@@ -3,11 +3,10 @@ package com.leidossd.djiwrapper;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.leidossd.dronecontrollerapp.missions.RotationTask;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
+import dji.common.flightcontroller.FlightControllerState;
 import dji.common.flightcontroller.virtualstick.FlightControlData;
 import dji.common.flightcontroller.virtualstick.FlightCoordinateSystem;
 import dji.common.flightcontroller.virtualstick.RollPitchControlMode;
@@ -27,7 +26,7 @@ public class VirtualStickFlightControl {
     // m/s, probably should make a constant for the speed and angular velocity, no magic numbers
     private float speed = (float) .5;
     // deg/s
-    private float angularVelocity = 50;
+    private float angularVelocity = 25;
 
     private float pitch;
     private float roll;
@@ -48,7 +47,8 @@ public class VirtualStickFlightControl {
 
     private VirtualStickFlightControl() {
         pitch = roll = yaw = throttle = 0;
-        updatePeriod = 200;
+        // must be between 40 and 200
+        updatePeriod = 50;
         inFlight = false;
         flightController = ((Aircraft) DJISDKManager.getInstance().
                 getProduct()).getFlightController();
@@ -59,6 +59,8 @@ public class VirtualStickFlightControl {
         inputTimer = null;
         inputTask = null;
         enabled = false;
+        listener = null;
+        callbackFail = null;
     }
 
     public static VirtualStickFlightControl getInstance() {
@@ -117,15 +119,20 @@ public class VirtualStickFlightControl {
     }
 
     public void setDirection(Coordinate direction) {
+        if(direction.magnitude() == 0)
+            return;
         Coordinate unitDirection = direction.unit();
         this.roll = unitDirection.getX() * speed;
         this.pitch = unitDirection.getY() * speed;
         this.throttle = unitDirection.getZ() * speed;
     }
 
-    public void setYaw(float yaw) {
+    public void setYaw(boolean clockwise) {
+        if(clockwise)
+            this.yaw = angularVelocity;
+        else
+            this.yaw = -angularVelocity;
         Log.v(TAG,"Setting yaw to " + String.valueOf(yaw));
-        this.yaw = yaw;
     }
 
     public float getPitch() {
@@ -161,19 +168,38 @@ public class VirtualStickFlightControl {
 //                flightController.setRollPitchControlMode(RollPitchControlMode.VELOCITY);
 //                flightController.setVerticalControlMode(VerticalControlMode.VELOCITY);
 //                flightController.setYawControlMode(YawControlMode.ANGULAR_VELOCITY);
-
+                if(yaw == 0)
+                    Log.v(TAG, String.format("VS: sent     r=%.3f p=%.3f t=%.3f y=%.3f", roll, pitch, throttle, yaw));
                 flightController.sendVirtualStickFlightControlData(
                         new FlightControlData(roll, pitch, yaw, throttle), (error) -> {
                             if (error != null) {
+                                Log.v(TAG, "VS: send failure, error: " + error.getDescription());
                                 if (callbackFail != null)
                                     callbackFail.onResult(error);
-                                halt();
+//                                halt();
+                            }
+                            else {
+                                FlightControllerState state = flightController.getState();
+                                if(yaw == 0)
+                                Log.v(TAG, String.format("VS: measured E=%.3f N=%.3f D=%.3f y=?",
+                                        state.getVelocityY(),
+                                        state.getVelocityX(),
+                                        state.getVelocityZ()));
+                                if (listener != null)
+//                                    listener.increment(
+//                                            new Coordinate(roll, pitch, throttle).scale((updatePeriod / (float) 1000.0)),
+//                                            yaw * (updatePeriod / (float) 1000.0));
+                                    listener.increment(new Coordinate(
+                                            state.getVelocityY(),
+                                            state.getVelocityX(),
+                                            state.getVelocityZ())
+                                            .scale(updatePeriod/1000f), yaw*(updatePeriod/1000f));
                             }
                         });
-                if (listener != null)
-                    listener.increment(
-                            new Coordinate(roll, pitch, throttle).scale((updatePeriod / (float) 1000.0)),
-                            yaw * (updatePeriod / (float) 1000.0));
+//                if (listener != null)
+//                    listener.increment(
+//                            new Coordinate(roll, pitch, throttle).scale((updatePeriod / (float) 1000.0)),
+//                            yaw * (updatePeriod / (float) 1000.0));
             }
         }
     }

@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:elevation="@dimen/menu_elevation"
     android:clipToPadding="false"
-    android:clipChildren="false">
+    android:clipChildren="false"
+    android:background="@color/accent_normal">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/menu_header_container"
@@ -75,13 +76,13 @@
                 android:drawableStart="@drawable/ic_mission_white"
                 android:text="@string/menu_main_item_missions_title" />
 
-            <View style="@style/Divider" />
+            <!--<View style="@style/Divider" />-->
 
-            <Button
-                android:id="@+id/main_menu_developer"
-                style="@style/CustomWidget.Button.Menu"
-                android:drawableStart="@drawable/ic_android_logo_white"
-                android:text="@string/menu_main_item_developer_title" />
+            <!--<Button-->
+                <!--android:id="@+id/main_menu_developer"-->
+                <!--style="@style/CustomWidget.Button.Menu"-->
+                <!--android:drawableStart="@drawable/ic_android_logo_white"-->
+                <!--android:text="@string/menu_main_item_developer_title" />-->
 
             <View style="@style/Divider" />
 
@@ -93,19 +94,19 @@
 
             <View style="@style/Divider" />
 
-            <Button
-                android:id="@+id/main_menu_grid"
-                style="@style/CustomWidget.Button.Menu"
-                android:drawableStart="@drawable/ic_cog_white"
-                android:text="@string/menu_main_item_grid_title" />
+            <!--<Button-->
+                <!--android:id="@+id/main_menu_grid"-->
+                <!--style="@style/CustomWidget.Button.Menu"-->
+                <!--android:drawableStart="@drawable/ic_cog_white"-->
+                <!--android:text="@string/menu_main_item_grid_title" />-->
 
-            <View style="@style/Divider" />
+            <!--<View style="@style/Divider" />-->
 
-            <Button
-                android:id="@+id/main_menu_settings"
-                style="@style/CustomWidget.Button.Menu"
-                android:drawableStart="@drawable/ic_cog_white"
-                android:text="@string/menu_main_item_settings_title" />
+            <!--<Button-->
+                <!--android:id="@+id/main_menu_settings"-->
+                <!--style="@style/CustomWidget.Button.Menu"-->
+                <!--android:drawableStart="@drawable/ic_cog_white"-->
+                <!--android:text="@string/menu_main_item_settings_title" />-->
 
         </LinearLayout>
     </ScrollView>

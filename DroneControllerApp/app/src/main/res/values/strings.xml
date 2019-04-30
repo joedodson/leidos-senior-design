@@ -50,8 +50,10 @@
     <string name="mission_blank">Create a mission to start.</string>
 
     <string name="mission_waypoint_title">Waypoint Mission</string>
+    <string name="mission_waypoint_description">Fly to specified waypoint and then return home</string>
 
     <string name="mission_surveillance_title">Surveillance Mission</string>
+    <string name="mission_surveillance_description">Fly to specified waypoint, do surveillance, and then return home</string>
 
     <string name="mission_test_title">Test Mission</string>
     <string name="mission_test_description">Testing mission for developers - who knows what it\'ll do&#8230;</string>

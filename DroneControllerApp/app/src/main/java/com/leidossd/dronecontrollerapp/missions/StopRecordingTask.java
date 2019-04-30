@@ -25,9 +25,9 @@ public class StopRecordingTask extends Task {
 //        DJISDKManager.getInstance().getProduct().getGimbal().
         DJISDKManager.getInstance().getProduct().getCamera().stopRecordVideo((error) -> {
             if (error != null)
-                listener.statusUpdate(TaskState.FAILED, error.getDescription());
+                listeners.statusUpdate(TaskState.FAILED, error.getDescription());
             else
-                listener.statusUpdate(TaskState.COMPLETED, "Stoped Recording...");
+                listeners.statusUpdate(TaskState.COMPLETED, "Stopped Recording...");
         });
     }
 
@@ -35,13 +35,13 @@ public class StopRecordingTask extends Task {
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public TakeOffTask createFromParcel(Parcel in) {
-            return new TakeOffTask();
+        public StopRecordingTask createFromParcel(Parcel in) {
+            return new StopRecordingTask();
 
         }
 
-        public TakeOffTask[] newArray(int size) {
-            return new TakeOffTask[size];
+        public StopRecordingTask[] newArray(int size) {
+            return new StopRecordingTask[size];
         }
     };
 }

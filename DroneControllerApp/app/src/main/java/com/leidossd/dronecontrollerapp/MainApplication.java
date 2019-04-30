@@ -35,13 +35,15 @@ import static com.leidossd.utils.IntentAction.REGISTRATION_RESULT;
 public class MainApplication extends Application {
     private static final String TAG = MainApplication.class.getName();
 
-    LocalBroadcastManager localBroadcastManager;
+    static LocalBroadcastManager localBroadcastManager;
 
     private static BootstrapApplication baseApplication;
 
     private static Aircraft droneInstance;
     private static Camera cameraInstance;
     private static boolean droneConnected;
+
+    static DJISDKManager.SDKManagerCallback djiSdkManagerCallback;
 
     public MainApplication() {
     }
@@ -62,7 +64,7 @@ public class MainApplication extends Application {
 
         localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
 
-        DJISDKManager.SDKManagerCallback DJISDKManagerCallback = new DJISDKManager.SDKManagerCallback() {
+        djiSdkManagerCallback = new DJISDKManager.SDKManagerCallback() {
             @Override
             public void onRegister(DJIError result) {
                 boolean registrationResult = result == DJISDKError.REGISTRATION_SUCCESS;
@@ -72,6 +74,8 @@ public class MainApplication extends Application {
 
                 localBroadcastManager.sendBroadcast(registrationIntent);
                 DJISDKManager.getInstance().startConnectionToProduct();
+
+                Log.d(TAG, "DJI SDK Registered with result: " + String.valueOf(registrationResult));
             }
 
             @Override
@@ -107,7 +111,7 @@ public class MainApplication extends Application {
             }
         };
 
-        DJISDKManager.getInstance().registerApp(getApplicationContext(), DJISDKManagerCallback);
+        DJISDKManager.getInstance().registerApp(getApplicationContext(), djiSdkManagerCallback);
     }
 
     private void broadcastConnectionChange(DroneConnectionStatus droneStatus) {
@@ -146,5 +150,9 @@ public class MainApplication extends Application {
 
     public static void showToast(String msg) {
         Toast.makeText(baseApplication, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void registerSdk() {
+        DJISDKManager.getInstance().registerApp(baseApplication, djiSdkManagerCallback);
     }
 }

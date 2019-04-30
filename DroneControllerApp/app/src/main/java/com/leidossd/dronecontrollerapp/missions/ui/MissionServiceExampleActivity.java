@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.leidossd.djiwrapper.Coordinate;
 import com.leidossd.dronecontrollerapp.MenuActivity;
 import com.leidossd.dronecontrollerapp.R;
-import com.leidossd.dronecontrollerapp.missions.MissionRunner;
+import com.leidossd.dronecontrollerapp.missions.execution.MissionRunner;
 import com.leidossd.dronecontrollerapp.missions.Task;
 import com.leidossd.dronecontrollerapp.missions.WaypointMission;
 
@@ -23,15 +23,14 @@ public class MissionServiceExampleActivity extends MenuActivity implements Task.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mission_service_example);
 
-
         missionStatusTextView = findViewById(R.id.tv_activity_mission_service_example_status);
 
         mission = new WaypointMission(new Coordinate(0, 3, 0));
-        missionRunner = new MissionRunner(this, this);
+        missionRunner = new MissionRunner(this);
     }
 
     public void startService(View view) {
-        missionRunner.startMission(this, mission);
+        missionRunner.startMission(this, mission, this);
     }
 
     private void setMissionStatus(String status) {

@@ -5,6 +5,11 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <FrameLayout
+        android:id="@+id/live_video_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,9 +31,4 @@
             android:background="@drawable/btn_confirm_land"
             android:onClick="confirmLand" />
     </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/live_video_fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 </merge>

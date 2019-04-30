@@ -1,21 +1,20 @@
-package com.leidossd.dronecontrollerapp.missions;
+package com.leidossd.dronecontrollerapp.missions.execution;
 
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.content.LocalBroadcastManager;
 
 import com.leidossd.dronecontrollerapp.R;
-import com.leidossd.dronecontrollerapp.missions.MissionRunnerService.ServiceStatusUpdate;
+import com.leidossd.dronecontrollerapp.missions.Mission;
+import com.leidossd.dronecontrollerapp.missions.Task;
 import com.leidossd.dronecontrollerapp.missions.ui.MissionStatusActivity;
 
 import java.util.Locale;
@@ -29,7 +28,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * service. Provides simple API to use everywhere else in the app.
  */
 public class MissionRunner {
-    public static MissionRunnerService missionRunnerService = null;
+    private static final String TAG = MissionRunner.class.getSimpleName();
+    private static MissionRunnerService missionRunnerService = null;
 
     /**
      * Static atomics are the best way around Singleton pattern for now. Multiple mission runners
@@ -40,29 +40,30 @@ public class MissionRunner {
     private static AtomicBoolean serviceBindingInProgress = new AtomicBoolean(false);
     private static AtomicBoolean missionInProgress = new AtomicBoolean(false);
 
-    private BroadcastReceiver missionStartBroadcastReceiver;
-    private BroadcastReceiver missionFinishBroadcastReceiver;
-    private BroadcastReceiver missionErrorBroadcastReceiver;
-
-    private NotificationManagerCompat notificationManager;
-    private NotificationCompat.Builder notificationBuilder;
-    private int notificationId;
+    private static NotificationManagerCompat notificationManager;
+    private static NotificationCompat.Builder notificationBuilder;
+    private static int notificationId;
+    private static Timer timer;
     private static final long notificationUpdateIntervalMs = 1000;
-    private Handler handler;
-    private Timer timer;
+    private static Handler handler;
     private long missionStartTime = 0;
 
-    Task.StatusUpdateListener listener;
-
-    private static LocalBroadcastManager localBroadcastManager;
+    private static final Task.StatusUpdateListener mListener = (newStatus, message) -> {
+        if(newStatus == Task.TaskState.COMPLETED || newStatus == Task.TaskState.FAILED) {
+            notificationManager.notify(notificationId,
+                    notificationBuilder.setContentText(
+                            String.format("%s %s",
+                                    missionRunnerService.getCurrentMission().getTitle(),
+                                    newStatus.toString()))
+                            .build());
+            clean();
+        }
+    };
 
     private static final String MISSION_BUNDLE_EXTRA_NAME = "MISSION_EXTRA";
 
-    public MissionRunner(Context applicationContext, Task.StatusUpdateListener listener) {
-        Random random = new Random();
-        notificationId = random.nextInt(1000) + 1;
+    public MissionRunner(Context applicationContext) {
         notificationManager = NotificationManagerCompat.from(applicationContext);
-        this.listener = listener;
         handler = new Handler();
 
         if (!serviceBindingInProgress.get()) {
@@ -99,7 +100,6 @@ public class MissionRunner {
             }
         };
         applicationContext.bindService(intent, missionRunnerServiceConnection, Context.BIND_AUTO_CREATE);
-        localBroadcastManager = LocalBroadcastManager.getInstance(applicationContext);
     }
 
     /**
@@ -109,22 +109,15 @@ public class MissionRunner {
      * @param applicationContext Context from activity or application
      * @param mission            The mission to be executed
      */
-    public synchronized void startMission(Context applicationContext, Mission mission) {
+    public synchronized void startMission(Context applicationContext, Mission mission, Task.StatusUpdateListener listener) {
         if (!missionRunnerServiceIsBound.get()) {
-//            mission.getMissionUpdateCallback().onMissionError("MissionRunner unable to bind to service");
             listener.statusUpdate(Task.TaskState.FAILED, "MissionRunner unable to bind to service");
         } else if (!missionInProgress.compareAndSet(false, true)) {
-//            mission.getMissionUpdateCallback().onMissionError("Mission already in progress");
             listener.statusUpdate(Task.TaskState.FAILED, "Mission already in progress");
         } else {
 
             // Put mission into an intent as an extra (make sure the mission implements Parcelable correctly
             Intent missionIntent = new Intent(applicationContext, MissionRunnerService.class);
-
-//            if (mission.getMissionUpdateCallback() != null) {
-            if (listener != null) {
-                registerReceivers(mission);
-            }
 
             missionIntent.putExtra(MISSION_BUNDLE_EXTRA_NAME, mission);
 
@@ -134,6 +127,8 @@ public class MissionRunner {
             PendingIntent pendingIntent =
                     PendingIntent.getActivity(applicationContext, 0, notificationIntent, 0);
 
+            Random random = new Random();
+            notificationId = random.nextInt(1000) + 1;
             notificationBuilder =
                     new NotificationCompat.Builder(applicationContext, applicationContext.getResources().getString(R.string.notification_channel_name))
                             .setContentTitle("Mission Runner")
@@ -152,6 +147,22 @@ public class MissionRunner {
             }
             missionRunnerService.startForeground(notificationId, notificationBuilder.build());
 
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if(missionRunnerService.mission != null) {
+                        if(listener != null) {
+                            missionRunnerService.mission.addListener(listener);
+                            listener.statusUpdate(missionRunnerService.mission.getCurrentState(), null);
+                        }
+
+                        missionRunnerService.mission.addListener(mListener);
+                    } else {
+                        handler.postDelayed(this, 100);
+                    }
+                }
+            }, 100);
+
             // Repeatedly updates the notification with mission run time
             TimerTask updateNotificationTask = new TimerTask() {
                 @Override
@@ -162,7 +173,7 @@ public class MissionRunner {
                         String formattedRunningTime;
                         if (currentMission != null) {
                             formattedRunningTime = String.format(Locale.US, "%s %s %d:%02d",
-                                    currentMission.getTitle(), currentMission.getStatus(),
+                                    currentMission.getTitle(), currentMission.getCurrentState(),
                                     (runningTime / 1000) / 60,
                                     (int) ((runningTime / 1000) % 60));
                         } else {
@@ -180,66 +191,28 @@ public class MissionRunner {
     }
 
     /**
-     * When a mission is created, it might have callbacks attached to it. These can't be put into a
-     * Parcel, so MissionRunner and MissionRunnerService use LocalBroadcasts to communicate these
-     * callbacks instead.
-     *
-     * @param mission Mission with @NonNull MissionUpdateCallback
+     * Returns the currently active mission in service.
+     * Returns copy so that mission listener can't be modified without using the setMissionListener method
+     * @return copy of currently active mission or null if no active mission
      */
-    private void registerReceivers(Mission mission) {
+    public @Nullable Mission getCurrentMission() {
+        if (missionRunnerService != null && missionRunnerService.mission != null) {
+            return missionRunnerService.mission;
+        }
 
-        missionStartBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-//                mission.getMissionUpdateCallback().onMissionStart(intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
-                listener.statusUpdate(Task.TaskState.RUNNING, intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
-            }
-        };
-
-        missionFinishBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                clean();
-                notificationManager.notify(notificationId,
-                        notificationBuilder.setContentText(
-                                String.format("%s %s",
-                                        missionRunnerService.getCurrentMission().getTitle(),
-                                        missionRunnerService.getCurrentMission().getStatus()))
-                                .build());
-
-//                mission.getMissionUpdateCallback().onMissionError(intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
-                listener.statusUpdate(Task.TaskState.FAILED, intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
-            }
-        };
-
-        missionErrorBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-//                mission.getMissionUpdateCallback().onMissionError(intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
-                listener.statusUpdate(Task.TaskState.FAILED, intent.getStringExtra(ServiceStatusUpdate.getResultKey()));
-            }
-        };
-
-        localBroadcastManager.registerReceiver(missionStartBroadcastReceiver, new IntentFilter(ServiceStatusUpdate.MISSION_START.action));
-        localBroadcastManager.registerReceiver(missionFinishBroadcastReceiver, new IntentFilter(ServiceStatusUpdate.MISSION_FINISH.action));
-        localBroadcastManager.registerReceiver(missionErrorBroadcastReceiver, new IntentFilter(ServiceStatusUpdate.MISSION_ERROR.action));
+        return null;
     }
-
 
     /**
      * For code readability. All tasks that should be done in between missions.
      */
-    private void clean() {
-        missionRunnerService.stopForeground(true);
+    private static void clean() {
+        missionRunnerService.stopForeground(false);
         missionRunnerService.stopSelf();
 
         timer.cancel();
         handler.removeCallbacksAndMessages(null);
         missionInProgress.set(false);
-
-        localBroadcastManager.unregisterReceiver(missionStartBroadcastReceiver);
-        localBroadcastManager.unregisterReceiver(missionFinishBroadcastReceiver);
-        localBroadcastManager.unregisterReceiver(missionErrorBroadcastReceiver);
     }
 }
 

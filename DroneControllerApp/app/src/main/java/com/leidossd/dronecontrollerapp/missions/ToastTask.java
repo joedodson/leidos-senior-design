@@ -17,10 +17,10 @@ public class ToastTask extends Task {
     void start() {
         Looper.prepare();
         currentState = TaskState.RUNNING;
-        listener.statusUpdate(currentState, String.format("Task \"%s\" started.", title));
+        listeners.statusUpdate(currentState, String.format("Task \"%s\" started.", title));
         showToast(toast);
         currentState = TaskState.COMPLETED;
-        listener.statusUpdate(currentState, String.format("Task \"%s\" finished.", title));
+        listeners.statusUpdate(currentState, String.format("Task \"%s\" finished.", title));
         Looper.loop();
     }
 

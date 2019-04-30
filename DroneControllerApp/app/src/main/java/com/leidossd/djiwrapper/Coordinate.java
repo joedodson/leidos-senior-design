@@ -1,5 +1,11 @@
+// Coordinate.java
+// Dalton Burke
+// Coordinate class, used to indicate position, and to do
+// linear algebra for dead reckoning calculations
+
 package com.leidossd.djiwrapper;
 
+// Coordinate needs to be parcelable to be handed between activities and services (for missions)
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -43,6 +49,11 @@ public class Coordinate implements Parcelable {
         return this.scale(1 / this.magnitude());
     }
 
+    // xy functions do the math for the xy plane (rotation complicates only xy)
+    public Coordinate xyUnit() {
+        return new Coordinate(this.x, this.y, 0).unit();
+    }
+
     public float magnitude() {
         return (float) Math.sqrt(x * x + y * y + z * z);
     }
@@ -53,12 +64,13 @@ public class Coordinate implements Parcelable {
 
     // a unit vector perpendicular to the current vector in the x,y plane
     public Coordinate perpendicularUnit() {
-        if (x == 0 && y == 0)
-            throw new IllegalArgumentException("Can't get a perpendicular unit vector from a 0 vector!");
-        if (x == 0)
-            return new Coordinate(1, -x / y, 0).unit();
-        else
-            return new Coordinate(y / x, -1, 0).unit();
+        return this.rotateByAngle(90);
+//        if (x == 0 && y == 0)
+//            throw new IllegalArgumentException("Can't get a perpendicular unit vector from a 0 vector!");
+//        if (x == 0)
+//            return new Coordinate(1, -x / y, 0).unit();
+//        else
+//            return new Coordinate(y / x, -1, 0).unit();
     }
 
     public float dot(Coordinate other) {
@@ -81,9 +93,9 @@ public class Coordinate implements Parcelable {
         return new Coordinate(newX, newY, this.z);
     }
 
+    // sine cosine math to determine which way the drone is
+    // facing with respect to the positive y axis, between -180 and 180
     public float angleFacing() {
-        float sin = this.x / this.magnitude();
-        float angle = (float) (180 * Math.asin(Math.abs(this.x / this.magnitude())) / Math.PI);
         if (this.x >= 0 && y >= 0)
             return (float) (180 * Math.asin(this.x / this.magnitude()) / Math.PI);
         else if (this.x >= 0)
@@ -96,19 +108,16 @@ public class Coordinate implements Parcelable {
 
     // The angle between the given angle and the angle that the current vector points at
     public float angleBetween(float angle) {
-        float diff = angle - angleFacing();
-        if (diff > 180)
-            return 360 - diff;
-        if (diff < -180)
-            return 360 + diff;
-
-        return diff;
+        float diff = (angle - angleFacing()) % 360;
+        // this is because java % can give negatives (WHY?!)
+        if(diff < 0)
+            diff += 360;
+        // diff should be between 0 and 360 now, if it's more than 180 we want it to go the other way
+        if(diff > 180)
+            return diff - 360;
+        else
+            return diff;
     }
-
-    // do not use
-    // public float angleBetween(Coordinate other){
-    //     return (float) (180*Math.acos(this.unit().dot(other.unit()))/Math.PI);
-    // }
 
     // representation of a coordinate in a basis formed with x, y
     // we do not care about z-axis here
@@ -134,7 +143,7 @@ public class Coordinate implements Parcelable {
         float d = y.getY();
         float det = a * d - b * c;
 
-        if (det < .01)
+        if (Math.abs(det) < .01)
             throw new IllegalArgumentException("x and y cannot form a basis if parallel!" +
                     x + ", " + y);
 

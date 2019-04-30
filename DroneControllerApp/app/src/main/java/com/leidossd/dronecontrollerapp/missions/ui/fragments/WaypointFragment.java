@@ -184,16 +184,11 @@ public class WaypointFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void getLocation() {
-        /*
-         * Get the best and most recent location of the device, which may be null in rare
-         * cases when a location is not available.
-         */
         try {
             if (getActivity() != null && locationPermission == PackageManager.PERMISSION_GRANTED) {
                 Task locationResult = fusedLocationClient.getLastLocation();
                 locationResult.addOnCompleteListener(getActivity(), task -> {
                     if (task.isSuccessful()) {
-                        // Set the map's camera position to the current location of the device.
                         location = (Location) task.getResult();
 
                         if (location != null) {
