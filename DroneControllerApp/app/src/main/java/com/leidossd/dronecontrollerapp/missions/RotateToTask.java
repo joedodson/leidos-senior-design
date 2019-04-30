@@ -22,10 +22,10 @@ public class RotateToTask extends Task {
     void start() {
         FlightControllerWrapper.getInstance().rotateTo(angle, (error) -> {
             if (error != null) {
-                listener.statusUpdate(TaskState.FAILED, "ROTATION FAILED! " + error.getDescription());
+                listeners.statusUpdate(TaskState.FAILED, "ROTATION FAILED! " + error.getDescription());
             }
             else
-                listener.statusUpdate(TaskState.COMPLETED, "ROTATION SUCCESS");
+                listeners.statusUpdate(TaskState.COMPLETED, "ROTATION SUCCESS");
         });
     }
 

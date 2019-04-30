@@ -3,7 +3,7 @@
     <item
         android:id="@+id/mtype_waypoint"
         android:title="@string/mission_waypoint_title"
-        android:visible="false"/>
+        android:visible="true"/>
 
     <item
         android:id="@+id/mtype_surveillance"
@@ -12,10 +12,10 @@
     <item
         android:id="@+id/mtype_custom"
         android:title="@string/mission_custom_title"
-        android:visible="false"/>
+        android:visible="true"/>
 
     <item
         android:id="@+id/mtype_test"
         android:title="@string/mission_test_title"
-        android:visible="false"/>
+        android:visible="true"/>
 </menu>

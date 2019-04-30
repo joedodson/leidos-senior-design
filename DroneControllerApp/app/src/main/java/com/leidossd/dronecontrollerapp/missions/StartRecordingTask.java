@@ -27,21 +27,21 @@ public class StartRecordingTask extends Task {
                     if (error == null) {
                         DJISDKManager.getInstance().getProduct().getCamera().startRecordVideo((error1) -> {
                             if (error1 != null)
-                                listener.statusUpdate(TaskState.FAILED, "Error starting recording: " + error1.getDescription());
+                                listeners.statusUpdate(TaskState.FAILED, "Error starting recording: " + error1.getDescription());
                             else
-                                listener.statusUpdate(TaskState.COMPLETED, "Started Recording...");
+                                listeners.statusUpdate(TaskState.COMPLETED, "Started Recording...");
                         });
                     } else
-                        listener.statusUpdate(TaskState.FAILED, "Error while setting camera mode to record: " + error.getDescription());
+                        listeners.statusUpdate(TaskState.FAILED, "Error while setting camera mode to record: " + error.getDescription());
                 });
             else
-                listener.statusUpdate(TaskState.FAILED, "Error while setting storage location: " + error0.getDescription());
+                listeners.statusUpdate(TaskState.FAILED, "Error while setting storage location: " + error0.getDescription());
         });
 //        DJISDKManager.getInstance().getProduct().getCamera().startRecordVideo((error) -> {
 //            if (error != null)
-//                listener.statusUpdate(TaskState.FAILED, error.getDescription());
+//                listeners.statusUpdate(TaskState.FAILED, error.getDescription());
 //            else
-//                listener.statusUpdate(TaskState.COMPLETED, "Started Recording...");
+//                listeners.statusUpdate(TaskState.COMPLETED, "Started Recording...");
 //        });
     }
 

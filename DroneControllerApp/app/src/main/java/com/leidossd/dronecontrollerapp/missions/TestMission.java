@@ -20,80 +20,77 @@ public class TestMission extends Mission {
     }
     public TestMission(String title) {
         super(title, description);
-        ArrayList<Task> tasks = new ArrayList<>();
 
 //        Test 1
-//        tasks.add(new ToastTask("Starting..."));
-//        tasks.add(new WaitTask(5000));
-//        tasks.add(new SetGimbalAngleTask(-45));
-//        tasks.add(new ToastTask("1..."));
-//        tasks.add(new WaitTask(5000));
-//        tasks.add(new SetGimbalAngleTask(-90));
-//        tasks.add(new ToastTask("2..."));
-//        tasks.add(new WaitTask(5000));
-//        tasks.add(new SetGimbalAngleTask(0));
-//        tasks.add(new ToastTask("3..."));
-//        tasks.add(new WaitTask(5000));
-//        tasks.add(new ToastTask("Ending..."));
+//        taskIterable.add(new ToastTask("Starting..."));
+//        taskIterable.add(new WaitTask(5000));
+//        taskIterable.add(new SetGimbalAngleTask(-45));
+//        taskIterable.add(new ToastTask("1..."));
+//        taskIterable.add(new WaitTask(5000));
+//        taskIterable.add(new SetGimbalAngleTask(-90));
+//        taskIterable.add(new ToastTask("2..."));
+//        taskIterable.add(new WaitTask(5000));
+//        taskIterable.add(new SetGimbalAngleTask(0));
+//        taskIterable.add(new ToastTask("3..."));
+//        taskIterable.add(new WaitTask(5000));
+//        taskIterable.add(new ToastTask("Ending..."));
 
-//      Test 2
-//        tasks.add(new TakeOffTask());
-//        tasks.add(new WaitTask(7000));
-//        tasks.add(new RotateByTask(90));
-//        tasks.add(new WaitTask(1000));
-//        tasks.add(new RotateByTask(-90));
-//        tasks.add(new WaitTask(1000));
-//        tasks.add(new LandingTask());
+//        Test 2
+//        taskIterable.add(new TakeOffTask());
+//        taskIterable.add(new WaitTask(7000));
+//        taskIterable.add(new RotateByTask(90));
+//        taskIterable.add(new WaitTask(1000));
+//        taskIterable.add(new RotateByTask(-90));
+//        taskIterable.add(new WaitTask(1000));
+//        taskIterable.add(new LandingTask());
 
-//        tasks.add(new ToastTask("Starting"));
-//        tasks.add(new WaitTask(2000));
-//        tasks.add(new ToastTask("Moving Gimbal in 2 seconds"));
-//        tasks.add(new SetGimbalAngleTask(-90));
-//        tasks.add(new WaitTask(2000));
-//        tasks.add(new SetGimbalAngleTask(0));
-//        tasks.add(new ToastTask("Done"));
-
+//        Test 3
+        taskIterable.add(new ToastTask("Starting"));
+        taskIterable.add(new WaitTask(2000));
+        taskIterable.add(new ToastTask("Waiting 5 seconds"));
+        taskIterable.add(new WaitTask(5000));
+        taskIterable.add(new ToastTask("Finished"));
 
 
-//                tasks.add(new TakeOffTask());
-//        tasks.add(new WaitTask(7000));
-//        tasks.add(new RotateToTask(180));
+//        Test 4
+//        taskIterable.add(new TakeOffTask());
+//        taskIterable.add(new WaitTask(7000));
+//        taskIterable.add(new RotateToTask(180));
 //        FlightControllerWrapper.getInstance().setRotationLock(false);
-//        tasks.add(new RotateToTask(180));
-//        tasks.add(new FlightTask(new Coordinate(1, 1, 1)));
-//        tasks.add(new WaitTask(2000));
-//        tasks.add(new FlightTask(new Coordinate(0, 1, 0)));
-//        tasks.add(new RotateToTask(90));
-//        tasks.add(new FlightTask(new Coordinate(0, -1, 0)));
-//        tasks.add(new WaitTask(2000));
-//        tasks.add(new FlightTask(new Coordinate(0, 0, 0)));
-//        tasks.add(new RotateByTask(-180));
-//        tasks.add(new WaitTask(2000));
-//        tasks.add(new WaitTask(2000));
-//        tasks.add(new RotateToTask(0));
-//        tasks.add(new WaitTask(1000));
-//        tasks.add(new SetGimbalAngleTask(-20));
-//        tasks.add(new WaitTask(2000));
-//        tasks.add(new StartRecordingTask());
-//        tasks.add(new WaitTask(1000));
-//        tasks.add(new RotateByTask(360));
-//        tasks.add(new WaitTask(2000));
-//        tasks.add(new WaitTask(1000));
-//        tasks.add(new StopRecordingTask());
+//        taskIterable.add(new RotateToTask(180));
+//        taskIterable.add(new FlightTask(new Coordinate(1, 1, 1)));
+//        taskIterable.add(new WaitTask(2000));
+//        taskIterable.add(new FlightTask(new Coordinate(0, 1, 0)));
+//        taskIterable.add(new RotateToTask(90));
+//        taskIterable.add(new FlightTask(new Coordinate(0, -1, 0)));
+//        taskIterable.add(new WaitTask(2000));
+//        taskIterable.add(new FlightTask(new Coordinate(0, 0, 0)));
+//        taskIterable.add(new RotateByTask(-180));
+//        taskIterable.add(new WaitTask(2000));
+//        taskIterable.add(new WaitTask(2000));
+//        taskIterable.add(new RotateToTask(0));
+//        taskIterable.add(new WaitTask(1000));
+//        taskIterable.add(new SetGimbalAngleTask(-20));
+//        taskIterable.add(new WaitTask(2000));
+//        taskIterable.add(new StartRecordingTask());
+//        taskIterable.add(new WaitTask(1000));
+//        taskIterable.add(new RotateByTask(360));
+//        taskIterable.add(new WaitTask(2000));
+//        taskIterable.add(new WaitTask(1000));
+//        taskIterable.add(new StopRecordingTask());
 
 
-        // test 3
-
-        tasks.add(new TakeOffTask());
-        tasks.add(new WaitTask(6000));
-        tasks.add(new FlightTask(new Coordinate(0,5,0)));
-        tasks.add(new WaitTask(500));
-        tasks.add(new FlightTask(new Coordinate(0,0,0)));
-        tasks.add(new WaitTask(500));
-        tasks.add(new RotateToTask(0));
-        tasks.add(new WaitTask(500));
-        tasks.add(new LandingTask());
-        taskIterable = tasks;
+//        Test 5
+//        taskIterable.add(new TakeOffTask());
+//        taskIterable.add(new WaitTask(6000));
+//        taskIterable.add(new FlightTask(new Coordinate(0,5,0)));
+//        taskIterable.add(new WaitTask(500));
+//        taskIterable.add(new FlightTask(new Coordinate(0,0,0)));
+//        taskIterable.add(new WaitTask(500));
+//        taskIterable.add(new RotateToTask(0));
+//        taskIterable.add(new WaitTask(500));
+//        taskIterable.add(new LandingTask());
+//        taskIterable = taskIterable;
     }
 
     TestMission(String title, ArrayList<Task> tasks) {

@@ -22,10 +22,10 @@ public class FlightTask extends Task {
 
         FlightControllerWrapper.getInstance().gotoXYZ(destination, (error) -> {
             if (error != null)
-                listener.statusUpdate(TaskState.FAILED, "ERROR IN gotoXYZ! " + error);
+                listeners.statusUpdate(TaskState.FAILED, "ERROR IN gotoXYZ! " + error);
             else {
                 currentState = TaskState.COMPLETED;
-                listener.statusUpdate(currentState, title + " Completed");
+                listeners.statusUpdate(currentState, title + " Completed");
             }
         });
     }

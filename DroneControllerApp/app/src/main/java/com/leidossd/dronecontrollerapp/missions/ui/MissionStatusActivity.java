@@ -1,19 +1,17 @@
 package com.leidossd.dronecontrollerapp.missions.ui;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.leidossd.dronecontrollerapp.R;
 import com.leidossd.dronecontrollerapp.missions.Mission;
-import com.leidossd.dronecontrollerapp.missions.MissionRunner;
+import com.leidossd.dronecontrollerapp.missions.execution.MissionRunner;
 import com.leidossd.dronecontrollerapp.missions.Task;
 
 public class MissionStatusActivity extends AppCompatActivity implements Task.StatusUpdateListener {
     private TextView missionStatus;
-    private MissionRunner missionRunner;
-    private Handler missionBindHandler;
+    private Mission mission;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,23 +19,28 @@ public class MissionStatusActivity extends AppCompatActivity implements Task.Sta
         setContentView(R.layout.activity_mission_status);
 
         missionStatus = findViewById(R.id.mission_status);
-        missionRunner = new MissionRunner(this, this);
-        missionBindHandler = new Handler();
-        missionBindHandler.postDelayed(this::checkBinding, 50);
-    }
+        MissionRunner missionRunner = new MissionRunner(this);
 
-    public void checkBinding(){
-        if(missionRunner.isBinded()){
-            missionRunner.loadMission();
-
+        mission = missionRunner.getCurrentMission();
+        if(mission != null) {
+            updateMissionStatus(mission.getCurrentState().toString());
+            missionRunner.getCurrentMission().addListener(this);
         } else {
-            missionBindHandler.postDelayed(this::checkBinding, 50);
+            missionStatus.setText("No active mission found");
         }
     }
 
     @Override
     public void statusUpdate(Task.TaskState state, String message) {
-        Mission mission = MissionRunner.missionRunnerService.mission;
-        missionStatus.setText(String.format("Current Mission: %s - %s - %s", mission.getTitle(), state.toString(), mission.getCurrentTaskName()));
+        runOnUiThread(() -> updateMissionStatus(state.toString()));
+    }
+
+    private void updateMissionStatus(String stateString) {
+        if (mission != null) {
+            missionStatus.setText(String.format("Current Mission: %s - %s - %s",
+                    mission.getTitle(),
+                    stateString,
+                    mission.getCurrentTaskName()));
+        }
     }
 }

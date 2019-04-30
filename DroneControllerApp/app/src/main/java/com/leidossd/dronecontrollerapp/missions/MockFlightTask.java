@@ -18,7 +18,7 @@ public class MockFlightTask extends Task {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                listener.statusUpdate(TaskState.COMPLETED, "Mock Flight Completed");
+                listeners.statusUpdate(TaskState.COMPLETED, "Mock Flight Completed");
             }
         }, 2000);
     }
