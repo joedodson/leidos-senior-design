@@ -227,21 +227,24 @@ public class DeadReckoningFlightControl implements CoordinateFlightControl, Virt
         // What follows is complicated math stuff
 
         if(rotationDelta == 0) {
-//            Coordinate movement =
-//                    direction.perpendicularUnit().scale(positionDelta.getX())
-//                    .add(direction.scale(positionDelta.getY()))
-//                    .add(new Coordinate(0,0,positionDelta.getZ()));
-//            position = position.add(movement);
+            // use this when you are trying to fly without FlightControllerState (no compass)
+            Coordinate movement =
+                    direction.perpendicularUnit().scale(positionDelta.getX())
+                    .add(direction.scale(positionDelta.getY()))
+                    .add(new Coordinate(0,0,positionDelta.getZ()));
+            position = position.add(movement);
 
 
-            position = position.add(positionDelta);
+            // use this when position updates are coming from FlightControllerState (compass)
+            // in the VirtualStickFlightControl class
+//            position = position.add(positionDelta);
             Log.v(TAG, "New position: " + position);
         }
         else {
             direction = direction.rotateByAngle(rotationDelta);
             Log.v(TAG, "New direction: " + direction);
 
-            // for our team, we probably won't use both rotation and movement simultaneously
+            // for our team, we won't use both rotation and movement simultaneously
             // but for the future teams who may want to (based on camera input..), this will be useful
             if(positionDelta.xyMagnitude() > 0){
 

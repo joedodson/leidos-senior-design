@@ -173,7 +173,10 @@ public class VirtualStickFlightControl {
                 flightController.sendVirtualStickFlightControlData(
                         new FlightControlData(roll, pitch, yaw, throttle), (error) -> {
                             if (error != null) {
+                                // This function won't actually return an error, and errors do happen,
+                                // which is a HUGE problem.
                                 Log.v(TAG, "VS: send failure, error: " + error.getDescription());
+
                                 if (callbackFail != null)
                                     callbackFail.onResult(error);
 //                                halt();
@@ -186,20 +189,22 @@ public class VirtualStickFlightControl {
                                         state.getVelocityX(),
                                         state.getVelocityZ()));
                                 if (listener != null)
-//                                    listener.increment(
-//                                            new Coordinate(roll, pitch, throttle).scale((updatePeriod / (float) 1000.0)),
-//                                            yaw * (updatePeriod / (float) 1000.0));
-                                    listener.increment(new Coordinate(
-                                            state.getVelocityY(),
-                                            state.getVelocityX(),
-                                            state.getVelocityZ())
-                                            .scale(updatePeriod/1000f), yaw*(updatePeriod/1000f));
+                                    // use this when avoiding compass (FlightControllerState), note that you should
+                                    // also switch what happens in the increment() function in the
+                                    // DeadReckoningFlightControl class. Compass is used because DJI's
+                                    // sendVirtualStickFlightControlData does not give an error with the callback
+                                    // which is a huge problem with positioning
+                                    listener.increment(
+                                            new Coordinate(roll, pitch, throttle).scale((updatePeriod / (float) 1000.0)),
+                                            yaw * (updatePeriod / (float) 1000.0));
+                                    // use this when using compass
+//                                    listener.increment(new Coordinate(
+//                                            state.getVelocityY(),
+//                                            state.getVelocityX(),
+//                                            state.getVelocityZ())
+//                                            .scale(updatePeriod/1000f), yaw*(updatePeriod/1000f));
                             }
                         });
-//                if (listener != null)
-//                    listener.increment(
-//                            new Coordinate(roll, pitch, throttle).scale((updatePeriod / (float) 1000.0)),
-//                            yaw * (updatePeriod / (float) 1000.0));
             }
         }
     }

@@ -45,11 +45,11 @@ public class TestMission extends Mission {
 //        taskIterable.add(new LandingTask());
 
 //        Test 3
-        taskIterable.add(new ToastTask("Starting"));
-        taskIterable.add(new WaitTask(2000));
-        taskIterable.add(new ToastTask("Waiting 5 seconds"));
-        taskIterable.add(new WaitTask(5000));
-        taskIterable.add(new ToastTask("Finished"));
+//        taskIterable.add(new ToastTask("Starting"));
+//        taskIterable.add(new WaitTask(2000));
+//        taskIterable.add(new ToastTask("Waiting 5 seconds"));
+//        taskIterable.add(new WaitTask(5000));
+//        taskIterable.add(new ToastTask("Finished"));
 
 
 //        Test 4
@@ -91,6 +91,77 @@ public class TestMission extends Mission {
 //        taskIterable.add(new WaitTask(500));
 //        taskIterable.add(new LandingTask());
 //        taskIterable = taskIterable;
+//        tasks.add(new ToastTask("Starting..."));
+//        tasks.add(new WaitTask(5000));
+//        tasks.add(new SetGimbalAngleTask(-45));
+//        tasks.add(new ToastTask("1..."));
+//        tasks.add(new WaitTask(5000));
+//        tasks.add(new SetGimbalAngleTask(-90));
+//        tasks.add(new ToastTask("2..."));
+//        tasks.add(new WaitTask(5000));
+//        tasks.add(new SetGimbalAngleTask(0));
+//        tasks.add(new ToastTask("3..."));
+//        tasks.add(new WaitTask(5000));
+//        tasks.add(new ToastTask("Ending..."));
+
+//      Test 2
+//        tasks.add(new TakeOffTask());
+//        tasks.add(new WaitTask(7000));
+//        tasks.add(new RotateByTask(90));
+//        tasks.add(new WaitTask(1000));
+//        tasks.add(new RotateByTask(-90));
+//        tasks.add(new WaitTask(1000));
+//        tasks.add(new LandingTask());
+
+//        tasks.add(new ToastTask("Starting"));
+//        tasks.add(new WaitTask(2000));
+//        tasks.add(new ToastTask("Moving Gimbal in 2 seconds"));
+//        tasks.add(new SetGimbalAngleTask(-90));
+//        tasks.add(new WaitTask(2000));
+//        tasks.add(new SetGimbalAngleTask(0));
+//        tasks.add(new ToastTask("Done"));
+
+
+        taskIterable.add(new StartRecordingTask());
+        taskIterable.add(new WaitTask(2000));
+        taskIterable.add(new TakeOffTask());
+        taskIterable.add(new WaitTask(6000));
+        taskIterable.add(new SetGimbalAngleTask(-20));
+        taskIterable.add(new WaitTask(500));
+        // this actually doesn't make sense, rotation lock should be set within a task/mission
+        // during run time, here it gets set in the mission constructor.
+        FlightControllerWrapper.getInstance().setRotationLock(false);
+        taskIterable.add(new FlightTask(new Coordinate(1, 1, 1)));
+        taskIterable.add(new WaitTask(500));
+        taskIterable.add(new FlightTask(new Coordinate(-1, 0, 0)));
+        taskIterable.add(new WaitTask(500));
+        taskIterable.add(new FlightTask(new Coordinate(0, -1, 1.5f)));
+        taskIterable.add(new WaitTask(500));
+        taskIterable.add(new RotateByTask(360));
+        taskIterable.add(new WaitTask(500));
+        taskIterable.add(new FlightTask(new Coordinate(0, 0, 0)));
+        taskIterable.add(new WaitTask(500));
+        taskIterable.add(new RotateToTask(0));
+        taskIterable.add(new WaitTask(500));
+        taskIterable.add(new LandingTask());
+        taskIterable.add(new WaitTask(5000));
+        // if the app crashes or the mission stops for some reason, the recording will need to be
+        // stopped by unplugging the battery of the drone. in the future, probably need to put that
+        // kind of functionality in the UI or in the mission status update function.
+        taskIterable.add(new StopRecordingTask());
+
+
+        // test 3
+
+//        tasks.add(new TakeOffTask());
+//        tasks.add(new WaitTask(6000));
+//        tasks.add(new FlightTask(new Coordinate(0,5,0)));
+//        tasks.add(new WaitTask(500));
+//        tasks.add(new FlightTask(new Coordinate(0,0,0)));
+//        tasks.add(new WaitTask(500));
+//        tasks.add(new RotateToTask(0));
+//        tasks.add(new WaitTask(500));
+//        tasks.add(new LandingTask());
     }
 
     TestMission(String title, ArrayList<Task> tasks) {

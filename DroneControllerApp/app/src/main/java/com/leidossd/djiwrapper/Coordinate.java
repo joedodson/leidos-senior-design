@@ -64,7 +64,7 @@ public class Coordinate implements Parcelable {
 
     // a unit vector perpendicular to the current vector in the x,y plane
     public Coordinate perpendicularUnit() {
-        return this.rotateByAngle(90);
+        return this.rotateByAngle(90).unit();
 //        if (x == 0 && y == 0)
 //            throw new IllegalArgumentException("Can't get a perpendicular unit vector from a 0 vector!");
 //        if (x == 0)
